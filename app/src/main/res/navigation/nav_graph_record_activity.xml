@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_record_activity"
+    app:startDestination="@id/recordFragment">
+
+    <fragment
+        android:id="@+id/recordFragment"
+        android:name="com.prox.voicechanger.ui.fragment.RecordFragment"
+        android:label="fragment_record"
+        tools:layout="@layout/fragment_record" >
+        <action
+            android:id="@+id/action_recordFragment_to_stopRecordFragment"
+            app:destination="@id/stopRecordFragment" />
+        <action
+            android:id="@+id/action_recordFragment_to_settingFragment"
+            app:destination="@id/settingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/stopRecordFragment"
+        android:name="com.prox.voicechanger.ui.fragment.StopRecordFragment"
+        android:label="fragment_stop_record"
+        tools:layout="@layout/fragment_stop_record" />
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.prox.voicechanger.ui.fragment.SettingFragment"
+        android:label="fragment_setting"
+        tools:layout="@layout/fragment_setting" />
+</navigation>

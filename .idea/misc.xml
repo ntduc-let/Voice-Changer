@@ -1,5 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/voice-changer/app/src/main/res/drawable-v24/bg_mess2.xml" value="0.138" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/ani_ic_splash.xml" value="0.212" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/bg_button.xml" value="0.126" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/bg_button_disable.xml" value="0.2125" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/bg_button_enable.xml" value="0.2125" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/bg_main.xml" value="0.138" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/bg_mess.xml" value="0.138" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/bg_splash.xml" value="0.212" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_ani_record1.xml" value="0.138" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_ani_record3.xml" value="0.138" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_ani_record7.xml" value="0.138" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_button_close.xml" value="0.138" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_facebook.xml" value="0.138" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_policy.xml" value="0.138" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_premium.xml" value="0.126" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_rate.xml" value="0.138" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_splash1.xml" value="0.212" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_splash2.xml" value="0.212" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_splash3.xml" value="0.212" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_terms.xml" value="0.138" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_tick.xml" value="0.126" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_user.xml" value="0.138" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/img_button_blue_while_selector.xml" value="0.2125" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/text_color_custom.xml" value="0.1615" />
+        <entry key="..\:/voice-changer/app/src/main/res/layout/activity_change_voice.xml" value="0.25" />
+        <entry key="..\:/voice-changer/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/voice-changer/app/src/main/res/layout/activity_record.xml" value="0.25" />
+        <entry key="..\:/voice-changer/app/src/main/res/layout/activity_splash.xml" value="0.25" />
+        <entry key="..\:/voice-changer/app/src/main/res/layout/dialog_name.xml" value="0.25" />
+        <entry key="..\:/voice-changer/app/src/main/res/layout/fragment_record.xml" value="0.25" />
+        <entry key="..\:/voice-changer/app/src/main/res/layout/fragment_recording.xml" value="0.264" />
+        <entry key="..\:/voice-changer/app/src/main/res/layout/fragment_setting.xml" value="0.264" />
+        <entry key="..\:/voice-changer/app/src/main/res/layout/fragment_stop_record.xml" value="0.13802083333333334" />
+        <entry key="..\:/voice-changer/app/src/main/res/layout/ic_ani_record.xml" value="0.25" />
+        <entry key="..\:/voice-changer/app/src/main/res/layout/layout_premium.xml" value="0.264" />
+        <entry key="..\:/voice-changer/app/src/main/res/layout/txt_mess.xml" value="0.264" />
+        <entry key="..\:/voice-changer/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.121" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
