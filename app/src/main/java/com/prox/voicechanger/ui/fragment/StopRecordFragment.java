@@ -42,7 +42,7 @@ public class StopRecordFragment extends Fragment {
             recorder.stop();
 
             if (FileUtils.deleteFile(requireContext(), recorder.getPath())){
-                NavController navController= Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
+                NavController navController= Navigation.findNavController(requireActivity(), R.id.nav_host_record_activity);
                 navController.popBackStack();
             }
         });

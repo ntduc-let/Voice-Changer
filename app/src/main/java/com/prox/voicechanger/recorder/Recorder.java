@@ -18,14 +18,13 @@ public class Recorder implements RecorderListener {
     private static final int CHANNEL_COUNT = 1;
     private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
     private static final int BIT_PER_SAMPLE = 16;
-    private static final long BYTE_RATE = (long)(BIT_PER_SAMPLE * SAMPLING_RATE_IN_HZ * CHANNEL_COUNT / 8);
+    private static final long BYTE_RATE = BIT_PER_SAMPLE * SAMPLING_RATE_IN_HZ * CHANNEL_COUNT / 8;
     private static final int BUFFER_SIZE = AudioRecord.getMinBufferSize(SAMPLING_RATE_IN_HZ, CHANNEL_CONFIG, AUDIO_FORMAT);
 
     private MediaRecorder recorder;
     private String path;
     private String name;
     private long startTime;
-    private boolean isRecording;
 
     public Recorder() {
         path = FileUtils.getRecordingFilePath();
@@ -38,7 +37,6 @@ public class Recorder implements RecorderListener {
         recorder.setOutputFile(path);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         startTime = 0;
-        isRecording = false;
     }
 
     @Override
@@ -50,7 +48,6 @@ public class Recorder implements RecorderListener {
             recorder.prepare();
             recorder.start();
             startTime = System.currentTimeMillis();
-            isRecording = true;
             Log.d(TAG, "Recorder: start");
         } catch (IOException e) {
             e.printStackTrace();
@@ -65,7 +62,6 @@ public class Recorder implements RecorderListener {
         recorder.stop();
         recorder.release();
         startTime = 0;
-        isRecording = false;
         Log.d(TAG, "Recorder: stop");
     }
 
@@ -79,7 +75,6 @@ public class Recorder implements RecorderListener {
         path = null;
         name = null;
         startTime = 0;
-        isRecording = false;
         Log.d(TAG, "Recorder: release");
     }
 

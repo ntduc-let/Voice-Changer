@@ -27,7 +27,7 @@ public class NameDialog extends CustomDialog{
 
         binding.btnCancel.setOnClickListener(view -> {
             if (FileUtils.deleteFile(context, recorder.getPath())){
-                NavController navController= Navigation.findNavController(activity, R.id.nav_host_fragment);
+                NavController navController= Navigation.findNavController(activity, R.id.nav_host_record_activity);
                 navController.popBackStack();
             }
             cancel();

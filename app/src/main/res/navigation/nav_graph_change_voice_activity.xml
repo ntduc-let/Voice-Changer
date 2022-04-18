@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/changeVoiceFragment"
-        android:name="com.prox.voicechanger.ChangeVoiceFragment"
+        android:name="com.prox.voicechanger.ui.fragment.ChangeVoiceFragment"
         android:label="fragment_change_voice"
         tools:layout="@layout/fragment_change_voice" />
 </navigation>

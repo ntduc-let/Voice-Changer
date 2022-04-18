@@ -42,7 +42,7 @@ public class SplashActivity extends AppCompatActivity {
         if (intent==null){
             Log.d(TAG, "SplashActivity: start Intent null");
             finish();
-        }else if (intent.getAction() == Intent.ACTION_MAIN){
+        }else if (intent.getAction().equals(Intent.ACTION_MAIN)){
             Log.d(TAG, "SplashActivity: start Intent.ACTION_MAIN");
             Intent goToRecord = new Intent(SplashActivity.this, RecordActivity.class);
             startActivity(goToRecord);

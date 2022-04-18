@@ -25,7 +25,7 @@ public class SettingFragment extends Fragment {
         FragmentSettingBinding binding = FragmentSettingBinding.inflate(inflater, container, false);
 
         binding.btnClose.setOnClickListener(view -> {
-            NavController navController= Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
+            NavController navController= Navigation.findNavController(requireActivity(), R.id.nav_host_record_activity);
             navController.popBackStack();
         });
 

@@ -3,7 +3,7 @@ package com.prox.voicechanger.utils;
 import java.util.concurrent.TimeUnit;
 
 public class NumberUtils {
-    public static final String formatAsTime(long time) {
+    public static String formatAsTime(long time) {
         int seconds = (int)(TimeUnit.MILLISECONDS.toSeconds(time) % (long)60);
         int minutes = (int)(TimeUnit.MILLISECONDS.toMinutes(time) % (long)60);
         int hours = (int)TimeUnit.MILLISECONDS.toHours(time);
