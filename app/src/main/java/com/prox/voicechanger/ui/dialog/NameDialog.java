@@ -17,7 +17,7 @@ import com.prox.voicechanger.utils.FileUtils;
 
 public class NameDialog extends CustomDialog{
     public static final String RECORD_TO_CHANGE_VOICE = "RECORD_TO_CHANGE_VOICE";
-    private static final String PATH_FILE = "PATH_FILE";
+    public static final String PATH_FILE = "PATH_FILE";
 
     public NameDialog(@NonNull Context context, Activity activity, DialogNameBinding binding, Recorder recorder) {
         super(context, binding.getRoot());

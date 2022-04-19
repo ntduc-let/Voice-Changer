@@ -162,7 +162,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/go_premium"
-            android:textColor="@color/black"
             android:textAlignment="center"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -173,7 +172,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/price"
-            android:textColor="@color/black"
             android:textAlignment="center"
             android:textSize="18sp"
             android:translationZ="10dp"/>

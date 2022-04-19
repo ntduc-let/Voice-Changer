@@ -18,18 +18,18 @@ import java.util.Date;
 public class FileUtils {
     public static String getRecordingFilePath() {
         File downloadRoot = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOWNLOADS), "Voice Changer");
+                Environment.DIRECTORY_DOWNLOADS), "VoiceChanger");
         if (!downloadRoot.exists()) {
             downloadRoot.mkdirs();
         }
 
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("ddMMyy");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyhhmmss");
         String currentDate = sdf.format(new Date());
         int i = 1;
 
         File recordFile;
         do {
-            recordFile = new File(downloadRoot, "Audio" + currentDate + "-" + i + ".mp3");
+            recordFile = new File(downloadRoot, "Audio" + currentDate + i + ".mp3");
             i++;
         } while (recordFile.exists());
 
