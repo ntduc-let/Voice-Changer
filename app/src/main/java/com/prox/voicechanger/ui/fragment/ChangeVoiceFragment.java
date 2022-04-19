@@ -1,5 +1,6 @@
 package com.prox.voicechanger.ui.fragment;
 
+import static com.prox.voicechanger.VoiceChangerApp.TAG;
 import static com.prox.voicechanger.ui.dialog.NameDialog.PATH_FILE;
 import static com.prox.voicechanger.ui.dialog.NameDialog.RECORD_TO_CHANGE_VOICE;
 
@@ -7,6 +8,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,7 @@ import com.google.android.flexbox.JustifyContent;
 import com.prox.voicechanger.R;
 import com.prox.voicechanger.adapter.EffectAdapter;
 import com.prox.voicechanger.databinding.FragmentChangeVoiceBinding;
+import com.prox.voicechanger.model.Effect;
 import com.prox.voicechanger.utils.FFMPEGUtils;
 import com.prox.voicechanger.utils.FileUtils;
 import com.prox.voicechanger.utils.NumberUtils;
@@ -30,6 +33,7 @@ import java.io.IOException;
 public class ChangeVoiceFragment extends Fragment {
     private FragmentChangeVoiceBinding binding;
     private MediaPlayer player;
+    private EffectAdapter effectAdapter;
     private String pathRecording;
     private String pathFFMPEG;
 
@@ -39,6 +43,7 @@ public class ChangeVoiceFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG, "ChangeVoiceFragment: onCreateView");
         binding = FragmentChangeVoiceBinding.inflate(inflater, container, false);
 
         init();
@@ -51,8 +56,17 @@ public class ChangeVoiceFragment extends Fragment {
             }
         });
 
+        binding.layoutPlayer.btnPauseOrResume.setOnClickListener(view -> {
+            if (player.isPlaying()){
+                pauseMediaPlayer();
+            }else {
+                resumeMediaPlayer();
+            }
+        });
+
         binding.layoutEffect.btnEffect.setOnClickListener(view -> {
             initClickBtnEffect();
+            startMediaPlayer(pathRecording);
         });
 
         binding.layoutEffect.btnCustom.setOnClickListener(view -> {
@@ -61,9 +75,49 @@ public class ChangeVoiceFragment extends Fragment {
                 FileUtils.deleteFile(requireContext(), pathFFMPEG);
                 pathFFMPEG = null;
             }
+            effectAdapter.resetEffects();
+            startMediaPlayer(pathRecording);
         });
 
         return binding.getRoot();
+    }
+
+    @Override
+    public void onDestroyView() {
+        Log.d(TAG, "ChangeVoiceFragment: onDestroyView");
+        super.onDestroyView();
+        handler.removeCallbacks(updateTime);
+        updateTime = null;
+        handler = null;
+        player.stop();
+        player.release();
+        player = null;
+        effectAdapter = null;
+        pathRecording = null;
+        pathFFMPEG = null;
+        binding = null;
+    }
+
+    private void init() {
+        Log.d(TAG, "ChangeVoiceFragment: init");
+        Intent intent = requireActivity().getIntent();
+        if (intent == null) {
+            return;
+        }
+        if (intent.getAction().equals(RECORD_TO_CHANGE_VOICE)) {
+            pathRecording = intent.getStringExtra(PATH_FILE);
+            player = new MediaPlayer();
+            startMediaPlayer(pathRecording);
+        }
+
+        effectAdapter = new EffectAdapter(this::selectEffect);
+
+        FlexboxLayoutManager flexboxLayoutManager = new FlexboxLayoutManager(getContext());
+        flexboxLayoutManager.setFlexWrap(FlexWrap.WRAP);
+        flexboxLayoutManager.setJustifyContent(JustifyContent.SPACE_AROUND);
+        binding.layoutEffect.recyclerViewEffects.setLayoutManager(flexboxLayoutManager);
+        binding.layoutEffect.recyclerViewEffects.setAdapter(effectAdapter);
+        effectAdapter.setEffects(FFMPEGUtils.getEffects());
     }
 
     private void initClickBtnCustom() {
@@ -80,74 +134,73 @@ public class ChangeVoiceFragment extends Fragment {
         binding.layoutEffect.layoutCustom.getRoot().setVisibility(View.GONE);
     }
 
-    private void init() {
-        Intent intent = requireActivity().getIntent();
-        if (intent == null) {
-            return;
-        }
-        if (intent.getAction().equals(RECORD_TO_CHANGE_VOICE)) {
-            pathRecording = intent.getStringExtra(PATH_FILE);
-            try {
-                player = new MediaPlayer();
-                player.setDataSource(pathRecording);
-                player.setLooping(true);
-                player.prepare();
-                player.setOnPreparedListener(mediaPlayer -> {
-                    mediaPlayer.start();
-                    binding.layoutPlayer.btnPauseOrResume.setImageResource(R.drawable.ic_pause);
-                });
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            updateTime();
+    private void selectEffect(Effect effect) {
+        Log.d(TAG, "ChangeVoiceFragment: selectEffect "+effect.getTitle());
+        stopMediaPlayer();
+
+        if (pathFFMPEG!=null){
+            FileUtils.deleteFile(requireContext(), pathFFMPEG);
+            pathFFMPEG = null;
         }
 
-        EffectAdapter effectAdapter = new EffectAdapter(effect -> {
-            player.stop();
-            handler.removeCallbacks(updateTime);
-            binding.layoutPlayer.btnPauseOrResume.setImageResource(R.drawable.ic_resume);
-            if (pathFFMPEG!=null){
-                FileUtils.deleteFile(requireContext(), pathFFMPEG);
-                pathFFMPEG = null;
+        String path;
+        if (effect.getTitle().equals(FFMPEGUtils.Original)) {
+            path = pathRecording;
+        }else {
+            FFMPEGUtils.playEffect(pathRecording, effect);
+            pathFFMPEG = FFMPEGUtils.getPathFFMPEG();
+            if (pathFFMPEG==null) {
+                Toast.makeText(requireContext(), R.string.add_effect_error, Toast.LENGTH_SHORT).show();
+                return;
             }
-            String path;
-            if (effect.getTitle().equals(FFMPEGUtils.Original)) {
-                path = pathRecording;
-            }else {
-                FFMPEGUtils.playEffect(pathRecording, effect);
-                pathFFMPEG = FFMPEGUtils.getPathFFMPEG();
-                if (pathFFMPEG==null) {
-                    Toast.makeText(requireContext(), R.string.add_effect_error, Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                path = pathFFMPEG;
-            }
-            try {
-                player.reset();
-                player.setDataSource(path);
-                player.setLooping(true);
-                player.prepare();
-                player.setOnPreparedListener(mediaPlayer -> {
-                    mediaPlayer.start();
-                    binding.layoutPlayer.btnPauseOrResume.setImageResource(R.drawable.ic_pause);
-                });
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            updateTime();
-        });
-        FlexboxLayoutManager flexboxLayoutManager = new FlexboxLayoutManager(getContext());
-        flexboxLayoutManager.setFlexWrap(FlexWrap.WRAP);
-        flexboxLayoutManager.setJustifyContent(JustifyContent.SPACE_AROUND);
+            path = pathFFMPEG;
+        }
+        startMediaPlayer(path);
+    }
 
-        binding.layoutEffect.recyclerViewEffects.setLayoutManager(flexboxLayoutManager);
-        binding.layoutEffect.recyclerViewEffects.setAdapter(effectAdapter);
-        effectAdapter.setEffects(FFMPEGUtils.getEffects());
+    private void startMediaPlayer(String path) {
+        Log.d(TAG, "ChangeVoiceFragment: startMediaPlayer "+path);
+        try {
+            player.reset();
+            player.setDataSource(path);
+            player.setLooping(true);
+            player.prepare();
+            player.setOnPreparedListener(mediaPlayer -> {
+                mediaPlayer.start();
+                binding.layoutPlayer.btnPauseOrResume.setImageResource(R.drawable.ic_pause);
+            });
+        } catch (IOException e) {
+            Log.d(TAG, "ChangeVoiceFragment: init");
+        }
+        updateTime();
+    }
 
-        initClickBtnEffect();
+    private void stopMediaPlayer() {
+        Log.d(TAG, "ChangeVoiceFragment: stopMediaPlayer");
+        player.stop();
+        handler.removeCallbacks(updateTime);
+
+        binding.layoutPlayer.btnPauseOrResume.setImageResource(R.drawable.ic_resume);
+    }
+
+    private void pauseMediaPlayer() {
+        Log.d(TAG, "ChangeVoiceFragment: pauseMediaPlayer");
+        player.pause();
+        handler.removeCallbacks(updateTime);
+
+        binding.layoutPlayer.btnPauseOrResume.setImageResource(R.drawable.ic_resume);
+    }
+
+    private void resumeMediaPlayer() {
+        Log.d(TAG, "ChangeVoiceFragment: resumeMediaPlayer");
+        player.start();
+        updateTime();
+
+        binding.layoutPlayer.btnPauseOrResume.setImageResource(R.drawable.ic_pause);
     }
 
     private void updateTime(){
+        Log.d(TAG, "ChangeVoiceFragment: updateTime");
         binding.layoutPlayer.txtTotalTime.setText(NumberUtils.formatAsTime(player.getDuration()));
         handler = new Handler();
         updateTime = new Runnable() {
