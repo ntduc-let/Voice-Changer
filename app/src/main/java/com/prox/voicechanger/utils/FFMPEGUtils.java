@@ -22,20 +22,20 @@ public class FFMPEGUtils {
     }
 
     public static void playEffect(String path, Effect effect) {
-        String type = path.substring(path.lastIndexOf('.'));
-        String root = path.substring(0, path.lastIndexOf("/") + 1);
-        String oldName = path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
+        String type = FileUtils.getType(path);
+        String root = FileUtils.getRoot(path);
+        String oldName = FileUtils.getName(path);
         String newName = oldName+"-"+effect.getTitle();
         String pathFFMPEG = root+newName+type;
         String cmd = "-y -i "+path+" -af "+effect.getChangeVoice()+" "+pathFFMPEG;
-        if(exceuteFFMPEG(cmd, pathFFMPEG)){
+        if(exceuteFFMPEG(cmd)){
             FFMPEGUtils.pathFFMPEG = pathFFMPEG;
         }else {
             FFMPEGUtils.pathFFMPEG = null;
         }
     }
 
-    private static boolean exceuteFFMPEG(String cmd, String path) {
+    private static boolean exceuteFFMPEG(String cmd) {
         FFmpegSession session = FFmpegKit.execute(cmd);
 
         if (ReturnCode.isSuccess(session.getReturnCode())) {

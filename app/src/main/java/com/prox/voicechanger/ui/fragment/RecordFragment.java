@@ -2,6 +2,7 @@ package com.prox.voicechanger.ui.fragment;
 
 import static com.prox.voicechanger.VoiceChangerApp.TAG;
 
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +19,7 @@ import androidx.navigation.Navigation;
 
 import com.prox.voicechanger.R;
 import com.prox.voicechanger.databinding.FragmentRecordBinding;
+import com.prox.voicechanger.ui.activity.FileVoiceActivity;
 import com.prox.voicechanger.utils.PermissionUtils;
 
 public class RecordFragment extends Fragment {
@@ -42,6 +44,8 @@ public class RecordFragment extends Fragment {
 
         binding.btnMore.setOnClickListener(view ->
                 Navigation.findNavController(binding.getRoot()).navigate(R.id.action_recordFragment_to_settingFragment));
+
+        binding.btnFile.setOnClickListener(view -> startActivity(new Intent(requireActivity(), FileVoiceActivity.class)));
 
         return binding.getRoot();
     }
@@ -77,6 +81,7 @@ public class RecordFragment extends Fragment {
 
         new Handler().postDelayed(() -> {
             binding.btnMore.setVisibility(View.VISIBLE);
+            binding.btnFile.setVisibility(View.VISIBLE);
             binding.txtContent.setVisibility(View.VISIBLE);
             binding.txtContent2.setVisibility(View.VISIBLE);
             binding.btnRecord.setVisibility(View.VISIBLE);

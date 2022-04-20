@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
@@ -21,18 +22,27 @@ import com.prox.voicechanger.R;
 import com.prox.voicechanger.adapter.EffectAdapter;
 import com.prox.voicechanger.databinding.ActivityChangeVoiceBinding;
 import com.prox.voicechanger.model.Effect;
+import com.prox.voicechanger.model.FileVoice;
 import com.prox.voicechanger.utils.FFMPEGUtils;
 import com.prox.voicechanger.utils.FileUtils;
 import com.prox.voicechanger.utils.NumberUtils;
+import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class ChangeVoiceActivity extends AppCompatActivity {
     private ActivityChangeVoiceBinding binding;
     private MediaPlayer player;
     private EffectAdapter effectAdapter;
     private String pathRecording;
     private String pathFFMPEG;
+    private Effect effectSelected;
+    private FileVoiceViewModel model;
 
     private Handler handler = new Handler();
     private Runnable updateTime = new Runnable() {
@@ -50,9 +60,27 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         binding = ActivityChangeVoiceBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        model = new ViewModelProvider(this).get(FileVoiceViewModel.class);
+
         init();
 
         binding.btnBack2.setOnClickListener(view -> onBackPressed());
+
+        binding.btnSave2.setOnClickListener(view -> {
+            if (pathFFMPEG != null){
+                FileVoice fileVoice = new FileVoice();
+                fileVoice.setSrc(effectSelected.getSrc());
+                fileVoice.setName(FileUtils.getName(pathFFMPEG));
+                fileVoice.setPath(pathFFMPEG);
+                fileVoice.setDuration(player.getDuration());
+                fileVoice.setSize(new File(pathFFMPEG).length());
+                fileVoice.setDate(new Date().getTime());
+                fileVoice.setExist(false);
+                model.insert(fileVoice);
+            }
+            startActivity(new Intent(this, FileVoiceActivity.class));
+            finish();
+        });
 
         binding.layoutPlayer.btnPauseOrResume.setOnClickListener(view -> {
             if (player.isPlaying()){
@@ -118,6 +146,16 @@ public class ChangeVoiceActivity extends AppCompatActivity {
             pathRecording = intent.getStringExtra(PATH_FILE);
             player = new MediaPlayer();
             startMediaPlayer(pathRecording);
+
+            FileVoice fileVoice = new FileVoice();
+            fileVoice.setSrc(R.drawable.ic_original);
+            fileVoice.setName(FileUtils.getName(pathRecording));
+            fileVoice.setPath(pathRecording);
+            fileVoice.setDuration(player.getDuration());
+            fileVoice.setSize(new File(pathRecording).length());
+            fileVoice.setDate(new Date().getTime());
+            fileVoice.setExist(false);
+            model.insert(fileVoice);
         }
 
         effectAdapter = new EffectAdapter(this::selectEffect);
@@ -146,6 +184,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
 
     private void selectEffect(Effect effect) {
         Log.d(TAG, "ChangeVoiceActivity: selectEffect "+effect.getTitle());
+        effectSelected = effect;
         stopMediaPlayer();
 
         if (pathFFMPEG!=null){

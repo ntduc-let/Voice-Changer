@@ -25,4 +25,6 @@
     <string name="custom">Custom</string>
     <string name="original">Original</string>
     <string name="add_effect_error">Add effect error</string>
+    <string name="delete_all">Delete All</string>
+    <string name="play">Play</string>
 </resources>

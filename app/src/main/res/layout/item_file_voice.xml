@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_main">
+
+    <ImageView
+        android:id="@+id/img_file"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/bg_button4"
+        android:scaleType="center"
+        app:layout_constraintBottom_toTopOf="@+id/item_play_media"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_original" />
+
+    <TextView
+        android:id="@+id/txt_name_file"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:text="file name"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/txt_size"
+        app:layout_constraintEnd_toStartOf="@+id/btn_play"
+        app:layout_constraintStart_toEndOf="@+id/img_file"
+        app:layout_constraintTop_toTopOf="@+id/img_file" />
+
+    <TextView
+        android:id="@+id/txt_size"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="size"
+        android:textColor="#BCBCBC"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/txt_date"
+        app:layout_constraintEnd_toStartOf="@+id/btn_play"
+        app:layout_constraintStart_toEndOf="@+id/img_file"
+        app:layout_constraintTop_toBottomOf="@+id/txt_name_file" />
+
+    <TextView
+        android:id="@+id/txt_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="date"
+        android:textColor="#BCBCBC"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/img_file"
+        app:layout_constraintEnd_toStartOf="@+id/btn_play"
+        app:layout_constraintStart_toEndOf="@+id/img_file"
+        app:layout_constraintTop_toBottomOf="@+id/txt_size" />
+
+    <Button
+        android:id="@+id/btn_play"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/play"
+        android:textSize="12sp"
+        android:textColor="@color/white"
+        android:background="@drawable/bg_button5"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="@+id/img_file"
+        app:layout_constraintEnd_toStartOf="@+id/btn_option"
+        app:layout_constraintTop_toTopOf="@+id/img_file" />
+
+    <ImageView
+        android:id="@+id/btn_option"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/img_file"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/img_file"
+        app:srcCompat="@drawable/ic_button_more" />
+
+    <include
+        android:id="@+id/item_play_media"
+        layout="@layout/item_play_media"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

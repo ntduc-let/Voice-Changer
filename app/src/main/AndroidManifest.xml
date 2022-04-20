@@ -14,6 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VoiceChanger">
         <activity
+            android:name=".ui.activity.FileVoiceActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activity.ChangeVoiceActivity"
             android:exported="false" />
         <activity
