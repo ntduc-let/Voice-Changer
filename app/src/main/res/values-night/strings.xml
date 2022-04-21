@@ -27,5 +27,8 @@
     <string name="add_effect_error">Add effect error</string>
     <string name="delete_all">Delete All</string>
     <string name="play">Play</string>
-    <string name="no_item">No item</string>
+    <string name="no_item">No recording folder</string>
+    <string name="are_you_sure">Are You Sure?</string>
+    <string name="delete">Delete</string>
+    <string name="record_now">Record Now</string>
 </resources>

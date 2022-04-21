@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.prox.voicechanger.adapter.FileVoiceAdapter;
 import com.prox.voicechanger.databinding.ActivityFileVoiceBinding;
-import com.prox.voicechanger.model.FileVoice;
-import com.prox.voicechanger.utils.FileUtils;
+import com.prox.voicechanger.databinding.DialogDeleteAllBinding;
+import com.prox.voicechanger.ui.dialog.DeleteAllDialog;
 import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -36,9 +36,11 @@ public class FileVoiceActivity extends AppCompatActivity {
         model = new ViewModelProvider(this).get(FileVoiceViewModel.class);
         model.getFileVoices().observe(this, fileVoices -> {
             if (fileVoices.size()==0){
-                binding.txtNoItem.setVisibility(View.VISIBLE);
+                binding.layoutNoItem.getRoot().setVisibility(View.VISIBLE);
+                binding.btnDeleteAll.setEnabled(false);
             }else{
-                binding.txtNoItem.setVisibility(View.GONE);
+                binding.layoutNoItem.getRoot().setVisibility(View.GONE);
+                binding.btnDeleteAll.setEnabled(true);
             }
             adapter.setFileVoices(fileVoices);
         });
@@ -48,12 +50,14 @@ public class FileVoiceActivity extends AppCompatActivity {
         binding.btnBack3.setOnClickListener(view -> onBackPressed());
 
         binding.btnDeleteAll.setOnClickListener(view -> {
-            for (FileVoice fileVoice : adapter.getFileVoices()){
-                if (FileUtils.deleteFile(this, fileVoice.getPath())){
-                    model.delete(fileVoice);
-                }
-            }
+            DeleteAllDialog dialog = new DeleteAllDialog(this,
+                    DialogDeleteAllBinding.inflate(getLayoutInflater()),
+                    model,
+                    adapter.getFileVoices());
+            dialog.show();
         });
+
+        binding.layoutNoItem.btnRecordNow.setOnClickListener(view -> onBackPressed());
     }
 
     @Override

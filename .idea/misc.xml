@@ -37,6 +37,7 @@
         <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_button_stop.xml" value="0.12" />
         <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_facebook.xml" value="0.138" />
         <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_loudspeaker.xml" value="0.16" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_no_item.xml" value="0.1875" />
         <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_original.xml" value="0.12" />
         <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_policy.xml" value="0.138" />
         <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_premium.xml" value="0.126" />
@@ -59,6 +60,7 @@
         <entry key="..\:/voice-changer/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/activity_record.xml" value="0.25" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/activity_splash.xml" value="0.25" />
+        <entry key="..\:/voice-changer/app/src/main/res/layout/dialog_delete_all.xml" value="0.25" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/dialog_name.xml" value="0.25" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/fragment_change_voice.xml" value="0.25" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/fragment_file_voice.xml" value="0.25" />
@@ -73,6 +75,7 @@
         <entry key="..\:/voice-changer/app/src/main/res/layout/item_play_media.xml" value="0.25" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/layout_custom.xml" value="0.25" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/layout_effect.xml" value="0.264" />
+        <entry key="..\:/voice-changer/app/src/main/res/layout/layout_no_item.xml" value="0.25" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/layout_player.xml" value="0.25" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/layout_premium.xml" value="0.3313180169286578" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/txt_mess.xml" value="0.264" />
