@@ -3,12 +3,16 @@ package com.prox.voicechanger.utils;
 import static com.prox.voicechanger.VoiceChangerApp.TAG;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
@@ -17,8 +21,11 @@ import androidx.core.content.FileProvider;
 
 import com.prox.voicechanger.R;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -124,6 +131,54 @@ public class FileUtils {
         }
 
         context.startActivity(chooser);
+    }
+
+    public static boolean setAsRingtoneOrNotification(Context context, String path, int type) {
+        ContentValues values = new ContentValues();
+        File file = new File(path);
+
+        values.put(MediaStore.MediaColumns.TITLE, file.getName());
+        values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mpeg");
+        if (RingtoneManager.TYPE_RINGTONE == type) {
+            values.put(MediaStore.Audio.Media.IS_RINGTONE, true);
+        } else if (RingtoneManager.TYPE_NOTIFICATION == type) {
+            values.put(MediaStore.Audio.Media.IS_NOTIFICATION, true);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Uri newUri = context.getContentResolver()
+                    .insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values);
+            try (OutputStream os = context.getContentResolver().openOutputStream(newUri)) {
+                int size = (int) file.length();
+                byte[] bytes = new byte[size];
+                try {
+                    BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
+                    buf.read(bytes, 0, bytes.length);
+                    buf.close();
+                    os.write(bytes);
+                    os.close();
+                    os.flush();
+                } catch (IOException e) {
+                    return false;
+                }
+            } catch (Exception ignored) {
+                return false;
+            }
+            RingtoneManager.setActualDefaultRingtoneUri(context, type, newUri);
+        } else {
+            values.put(MediaStore.MediaColumns.DATA, file.getAbsolutePath());
+
+            Uri uri = MediaStore.Audio.Media.getContentUriForPath(file.getAbsolutePath());
+
+            context.getContentResolver().delete(uri, MediaStore.MediaColumns.DATA + "=\"" + file.getAbsolutePath() + "\"", null);
+
+            Uri newUri = context.getContentResolver().insert(uri, values);
+            RingtoneManager.setActualDefaultRingtoneUri(context, type, newUri);
+
+            context.getContentResolver()
+                    .insert(MediaStore.Audio.Media.getContentUriForPath(file.getAbsolutePath()), values);
+        }
+        return true;
     }
 
     public static String getRoot(String path){

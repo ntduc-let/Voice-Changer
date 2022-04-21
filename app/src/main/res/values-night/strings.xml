@@ -41,4 +41,6 @@
     <string name="name_empty">Name cannot be empty</string>
     <string name="name_unchange">Name unchanged</string>
     <string name="file_not_exist">File doesn\'t exist</string>
+    <string name="request_write_setting">Please grant permissions to take action</string>
+    <string name="setting_success">Set up success</string>
 </resources>
