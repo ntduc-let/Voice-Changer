@@ -11,8 +11,11 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
+import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
+
+import com.prox.voicechanger.R;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,26 +50,29 @@ public class FileUtils {
     }
 
     public static String renameFile(Context context, String path, String name) {
-        String type = path.substring(path.lastIndexOf('.'));         //Đuôi file (VD: .docx, .doc ...)
-        String oldName = path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
+        String type = getType(path);
+        String oldName = getName(path);
         File oldFile = new File(path);
 
         String newName = name.trim();
-        String newPath = path.substring(0, path.lastIndexOf("/") + 1) + newName + type;
+        String newPath = path.substring(0, path.lastIndexOf("/") + 1) + newName + "." +type;
         File newFile = new File(newPath);
 
         //Tên để trống
         if (newName.isEmpty()) {
             Log.d(TAG, "renameFile: false");
+            Toast.makeText(context, R.string.name_empty, Toast.LENGTH_SHORT).show();
             return null;
         } else if (newName.equals(oldName)) {
             Log.d(TAG, "renameFile: false");
+            Toast.makeText(context, R.string.name_unchange, Toast.LENGTH_SHORT).show();
             return null;
         }
 
         if (new File(path).exists()) {
             if (new File(newPath).exists()) {
                 Log.d(TAG, "renameFile: false");
+                Toast.makeText(context, R.string.name_exits, Toast.LENGTH_SHORT).show();
                 return null;
             }
 
@@ -78,6 +84,7 @@ public class FileUtils {
             }
         }
         Log.d(TAG, "renameFile: false");
+        Toast.makeText(context, R.string.file_not_exist, Toast.LENGTH_SHORT).show();
         return null;
     }
 
@@ -91,6 +98,7 @@ public class FileUtils {
             }
         }
         Log.d(TAG, "deleteFile: false");
+        Toast.makeText(context, R.string.file_not_exist, Toast.LENGTH_SHORT).show();
         return false;
     }
 

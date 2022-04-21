@@ -84,7 +84,7 @@ public class FileVoiceActivity extends AppCompatActivity {
 
     private void init(){
         Log.d(TAG, "FileVoiceActivity: init");
-        adapter = new FileVoiceAdapter( this, this);
+        adapter = new FileVoiceAdapter( this, this, model);
         binding.recyclerViewFileVoice.setAdapter(adapter);
         binding.recyclerViewFileVoice.setHasFixedSize(true);
 

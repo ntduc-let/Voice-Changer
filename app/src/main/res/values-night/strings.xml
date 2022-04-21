@@ -37,4 +37,8 @@
     <string name="btn_ring_noti">Set as notification rington</string>
     <string name="btn_rename">Rename</string>
     <string name="btn_delete">Delete</string>
+    <string name="name_exits">Name already exists</string>
+    <string name="name_empty">Name cannot be empty</string>
+    <string name="name_unchange">Name unchanged</string>
+    <string name="file_not_exist">File doesn\'t exist</string>
 </resources>

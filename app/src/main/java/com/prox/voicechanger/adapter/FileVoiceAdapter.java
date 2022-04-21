@@ -14,6 +14,7 @@ import com.prox.voicechanger.databinding.ItemFileVoiceBinding;
 import com.prox.voicechanger.model.FileVoice;
 import com.prox.voicechanger.ui.dialog.OptionDialog;
 import com.prox.voicechanger.utils.NumberUtils;
+import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
 
 import java.util.List;
 
@@ -21,10 +22,12 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
     private List<FileVoice> fileVoices;
     private final Context context;
     private final Activity activity;
+    private final FileVoiceViewModel model;
 
-    public FileVoiceAdapter(Context context, Activity activity){
+    public FileVoiceAdapter(Context context, Activity activity, FileVoiceViewModel model){
         this.context = context;
         this.activity = activity;
+        this.model = model;
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -54,7 +57,9 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
         holder.binding.btnOption.setOnClickListener(view -> {
             OptionDialog dialog = new OptionDialog(
                     context,
+                    activity,
                     DialogOptionBinding.inflate(activity.getLayoutInflater()),
+                    model,
                     fileVoice);
             dialog.show();
         });

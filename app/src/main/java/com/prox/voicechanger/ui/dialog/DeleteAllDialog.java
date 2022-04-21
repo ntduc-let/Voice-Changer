@@ -29,9 +29,8 @@ public class DeleteAllDialog extends CustomDialog{
         binding.btnDelete.setOnClickListener(view -> {
             Log.d(TAG, "DeleteAllDialog: Delete");
             for (FileVoice fileVoice : fileVoices){
-                if (FileUtils.deleteFile(context, fileVoice.getPath())){
-                    model.delete(fileVoice);
-                }
+                FileUtils.deleteFile(context, fileVoice.getPath());
+                model.delete(fileVoice);
             }
             cancel();
         });
