@@ -26,7 +26,7 @@ public class FFMPEGUtils {
         String root = FileUtils.getRoot(path);
         String oldName = FileUtils.getName(path);
         String newName = oldName+"-"+effect.getTitle();
-        String pathFFMPEG = root+newName+type;
+        String pathFFMPEG = root+newName+"."+type;
         String cmd = "-y -i "+path+" -af "+effect.getChangeVoice()+" "+pathFFMPEG;
         if(exceuteFFMPEG(cmd)){
             FFMPEGUtils.pathFFMPEG = pathFFMPEG;

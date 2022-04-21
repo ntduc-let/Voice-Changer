@@ -1,20 +1,31 @@
 package com.prox.voicechanger.adapter;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.prox.voicechanger.databinding.DialogOptionBinding;
 import com.prox.voicechanger.databinding.ItemFileVoiceBinding;
 import com.prox.voicechanger.model.FileVoice;
+import com.prox.voicechanger.ui.dialog.OptionDialog;
 import com.prox.voicechanger.utils.NumberUtils;
 
 import java.util.List;
 
 public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.FileVoiceViewHolder> {
     private List<FileVoice> fileVoices;
+    private final Context context;
+    private final Activity activity;
+
+    public FileVoiceAdapter(Context context, Activity activity){
+        this.context = context;
+        this.activity = activity;
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     public void setFileVoices(List<FileVoice> fileVoices){
@@ -41,7 +52,11 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
         holder.binding.txtSize.setText(NumberUtils.formatAsTime(fileVoice.getDuration())+" | "+fileVoice.getSize()/1024 + "kB");
         holder.binding.txtDate.setText(NumberUtils.formatAsDate(fileVoice.getDate()));
         holder.binding.btnOption.setOnClickListener(view -> {
-
+            OptionDialog dialog = new OptionDialog(
+                    context,
+                    DialogOptionBinding.inflate(activity.getLayoutInflater()),
+                    fileVoice);
+            dialog.show();
         });
         holder.binding.btnPlay.setOnClickListener(view -> {
 

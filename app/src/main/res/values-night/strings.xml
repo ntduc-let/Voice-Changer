@@ -31,4 +31,10 @@
     <string name="are_you_sure">Are You Sure?</string>
     <string name="delete">Delete</string>
     <string name="record_now">Record Now</string>
+    <string name="btn_share">Share</string>
+    <string name="btn_add_img">Create image with sound</string>
+    <string name="btn_ring_phone">Set as phone ringtone</string>
+    <string name="btn_ring_noti">Set as notification rington</string>
+    <string name="btn_rename">Rename</string>
+    <string name="btn_delete">Delete</string>
 </resources>

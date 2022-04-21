@@ -5,15 +5,20 @@ import static com.prox.voicechanger.VoiceChangerApp.TAG;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
+import androidx.core.content.FileProvider;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class FileUtils {
     public static String getRecordingFilePath() {
@@ -89,6 +94,30 @@ public class FileUtils {
         return false;
     }
 
+    public static void shareFile(Context context, String path) {
+        File file = new File(path);
+        Uri uri = FileProvider.getUriForFile(context, "com.prox.voicechanger.fileprovider", file);
+
+        Intent intentShareFile = new Intent(Intent.ACTION_SEND);
+
+        String titleFull = getName(path)+"."+getType(path);
+
+        intentShareFile.setType(MimeTypeMap.getSingleton().getMimeTypeFromExtension(getType(path)));
+        intentShareFile.putExtra(Intent.EXTRA_STREAM, uri);
+        intentShareFile.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        Intent chooser = Intent.createChooser(intentShareFile, titleFull);
+
+        @SuppressLint("QueryPermissionsNeeded") List<ResolveInfo> resInfoList = context.getPackageManager().queryIntentActivities(chooser, PackageManager.MATCH_DEFAULT_ONLY);
+
+        for (ResolveInfo resolveInfo : resInfoList) {
+            String packageName = resolveInfo.activityInfo.packageName;
+            context.grantUriPermission(packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
+
+        context.startActivity(chooser);
+    }
+
     public static String getRoot(String path){
         return path.substring(0, path.lastIndexOf("/") + 1);
     }
@@ -98,7 +127,7 @@ public class FileUtils {
     }
 
     public static String getType(String path){
-        return path.substring(path.lastIndexOf('.'));
+        return path.substring(path.lastIndexOf('.')+1);
     }
 
     @SuppressLint("IntentReset")
