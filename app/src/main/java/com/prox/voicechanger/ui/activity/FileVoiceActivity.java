@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.prox.voicechanger.R;
 import com.prox.voicechanger.adapter.FileVoiceAdapter;
 import com.prox.voicechanger.databinding.ActivityFileVoiceBinding;
 import com.prox.voicechanger.databinding.DialogDeleteAllBinding;
@@ -38,9 +39,13 @@ public class FileVoiceActivity extends AppCompatActivity {
             if (fileVoices.size()==0){
                 binding.layoutNoItem.getRoot().setVisibility(View.VISIBLE);
                 binding.btnDeleteAll.setEnabled(false);
+                binding.btnDeleteAll.setTextColor(getResources().getColor(R.color.white30));
+                binding.btnDeleteAll.setBackgroundResource(R.drawable.bg_button6);
             }else{
                 binding.layoutNoItem.getRoot().setVisibility(View.GONE);
                 binding.btnDeleteAll.setEnabled(true);
+                binding.btnDeleteAll.setTextColor(getResources().getColor(R.color.white));
+                binding.btnDeleteAll.setBackgroundResource(R.drawable.bg_button1);
             }
             adapter.setFileVoices(fileVoices);
         });
