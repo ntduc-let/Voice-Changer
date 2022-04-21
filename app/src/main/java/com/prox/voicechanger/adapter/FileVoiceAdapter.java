@@ -22,6 +22,10 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
         notifyDataSetChanged();
     }
 
+    public List<FileVoice> getFileVoices(){
+        return fileVoices;
+    }
+
     @NonNull
     @Override
     public FileVoiceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

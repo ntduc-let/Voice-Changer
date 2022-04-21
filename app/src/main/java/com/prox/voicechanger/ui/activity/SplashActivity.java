@@ -37,20 +37,6 @@ public class SplashActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private void goToMain() {
-        Intent intent = getIntent();
-        if (intent==null){
-            Log.d(TAG, "SplashActivity: start Intent null");
-            finish();
-        }else if (intent.getAction().equals(Intent.ACTION_MAIN)){
-            Log.d(TAG, "SplashActivity: start Intent.ACTION_MAIN");
-            Intent goToRecord = new Intent(SplashActivity.this, RecordActivity.class);
-            startActivity(goToRecord);
-            finish();
-        }
-
-    }
-
     private void init(){
         Log.d(TAG, "SplashActivity: init");
         Animation rotate1Animation = AnimationUtils.loadAnimation(this, R.anim.anim_rotate1);
@@ -68,5 +54,19 @@ public class SplashActivity extends AppCompatActivity {
         rocketAnimation.start();
 
         new Handler().postDelayed(this::goToMain, 4500);
+    }
+
+    private void goToMain() {
+        Intent intent = getIntent();
+        if (intent==null){
+            Log.d(TAG, "SplashActivity: start Intent null");
+            finish();
+        }else if (intent.getAction().equals(Intent.ACTION_MAIN)){
+            Log.d(TAG, "SplashActivity: start Intent.ACTION_MAIN");
+            Intent goToRecord = new Intent(SplashActivity.this, RecordActivity.class);
+            startActivity(goToRecord);
+            finish();
+        }
+
     }
 }

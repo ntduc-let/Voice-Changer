@@ -18,14 +18,8 @@ public interface FileVoiceDAO {
     @Update
     void update(FileVoice fileVoice);
 
-    @Query("UPDATE filevoice SET isExist = 0")
-    void updateIsExist();
-
     @Delete
     void delete(FileVoice fileVoice);
-
-    @Query("DELETE FROM filevoice WHERE isExist = 0")
-    void deleteNotExist();
 
     @Query("SELECT * FROM filevoice")
     List<FileVoice> getAll();

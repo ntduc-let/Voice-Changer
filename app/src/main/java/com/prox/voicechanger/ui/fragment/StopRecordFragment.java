@@ -1,7 +1,10 @@
 package com.prox.voicechanger.ui.fragment;
 
+import static com.prox.voicechanger.VoiceChangerApp.TAG;
+
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +34,7 @@ public class StopRecordFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG, "StopRecordFragment: onCreateView");
         binding = FragmentStopRecordBinding.inflate(inflater, container, false);
 
         init();
@@ -38,8 +42,7 @@ public class StopRecordFragment extends Fragment {
         recording();
 
         binding.btnBack.setOnClickListener(view -> {
-            removeRunnables();
-            recorder.stop();
+            stopRecord();
 
             if (FileUtils.deleteFile(requireContext(), recorder.getPath())){
                 NavController navController= Navigation.findNavController(requireActivity(), R.id.nav_host_record_activity);
@@ -48,10 +51,7 @@ public class StopRecordFragment extends Fragment {
         });
 
         binding.btnStop.setOnClickListener(view -> {
-            removeRunnables();
-            recorder.stop();
-
-            binding.txtMess.getRoot().setVisibility(View.INVISIBLE);
+            stopRecord();
 
             NameDialog dialog = new NameDialog(requireContext(),
                     requireActivity(),
@@ -65,8 +65,9 @@ public class StopRecordFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        Log.d(TAG, "StopRecordFragment: onDestroyView");
         super.onDestroyView();
-        removeRunnables();
+        stopRecord();
         runnable=null;
         runnable2=null;
         handler = null;
@@ -74,6 +75,8 @@ public class StopRecordFragment extends Fragment {
     }
 
     private void init() {
+        Log.d(TAG, "StopRecordFragment: init");
+
         binding.txtMess.getRoot().setVisibility(View.VISIBLE);
         binding.txtMess.txtMess.setText(R.string.mess_stop_record);
 
@@ -90,6 +93,7 @@ public class StopRecordFragment extends Fragment {
     }
 
     private void recording() {
+        Log.d(TAG, "StopRecordFragment: recording");
         recorder = new Recorder();
         recorder.start();
 
@@ -104,8 +108,12 @@ public class StopRecordFragment extends Fragment {
         handler.post(runnable2);
     }
 
-    private void removeRunnables(){
+    private void stopRecord(){
         handler.removeCallbacks(runnable);
         handler.removeCallbacks(runnable2);
+
+        recorder.stop();
+
+        binding.txtMess.getRoot().setVisibility(View.INVISIBLE);
     }
 }

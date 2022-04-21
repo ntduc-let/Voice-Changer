@@ -25,11 +25,12 @@ public class Recorder implements RecorderListener {
     private String path;
     private String name;
     private long startTime;
+    private boolean isRecording;
 
     public Recorder() {
         path = FileUtils.getRecordingFilePath();
-        name = path.substring(path.lastIndexOf("/")+1, path.lastIndexOf("."));
-        Log.d(TAG, "Recorder: "+path);
+        name = FileUtils.getName(path);
+        Log.d(TAG, "Recorder: create "+path);
 
         recorder = new MediaRecorder();
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -37,44 +38,58 @@ public class Recorder implements RecorderListener {
         recorder.setOutputFile(path);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         startTime = 0;
+        isRecording = false;
     }
 
     @Override
     public void start() {
         if (recorder==null){
+            Log.d(TAG, "Recorder: start null");
             return;
         }
-        try {
-            recorder.prepare();
-            recorder.start();
-            startTime = System.currentTimeMillis();
-            Log.d(TAG, "Recorder: start");
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (!isRecording){
+            try {
+                recorder.prepare();
+                recorder.start();
+                startTime = System.currentTimeMillis();
+                isRecording = true;
+                Log.d(TAG, "Recorder: start");
+            } catch (IOException e) {
+                Log.d(TAG, "Recorder: error start - "+e.getMessage());
+            }
         }
     }
 
     @Override
     public void stop() {
         if (recorder==null){
+            Log.d(TAG, "Recorder: stop null");
             return;
         }
-        recorder.stop();
-        recorder.release();
-        startTime = 0;
-        Log.d(TAG, "Recorder: stop");
+        if (isRecording){
+            recorder.stop();
+            recorder.release();
+            startTime = 0;
+            isRecording = false;
+            Log.d(TAG, "Recorder: stop");
+        }
     }
 
     @Override
     public void release() {
         if (recorder==null){
+            Log.d(TAG, "Recorder: release null");
             return;
+        }
+        if (isRecording){
+            recorder.stop();
         }
         recorder.release();
         recorder = null;
         path = null;
         name = null;
         startTime = 0;
+        isRecording = false;
         Log.d(TAG, "Recorder: release");
     }
 

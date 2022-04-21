@@ -13,20 +13,8 @@ public class FileVoice {
     private long duration;
     private long size;
     private long date;
-    private boolean isExist;
 
     public FileVoice() {
-    }
-
-    public FileVoice(int id, int src, String name, String path, long duration, long size, long date, boolean isExist) {
-        this.id = id;
-        this.src = src;
-        this.name = name;
-        this.path = path;
-        this.duration = duration;
-        this.size = size;
-        this.date = date;
-        this.isExist = isExist;
     }
 
     public int getId() {
@@ -83,13 +71,5 @@ public class FileVoice {
 
     public void setDate(long date) {
         this.date = date;
-    }
-
-    public boolean isExist() {
-        return isExist;
-    }
-
-    public void setExist(boolean exist) {
-        isExist = exist;
     }
 }

@@ -46,4 +46,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_delete_all" />
 
+    <TextView
+        android:id="@+id/txt_no_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_item"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/recycler_view_file_voice"
+        app:layout_constraintEnd_toEndOf="@+id/recycler_view_file_voice"
+        app:layout_constraintStart_toStartOf="@+id/recycler_view_file_voice"
+        app:layout_constraintTop_toTopOf="@+id/recycler_view_file_voice" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

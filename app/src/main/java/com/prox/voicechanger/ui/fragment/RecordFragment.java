@@ -15,15 +15,18 @@ import android.view.animation.AnimationUtils;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.prox.voicechanger.R;
 import com.prox.voicechanger.databinding.FragmentRecordBinding;
 import com.prox.voicechanger.ui.activity.FileVoiceActivity;
 import com.prox.voicechanger.utils.PermissionUtils;
+import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
 
 public class RecordFragment extends Fragment {
     private FragmentRecordBinding binding;
+    private FileVoiceViewModel model;
 
     private Handler handler;
     private Runnable runnable;
@@ -33,6 +36,8 @@ public class RecordFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.d(TAG, "RecordFragment: onCreateView");
         binding = FragmentRecordBinding.inflate(inflater, container, false);
+
+        model = new ViewModelProvider(requireActivity()).get(FileVoiceViewModel.class);
 
         init();
 
@@ -57,6 +62,7 @@ public class RecordFragment extends Fragment {
         handler.removeCallbacks(runnable);
         runnable = null;
         handler = null;
+        model = null;
         binding = null;
     }
 
@@ -81,7 +87,11 @@ public class RecordFragment extends Fragment {
 
         new Handler().postDelayed(() -> {
             binding.btnMore.setVisibility(View.VISIBLE);
-            binding.btnFile.setVisibility(View.VISIBLE);
+            model.getFileVoices().observe(requireActivity(), fileVoices -> {
+                if(fileVoices.size()!=0){
+                    binding.btnFile.setVisibility(View.VISIBLE);
+                }
+            });
             binding.txtContent.setVisibility(View.VISIBLE);
             binding.txtContent2.setVisibility(View.VISIBLE);
             binding.btnRecord.setVisibility(View.VISIBLE);

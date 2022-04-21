@@ -68,15 +68,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
 
         binding.btnSave2.setOnClickListener(view -> {
             if (pathFFMPEG != null){
-                FileVoice fileVoice = new FileVoice();
-                fileVoice.setSrc(effectSelected.getSrc());
-                fileVoice.setName(FileUtils.getName(pathFFMPEG));
-                fileVoice.setPath(pathFFMPEG);
-                fileVoice.setDuration(player.getDuration());
-                fileVoice.setSize(new File(pathFFMPEG).length());
-                fileVoice.setDate(new Date().getTime());
-                fileVoice.setExist(false);
-                model.insert(fileVoice);
+                insertEffectToDB();
             }
             startActivity(new Intent(this, FileVoiceActivity.class));
             finish();
@@ -117,6 +109,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         effectAdapter = null;
         pathRecording = null;
         pathFFMPEG = null;
+        model = null;
         binding = null;
         super.onDestroy();
     }
@@ -140,22 +133,17 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         Log.d(TAG, "ChangeVoiceActivity: init");
         Intent intent = getIntent();
         if (intent == null) {
+            Log.d(TAG, "ChangeVoiceActivity: start intent null");
             return;
         }
         if (intent.getAction().equals(RECORD_TO_CHANGE_VOICE)) {
             pathRecording = intent.getStringExtra(PATH_FILE);
+            binding.layoutPlayer.txtName2.setText(FileUtils.getName(pathRecording));
+
             player = new MediaPlayer();
             startMediaPlayer(pathRecording);
 
-            FileVoice fileVoice = new FileVoice();
-            fileVoice.setSrc(R.drawable.ic_original);
-            fileVoice.setName(FileUtils.getName(pathRecording));
-            fileVoice.setPath(pathRecording);
-            fileVoice.setDuration(player.getDuration());
-            fileVoice.setSize(new File(pathRecording).length());
-            fileVoice.setDate(new Date().getTime());
-            fileVoice.setExist(false);
-            model.insert(fileVoice);
+            insertOriginToDB();
         }
 
         effectAdapter = new EffectAdapter(this::selectEffect);
@@ -204,6 +192,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
             }
             path = pathFFMPEG;
         }
+        binding.layoutPlayer.txtName2.setText(FileUtils.getName(path));
         startMediaPlayer(path);
     }
 
@@ -252,5 +241,27 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         Log.d(TAG, "ChangeVoiceActivity: updateTime");
         binding.layoutPlayer.txtTotalTime.setText(NumberUtils.formatAsTime(player.getDuration()));
         handler.post(updateTime);
+    }
+
+    private void insertOriginToDB() {
+        FileVoice fileVoice = new FileVoice();
+        fileVoice.setSrc(R.drawable.ic_original);
+        fileVoice.setName(FileUtils.getName(pathRecording));
+        fileVoice.setPath(pathRecording);
+        fileVoice.setDuration(player.getDuration());
+        fileVoice.setSize(new File(pathRecording).length());
+        fileVoice.setDate(new Date().getTime());
+        model.insert(fileVoice);
+    }
+
+    private void insertEffectToDB() {
+        FileVoice fileVoice = new FileVoice();
+        fileVoice.setSrc(effectSelected.getSrc());
+        fileVoice.setName(FileUtils.getName(pathFFMPEG));
+        fileVoice.setPath(pathFFMPEG);
+        fileVoice.setDuration(player.getDuration());
+        fileVoice.setSize(new File(pathFFMPEG).length());
+        fileVoice.setDate(new Date().getTime());
+        model.insert(fileVoice);
     }
 }

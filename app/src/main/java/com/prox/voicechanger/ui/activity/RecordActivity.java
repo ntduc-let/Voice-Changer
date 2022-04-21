@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -14,7 +13,6 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.prox.voicechanger.R;
 import com.prox.voicechanger.databinding.ActivityRecordBinding;
-import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -22,7 +20,6 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class RecordActivity extends AppCompatActivity {
     private NavController navController;
     private AppBarConfiguration appBarConfiguration;
-    private FileVoiceViewModel model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +27,6 @@ public class RecordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ActivityRecordBinding binding = ActivityRecordBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        model = new ViewModelProvider(this).get(FileVoiceViewModel.class);
 
         init();
     }
@@ -51,6 +46,7 @@ public class RecordActivity extends AppCompatActivity {
     }
 
     private void init(){
+        Log.d(TAG, "RecordActivity: init");
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_record_activity);
         if (navHostFragment != null) {
