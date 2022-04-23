@@ -2,8 +2,10 @@ package com.prox.voicechanger.ui.fragment;
 
 import static com.prox.voicechanger.VoiceChangerApp.TAG;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Shader;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,10 +18,16 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.prox.voicechanger.R;
+import com.prox.voicechanger.databinding.DialogRateBinding;
 import com.prox.voicechanger.databinding.FragmentSettingBinding;
+import com.prox.voicechanger.ui.dialog.RateDialog;
 import com.prox.voicechanger.utils.ColorUtils;
 
 public class SettingFragment extends Fragment {
+    private static final String ID_FACEBOOK = "fb://page/105955561135473";
+    private static final String URI_FACEBOOK = "https://www.facebook.com/Proxglobalstudio";
+    private static final String EMAIL_FEEDBACK = "elaineeyui@gmail.com";
+    private static final String URI_POLICY = "https://hellowordapp.github.io/policy/privacy.html";
     private FragmentSettingBinding binding;
 
     @Override
@@ -35,13 +43,54 @@ public class SettingFragment extends Fragment {
             navController.popBackStack();
         });
 
+        binding.btnRate.setOnClickListener(view -> {
+            RateDialog dialog = new RateDialog(
+                    requireContext(),
+                    DialogRateBinding.inflate(requireActivity().getLayoutInflater()));
+            dialog.show();
+        });
+
+        binding.btnFacebook.setOnClickListener(view -> {
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(ID_FACEBOOK)));
+            } catch (Exception e) {
+                Log.e(TAG, "Application not intalled.");
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(URI_FACEBOOK)));
+            }
+        });
+
+        binding.btnContact.setOnClickListener(view -> {
+            Intent selectorIntent = new Intent(Intent.ACTION_SENDTO);
+            selectorIntent.setData(Uri.parse("mailto:"));
+
+            final Intent emailIntent = new Intent(Intent.ACTION_SEND);
+            emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{EMAIL_FEEDBACK});
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.app_name));
+            emailIntent.setSelector(selectorIntent);
+
+            startActivity(Intent.createChooser(emailIntent, getResources().getString(R.string.notification_send_mail)));
+        });
+
+        binding.btnPolicy.setOnClickListener(view -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(URI_POLICY))));
+
+        binding.btnTerms.setOnClickListener(view -> {
+
+        });
+
         return binding.getRoot();
     }
 
     private void init() {
         Log.d(TAG, "SettingFragment: init");
-        Shader shader = ColorUtils.textShader(Color.parseColor("#4B5DFC"), Color.parseColor("#F7277E"));
-        binding.layoutPremium.txtPremium1.getPaint().setShader(shader);
-        binding.layoutPremium.txtPremium2.getPaint().setShader(shader);
+        Shader shader1 = ColorUtils.textShader(
+                Color.parseColor("#4B5DFC"),
+                Color.parseColor("#F7277E"),
+                binding.layoutPremium.txtPremium1.getTextSize());
+        Shader shader2 = ColorUtils.textShader(
+                Color.parseColor("#4B5DFC"),
+                Color.parseColor("#F7277E"),
+                binding.layoutPremium.txtPremium2.getTextSize());
+        binding.layoutPremium.txtPremium1.getPaint().setShader(shader1);
+        binding.layoutPremium.txtPremium2.getPaint().setShader(shader2);
     }
 }

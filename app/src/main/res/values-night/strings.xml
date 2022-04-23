@@ -43,4 +43,8 @@
     <string name="file_not_exist">File doesn\'t exist</string>
     <string name="request_write_setting">Please grant permissions to take action</string>
     <string name="setting_success">Set up success</string>
+    <string name="txt_rate">Rate your experience</string>
+    <string name="txt_rate_done">Thanks For The Rating</string>
+    <string name="rate_now">Rate now</string>
+    <string name="notification_send_mail">Send mail...</string>
 </resources>
