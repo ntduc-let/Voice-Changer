@@ -186,7 +186,10 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
         }
         if (player.isPlaying()){
             stopMediaPlayer();
+        }else {
+            holderSelect.binding.itemPlayMedia.getRoot().setVisibility(View.GONE);
         }
+
         player.release();
         updateTime = null;
         handler = null;
