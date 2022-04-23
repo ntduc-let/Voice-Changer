@@ -55,6 +55,7 @@ public class FileVoiceActivity extends AppCompatActivity {
         binding.btnBack3.setOnClickListener(view -> onBackPressed());
 
         binding.btnDeleteAll.setOnClickListener(view -> {
+            adapter.release();
             DeleteAllDialog dialog = new DeleteAllDialog(this,
                     DialogDeleteAllBinding.inflate(getLayoutInflater()),
                     model,
@@ -68,6 +69,7 @@ public class FileVoiceActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         Log.d(TAG, "FileVoiceActivity: onDestroy");
+        adapter.release();
         adapter = null;
         model = null;
         binding = null;

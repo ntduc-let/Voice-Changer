@@ -32,7 +32,7 @@
         android:textColor="@color/white"
         android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/txt_size"
-        app:layout_constraintEnd_toStartOf="@+id/btn_play"
+        app:layout_constraintEnd_toStartOf="@+id/btn_play_or_pause"
         app:layout_constraintStart_toEndOf="@+id/img_file"
         app:layout_constraintTop_toTopOf="@+id/img_file" />
 
@@ -46,7 +46,7 @@
         android:textColor="#BCBCBC"
         android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/txt_date"
-        app:layout_constraintEnd_toStartOf="@+id/btn_play"
+        app:layout_constraintEnd_toStartOf="@+id/btn_play_or_pause"
         app:layout_constraintStart_toEndOf="@+id/img_file"
         app:layout_constraintTop_toBottomOf="@+id/txt_name_file" />
 
@@ -60,12 +60,12 @@
         android:textColor="#BCBCBC"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/img_file"
-        app:layout_constraintEnd_toStartOf="@+id/btn_play"
+        app:layout_constraintEnd_toStartOf="@+id/btn_play_or_pause"
         app:layout_constraintStart_toEndOf="@+id/img_file"
         app:layout_constraintTop_toBottomOf="@+id/txt_size" />
 
     <Button
-        android:id="@+id/btn_play"
+        android:id="@+id/btn_play_or_pause"
         android:layout_width="wrap_content"
         android:layout_height="35dp"
         android:text="@string/play"

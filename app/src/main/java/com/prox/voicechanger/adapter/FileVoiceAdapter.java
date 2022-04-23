@@ -1,14 +1,22 @@
 package com.prox.voicechanger.adapter;
 
+import static com.prox.voicechanger.VoiceChangerApp.TAG;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.media.MediaPlayer;
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.prox.voicechanger.R;
 import com.prox.voicechanger.databinding.DialogOptionBinding;
 import com.prox.voicechanger.databinding.ItemFileVoiceBinding;
 import com.prox.voicechanger.model.FileVoice;
@@ -16,6 +24,7 @@ import com.prox.voicechanger.ui.dialog.OptionDialog;
 import com.prox.voicechanger.utils.NumberUtils;
 import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
 
+import java.io.IOException;
 import java.util.List;
 
 public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.FileVoiceViewHolder> {
@@ -23,6 +32,12 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
     private final Context context;
     private final Activity activity;
     private final FileVoiceViewModel model;
+
+    private MediaPlayer player;
+    private FileVoiceViewHolder holderSelect;
+
+    private Handler handler;
+    private Runnable updateTime;
 
     public FileVoiceAdapter(Context context, Activity activity, FileVoiceViewModel model){
         this.context = context;
@@ -55,6 +70,7 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
         holder.binding.txtSize.setText(NumberUtils.formatAsTime(fileVoice.getDuration())+" | "+fileVoice.getSize()/1024 + "kB");
         holder.binding.txtDate.setText(NumberUtils.formatAsDate(fileVoice.getDate()));
         holder.binding.btnOption.setOnClickListener(view -> {
+            release();
             OptionDialog dialog = new OptionDialog(
                     context,
                     activity,
@@ -63,8 +79,43 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
                     fileVoice);
             dialog.show();
         });
-        holder.binding.btnPlay.setOnClickListener(view -> {
+        holder.binding.btnPlayOrPause.setOnClickListener(view -> {
+            if (holderSelect == null){
+                holderSelect = holder;
+                player = new MediaPlayer();
+                startMediaPlayer(fileVoice.getPath());
+            }else if (holderSelect.equals(holder)){
+                if (player.isPlaying()){
+                    pauseMediaPlayer();
+                }else {
+                    resumeMediaPlayer();
+                }
+            }else {
+                stopMediaPlayer();
+                holderSelect = holder;
+                startMediaPlayer(fileVoice.getPath());
+            }
+        });
+        holder.binding.itemPlayMedia.seekTime.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                player.seekTo(i);
+                holder.binding.itemPlayMedia.txtCurrentTime2.setText(NumberUtils.formatAsTime(player.getCurrentPosition()));
+            }
 
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                if (player.isPlaying()){
+                    handler.removeCallbacks(updateTime);
+                }
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                if (player.isPlaying()){
+                    handler.post(updateTime);
+                }
+            }
         });
     }
 
@@ -83,5 +134,79 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
             super(binding.getRoot());
             this.binding = binding;
         }
+    }
+
+    private void startMediaPlayer(String path) {
+        Log.d(TAG, "FileVoiceAdapter: startMediaPlayer "+path);
+        try {
+            player.reset();
+            player.setDataSource(path);
+            player.setLooping(true);
+            player.prepare();
+            player.setOnPreparedListener(mediaPlayer -> {
+                mediaPlayer.start();
+                holderSelect.binding.btnPlayOrPause.setText(R.string.pause);
+                holderSelect.binding.itemPlayMedia.getRoot().setVisibility(View.VISIBLE);
+            });
+        } catch (IOException e) {
+            Log.d(TAG, "FileVoiceAdapter: "+e.getMessage());
+        }
+        updateTime();
+    }
+
+    private void pauseMediaPlayer() {
+        Log.d(TAG, "FileVoiceAdapter: pauseMediaPlayer");
+        player.pause();
+        handler.removeCallbacks(updateTime);
+
+        holderSelect.binding.btnPlayOrPause.setText(R.string.play);
+    }
+
+    private void resumeMediaPlayer() {
+        Log.d(TAG, "FileVoiceAdapter: resumeMediaPlayer");
+        player.start();
+        updateTime();
+
+        holderSelect.binding.btnPlayOrPause.setText(R.string.pause);
+    }
+
+    private void stopMediaPlayer() {
+        Log.d(TAG, "FileVoiceAdapter: stopMediaPlayer");
+        player.stop();
+        handler.removeCallbacks(updateTime);
+
+        holderSelect.binding.btnPlayOrPause.setText(R.string.play);
+        holderSelect.binding.itemPlayMedia.getRoot().setVisibility(View.GONE);
+    }
+
+    public void release() {
+        Log.d(TAG, "FileVoiceAdapter: release");
+        if (player == null){
+            return;
+        }
+        if (player.isPlaying()){
+            stopMediaPlayer();
+        }
+        player.release();
+        updateTime = null;
+        handler = null;
+        player = null;
+        holderSelect = null;
+    }
+
+    private void updateTime(){
+        Log.d(TAG, "FileVoiceAdapter: updateTime");
+        holderSelect.binding.itemPlayMedia.seekTime.setMax(player.getDuration());
+        holderSelect.binding.itemPlayMedia.txtTotalTime2.setText(NumberUtils.formatAsTime(player.getDuration()));
+        handler = new Handler();
+        updateTime = new Runnable() {
+            @Override
+            public void run() {
+                holderSelect.binding.itemPlayMedia.txtCurrentTime2.setText(NumberUtils.formatAsTime(player.getCurrentPosition()));
+                holderSelect.binding.itemPlayMedia.seekTime.setProgress(player.getCurrentPosition());
+                handler.postDelayed(this, 1000);
+            }
+        };
+        handler.post(updateTime);
     }
 }
