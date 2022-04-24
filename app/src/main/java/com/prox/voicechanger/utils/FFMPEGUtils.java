@@ -16,11 +16,15 @@ public class FFMPEGUtils {
     public final static String Original = "Original";
 
     private static String pathFFMPEG;
+    private static String videoFFMPEG;
 
     public static String getPathFFMPEG() {
         return pathFFMPEG;
     }
 
+    public static String getVideoFFMPEG() {
+        return videoFFMPEG;
+    }
     public static void playEffect(String path, Effect effect) {
         String type = FileUtils.getType(path);
         String root = FileUtils.getRoot(path);
@@ -65,5 +69,15 @@ public class FFMPEGUtils {
         effects.add(new Effect(11, R.drawable.ic_loudspeaker, "Loudspeaker", "stereotools=mlev=64"));
 
         return effects;
+    }
+
+    public static void addMusicToImage(String pathMusic, String pathImage) {
+        String videoFFMPEG = FileUtils.getImageFilePath();
+        String cmd = "-loop 1 -r 1 -y -i " + pathImage + " -i " + pathMusic + " -c:v libx264 -crf 27 -tune stillimage -c:a aac -pix_fmt yuv420p -preset ultrafast -shortest -vf pad=\"width=ceil(iw/2)*2:height=ceil(ih/2)*2\" " + videoFFMPEG;
+        if(exceuteFFMPEG(cmd)){
+            FFMPEGUtils.videoFFMPEG = videoFFMPEG;
+        }else {
+            FFMPEGUtils.videoFFMPEG = null;
+        }
     }
 }

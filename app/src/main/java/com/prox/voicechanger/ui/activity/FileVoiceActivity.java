@@ -1,12 +1,16 @@
 package com.prox.voicechanger.ui.activity;
 
 import static com.prox.voicechanger.VoiceChangerApp.TAG;
+import static com.prox.voicechanger.ui.dialog.OptionDialog.SELECT_IMAGE;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -17,6 +21,9 @@ import com.prox.voicechanger.adapter.FileVoiceAdapter;
 import com.prox.voicechanger.databinding.ActivityFileVoiceBinding;
 import com.prox.voicechanger.databinding.DialogDeleteAllBinding;
 import com.prox.voicechanger.ui.dialog.DeleteAllDialog;
+import com.prox.voicechanger.ui.dialog.OptionDialog;
+import com.prox.voicechanger.utils.FFMPEGUtils;
+import com.prox.voicechanger.utils.FileUtils;
 import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -96,5 +103,21 @@ public class FileVoiceActivity extends AppCompatActivity {
         DividerItemDecoration dividerHorizontal = new DividerItemDecoration
                 (this, DividerItemDecoration.VERTICAL);
         binding.recyclerViewFileVoice.addItemDecoration(dividerHorizontal);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SELECT_IMAGE) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (data != null) {
+                    String path = FileUtils.getUriRealPath(this, data.getData());
+                    FFMPEGUtils.addMusicToImage(OptionDialog.fileVoice.getPath(), path);
+//                    Toast.makeText(this, FFMPEGUtils.getVideoFFMPEG(), Toast.LENGTH_SHORT).show();
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED)  {
+                Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

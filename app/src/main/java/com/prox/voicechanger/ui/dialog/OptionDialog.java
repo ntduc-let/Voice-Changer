@@ -4,8 +4,10 @@ import static com.prox.voicechanger.VoiceChangerApp.TAG;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.media.RingtoneManager;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
@@ -22,20 +24,29 @@ import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
 
 public class OptionDialog extends CustomDialog{
 
+    public static final int SELECT_IMAGE = 20;
+    public static FileVoice fileVoice;
+
     public OptionDialog(
             @NonNull Context context,
             Activity activity,
             DialogOptionBinding binding,
             FileVoiceViewModel model,
             FileVoice fileVoice) {
-
         super(context, binding.getRoot());
         Log.d(TAG, "OptionDialog: create");
         setCancelable(true);
 
+        OptionDialog.fileVoice = fileVoice;
+
         binding.btnShare.setOnClickListener(view -> {
             FileUtils.shareFile(context, fileVoice.getPath());
             cancel();
+        });
+
+        binding.btnAddImg.setOnClickListener(view -> {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            activity.startActivityForResult(intent, SELECT_IMAGE);
         });
 
         binding.btnRingPhone.setOnClickListener(view -> {
