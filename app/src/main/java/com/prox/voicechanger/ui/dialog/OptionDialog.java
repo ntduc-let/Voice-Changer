@@ -47,6 +47,7 @@ public class OptionDialog extends CustomDialog{
         binding.btnAddImg.setOnClickListener(view -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             activity.startActivityForResult(intent, SELECT_IMAGE);
+            cancel();
         });
 
         binding.btnRingPhone.setOnClickListener(view -> {

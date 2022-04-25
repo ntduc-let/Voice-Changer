@@ -6,6 +6,7 @@ import static com.prox.voicechanger.ui.dialog.OptionDialog.SELECT_IMAGE;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -20,7 +21,9 @@ import com.prox.voicechanger.R;
 import com.prox.voicechanger.adapter.FileVoiceAdapter;
 import com.prox.voicechanger.databinding.ActivityFileVoiceBinding;
 import com.prox.voicechanger.databinding.DialogDeleteAllBinding;
+import com.prox.voicechanger.databinding.DialogLoadingBinding;
 import com.prox.voicechanger.ui.dialog.DeleteAllDialog;
+import com.prox.voicechanger.ui.dialog.LoadingDialog;
 import com.prox.voicechanger.ui.dialog.OptionDialog;
 import com.prox.voicechanger.utils.FFMPEGUtils;
 import com.prox.voicechanger.utils.FileUtils;
@@ -30,6 +33,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class FileVoiceActivity extends AppCompatActivity {
+    public static final String PATH_VIDEO = "PATH_VIDEO";
     private ActivityFileVoiceBinding binding;
     private FileVoiceAdapter adapter;
     private FileVoiceViewModel model;
@@ -111,9 +115,23 @@ public class FileVoiceActivity extends AppCompatActivity {
         if (requestCode == SELECT_IMAGE) {
             if (resultCode == Activity.RESULT_OK) {
                 if (data != null) {
-                    String path = FileUtils.getUriRealPath(this, data.getData());
-                    FFMPEGUtils.addMusicToImage(OptionDialog.fileVoice.getPath(), path);
-//                    Toast.makeText(this, FFMPEGUtils.getVideoFFMPEG(), Toast.LENGTH_SHORT).show();
+                    LoadingDialog dialog = new LoadingDialog(
+                            this,
+                            DialogLoadingBinding.inflate(getLayoutInflater())
+                    );
+                    dialog.show();
+
+                    String pathImage = FileUtils.getUriRealPath(this, data.getData());
+                    String pathVideo = FileUtils.getDCIMFolderPath("VoiceChanger") + "/"+FileUtils.getVideoFileName();
+                    new Handler().post(() -> {
+                        String cmd = FFMPEGUtils.getCMDAddImage(OptionDialog.fileVoice.getPath(), pathImage, pathVideo);
+                        if (FFMPEGUtils.executeFFMPEG(cmd)){
+                            dialog.cancel();
+                            Intent intent = new Intent(this, PlayVideoActivity.class);
+                            intent.putExtra(PATH_VIDEO, pathVideo);
+                            startActivity(intent);
+                        }
+                    });
                 }
             } else if (resultCode == Activity.RESULT_CANCELED)  {
                 Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show();

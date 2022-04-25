@@ -25,8 +25,8 @@ public class PermissionUtils {
             Log.d(TAG, "PermissionUtils: checkPermission true");
             return true;
         } else {
-            requestPermissions(activity);
             Log.d(TAG, "PermissionUtils: checkPermission false");
+            requestPermissions(activity);
             return false;
         }
     }

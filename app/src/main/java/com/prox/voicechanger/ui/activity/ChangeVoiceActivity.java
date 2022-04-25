@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -21,8 +20,10 @@ import com.google.android.flexbox.JustifyContent;
 import com.prox.voicechanger.R;
 import com.prox.voicechanger.adapter.EffectAdapter;
 import com.prox.voicechanger.databinding.ActivityChangeVoiceBinding;
+import com.prox.voicechanger.databinding.DialogLoadingBinding;
 import com.prox.voicechanger.model.Effect;
 import com.prox.voicechanger.model.FileVoice;
+import com.prox.voicechanger.ui.dialog.LoadingDialog;
 import com.prox.voicechanger.utils.FFMPEGUtils;
 import com.prox.voicechanger.utils.FileUtils;
 import com.prox.voicechanger.utils.NumberUtils;
@@ -52,6 +53,29 @@ public class ChangeVoiceActivity extends AppCompatActivity {
             handler.postDelayed(this, 1000);
         }
     };
+    private Runnable selectEffect = new Runnable() {
+        @Override
+        public void run() {
+            String cmd = FFMPEGUtils.getCMDAddEffect(pathRecording, FileUtils.getTempEffectFilePath(ChangeVoiceActivity.this), effectSelected);
+            if (FFMPEGUtils.executeFFMPEG(cmd)){
+                binding.layoutPlayer.getRoot().setVisibility(View.VISIBLE);
+                binding.layoutLoading.getRoot().setVisibility(View.GONE);
+                binding.layoutLoading.txtProcessing.setText(R.string.processing);
+                binding.layoutLoading.txtProcessing.setTextColor(getResources().getColor(R.color.white30));
+                binding.btnSave2.setEnabled(true);
+                binding.btnSave2.setTextColor(getResources().getColor(R.color.white));
+                binding.btnSave2.setBackgroundResource(R.drawable.bg_button1);
+                startMediaPlayer(FileUtils.getTempEffectFilePath(ChangeVoiceActivity.this));
+            }else {
+                binding.layoutLoading.txtProcessing.setText(R.string.process_error);
+                binding.layoutLoading.txtProcessing.setTextColor(getResources().getColor(R.color.red));
+                binding.btnSave2.setEnabled(false);
+                binding.btnSave2.setTextColor(getResources().getColor(R.color.white30));
+                binding.btnSave2.setBackgroundResource(R.drawable.bg_button6);
+            }
+            handler.removeCallbacks(selectEffect);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,11 +91,27 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         binding.btnBack2.setOnClickListener(view -> onBackPressed());
 
         binding.btnSave2.setOnClickListener(view -> {
+            LoadingDialog dialog = new LoadingDialog(
+                    this,
+                    DialogLoadingBinding.inflate(getLayoutInflater())
+            );
+            dialog.show();
+
             if (pathFFMPEG != null){
-                insertEffectToDB();
+                new Handler().post(() -> {
+                    String cmd = FFMPEGUtils.getCMDConvertRecording(FileUtils.getTempEffectFilePath(this), pathFFMPEG);
+                    if (FFMPEGUtils.executeFFMPEG(cmd)){
+                        insertEffectToDB();
+                        startActivity(new Intent(this, FileVoiceActivity.class));
+                        finish();
+                        dialog.cancel();
+                    }
+                });
+            }else {
+                startActivity(new Intent(this, FileVoiceActivity.class));
+                finish();
+                dialog.cancel();
             }
-            startActivity(new Intent(this, FileVoiceActivity.class));
-            finish();
         });
 
         binding.layoutPlayer.btnPauseOrResume.setOnClickListener(view -> {
@@ -89,10 +129,6 @@ public class ChangeVoiceActivity extends AppCompatActivity {
 
         binding.layoutEffect.btnCustom.setOnClickListener(view -> {
             initClickBtnCustom();
-            if (pathFFMPEG!=null){
-                FileUtils.deleteFile(this, pathFFMPEG);
-                pathFFMPEG = null;
-            }
             effectAdapter.resetEffects();
             startMediaPlayer(pathRecording);
         });
@@ -104,6 +140,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         stopMediaPlayer();
         player.release();
         updateTime = null;
+        selectEffect = null;
         handler = null;
         player = null;
         effectAdapter = null;
@@ -118,10 +155,6 @@ public class ChangeVoiceActivity extends AppCompatActivity {
     public void onBackPressed() {
         Log.d(TAG, "ChangeVoiceActivity: onBackPressed");
         stopMediaPlayer();
-        if (pathFFMPEG!=null){
-            FileUtils.deleteFile(this, pathFFMPEG);
-            pathFFMPEG = null;
-        }
 
         Intent intent = new Intent(this, RecordActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -175,25 +208,30 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         effectSelected = effect;
         stopMediaPlayer();
 
-        if (pathFFMPEG!=null){
-            FileUtils.deleteFile(this, pathFFMPEG);
-            pathFFMPEG = null;
-        }
-
-        String path;
         if (effect.getTitle().equals(FFMPEGUtils.Original)) {
-            path = pathRecording;
+            binding.layoutPlayer.getRoot().setVisibility(View.VISIBLE);
+            binding.layoutLoading.getRoot().setVisibility(View.GONE);
+            binding.layoutPlayer.txtName2.setText(FileUtils.getName(pathRecording));
+            binding.btnSave2.setEnabled(true);
+            binding.btnSave2.setTextColor(getResources().getColor(R.color.white));
+            binding.btnSave2.setBackgroundResource(R.drawable.bg_button1);
+            startMediaPlayer(pathRecording);
+            pathFFMPEG = null;
         }else {
-            FFMPEGUtils.playEffect(pathRecording, effect);
-            pathFFMPEG = FFMPEGUtils.getPathFFMPEG();
-            if (pathFFMPEG==null) {
-                Toast.makeText(this, R.string.add_effect_error, Toast.LENGTH_SHORT).show();
-                return;
-            }
-            path = pathFFMPEG;
+            binding.layoutPlayer.getRoot().setVisibility(View.INVISIBLE);
+            binding.layoutLoading.getRoot().setVisibility(View.VISIBLE);
+            File file;
+            String name;
+            int i = 1;
+            do{
+                name = FileUtils.getName(pathRecording)+effect.getTitle()+i+"."+FileUtils.getType(pathRecording);
+                i++;
+                file = new File(FileUtils.getDownloadFolderPath("VoiceChanger") + "/" + name);
+            }while (file.exists());
+            pathFFMPEG = file.getPath();
+            binding.layoutPlayer.txtName2.setText(FileUtils.getName(pathFFMPEG));
+            handler.post(selectEffect);
         }
-        binding.layoutPlayer.txtName2.setText(FileUtils.getName(path));
-        startMediaPlayer(path);
     }
 
     private void startMediaPlayer(String path) {
@@ -259,7 +297,16 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         fileVoice.setSrc(effectSelected.getSrc());
         fileVoice.setName(FileUtils.getName(pathFFMPEG));
         fileVoice.setPath(pathFFMPEG);
-        fileVoice.setDuration(player.getDuration());
+
+        MediaPlayer playerEffect = new MediaPlayer();
+        try {
+            playerEffect.setDataSource(pathFFMPEG);
+            playerEffect.prepare();
+        } catch (IOException e) {
+            Log.d(TAG, "insertEffectToDB: "+e.getMessage());
+            return;
+        }
+        fileVoice.setDuration(playerEffect.getDuration());
         fileVoice.setSize(new File(pathFFMPEG).length());
         fileVoice.setDate(new Date().getTime());
         model.insert(fileVoice);

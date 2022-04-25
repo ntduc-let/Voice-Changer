@@ -21,7 +21,6 @@ import com.prox.voicechanger.databinding.DialogNameBinding;
 import com.prox.voicechanger.databinding.FragmentStopRecordBinding;
 import com.prox.voicechanger.recorder.Recorder;
 import com.prox.voicechanger.ui.dialog.NameDialog;
-import com.prox.voicechanger.utils.FileUtils;
 import com.prox.voicechanger.utils.NumberUtils;
 
 public class StopRecordFragment extends Fragment {
@@ -44,10 +43,8 @@ public class StopRecordFragment extends Fragment {
         binding.btnBack.setOnClickListener(view -> {
             stopRecord();
 
-            if (FileUtils.deleteFile(requireContext(), recorder.getPath())){
-                NavController navController= Navigation.findNavController(requireActivity(), R.id.nav_host_record_activity);
-                navController.popBackStack();
-            }
+            NavController navController= Navigation.findNavController(requireActivity(), R.id.nav_host_record_activity);
+            navController.popBackStack();
         });
 
         binding.btnStop.setOnClickListener(view -> {
@@ -55,8 +52,8 @@ public class StopRecordFragment extends Fragment {
 
             NameDialog dialog = new NameDialog(requireContext(),
                     requireActivity(),
-                    DialogNameBinding.inflate(getLayoutInflater()),
-                    recorder);
+                    DialogNameBinding.inflate(getLayoutInflater())
+            );
             dialog.show();
         });
 
@@ -94,7 +91,7 @@ public class StopRecordFragment extends Fragment {
 
     private void recording() {
         Log.d(TAG, "StopRecordFragment: recording");
-        recorder = new Recorder();
+        recorder = new Recorder(requireContext());
         recorder.start();
 
         runnable2 = new Runnable() {

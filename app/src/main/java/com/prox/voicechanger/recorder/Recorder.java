@@ -2,6 +2,7 @@ package com.prox.voicechanger.recorder;
 
 import static com.prox.voicechanger.VoiceChangerApp.TAG;
 
+import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -23,13 +24,11 @@ public class Recorder implements RecorderListener {
 
     private MediaRecorder recorder;
     private String path;
-    private String name;
     private long startTime;
     private boolean isRecording;
 
-    public Recorder() {
-        path = FileUtils.getRecordingFilePath();
-        name = FileUtils.getName(path);
+    public Recorder(Context context) {
+        path = FileUtils.getTempRecordingFilePath(context);
         Log.d(TAG, "Recorder: create "+path);
 
         recorder = new MediaRecorder();
@@ -87,7 +86,6 @@ public class Recorder implements RecorderListener {
         recorder.release();
         recorder = null;
         path = null;
-        name = null;
         startTime = 0;
         isRecording = false;
         Log.d(TAG, "Recorder: release");
@@ -107,8 +105,5 @@ public class Recorder implements RecorderListener {
 
     public String getPath() {
         return path;
-    }
-    public String getName() {
-        return name;
     }
 }

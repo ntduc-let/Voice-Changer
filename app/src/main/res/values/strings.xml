@@ -49,4 +49,8 @@
     <string name="rate_now">Rate now</string>
     <string name="notification_send_mail">Send mail...</string>
     <string name="pause">Pause</string>
+    <string name="saving">Saving...</string>
+    <string name="create_error">Save errors. Please try again later</string>
+    <string name="processing">Processing...</string>
+    <string name="process_error">Error processing. Please try again</string>
 </resources>

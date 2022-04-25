@@ -7,6 +7,7 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -35,29 +36,53 @@ import java.util.Date;
 import java.util.List;
 
 public class FileUtils {
-    public static String getRecordingFilePath() {
+
+    public static String getRecordingFileName() {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("ddMMyy-hhmmss");
+        String currentDate = sdf.format(new Date());
+
+        return "Audio" + currentDate + ".mp3";
+    }
+
+    public static String getVideoFileName() {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("ddMMyy-hhmmss");
+        String currentDate = sdf.format(new Date());
+
+        return "Video" + currentDate + ".mp4";
+    }
+
+    public static String getTempRecordingFilePath(Context context) {
+        ContextWrapper contextWrapper = new ContextWrapper(context.getApplicationContext());
+        File musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+        File file = new File(musicDirectory, "tempRecording.mp3");
+        return file.getPath();
+    }
+
+    public static String getTempEffectFilePath(Context context) {
+        ContextWrapper contextWrapper = new ContextWrapper(context.getApplicationContext());
+        File musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+        File file = new File(musicDirectory, "tempEffect.mp3");
+        return file.getPath();
+    }
+
+    public static String getDownloadFolderPath(String folder) {
         File downloadRoot = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOWNLOADS), "VoiceChanger");
+                Environment.DIRECTORY_DOWNLOADS), folder);
         if (!downloadRoot.exists()) {
             downloadRoot.mkdirs();
         }
 
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyhhmmss");
-        String currentDate = sdf.format(new Date());
-        int i = 1;
+        return downloadRoot.getPath();
+    }
 
-        File recordFile;
-        do {
-            recordFile = new File(downloadRoot, "Audio" + currentDate + i + ".mp3");
-            i++;
-        } while (recordFile.exists());
-
-        try {
-            recordFile.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static String getDCIMFolderPath(String folder) {
+        File dicmRoot = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DCIM), folder);
+        if (!dicmRoot.exists()) {
+            dicmRoot.mkdirs();
         }
-        return recordFile.getPath();
+
+        return dicmRoot.getPath();
     }
 
     public static String renameFile(Context context, String path, String name) {

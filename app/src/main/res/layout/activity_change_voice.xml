@@ -53,4 +53,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layout_player" />
+
+    <include
+        android:id="@+id/layout_loading"
+        layout="@layout/dialog_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/layout_player"
+        app:layout_constraintEnd_toEndOf="@+id/layout_player"
+        app:layout_constraintStart_toStartOf="@+id/layout_player"
+        app:layout_constraintTop_toTopOf="@+id/layout_player"
+        app:layout_constraintVertical_bias="0.3"
+        android:visibility="gone"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
