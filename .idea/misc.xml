@@ -33,6 +33,7 @@
         <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_ani_record9.xml" value="0.12" />
         <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_app.xml" value="0.12" />
         <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_back.xml" value="0.12" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_basic.xml" value="0.174" />
         <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_button_close.xml" value="0.138" />
         <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_button_more.xml" value="0.12" />
         <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_button_record.xml" value="0.12" />
@@ -51,6 +52,7 @@
         <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_splash2.xml" value="0.212" />
         <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_splash3.xml" value="0.212" />
         <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_terms.xml" value="0.138" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_thumb2.xml" value="0.181" />
         <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_tick.xml" value="0.126" />
         <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_user.xml" value="0.138" />
         <entry key="..\:/voice-changer/app/src/main/res/drawable/img_button_blue_while_enabled.xml" value="0.131" />
@@ -79,13 +81,17 @@
         <entry key="..\:/voice-changer/app/src/main/res/layout/item_effect.xml" value="0.264" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/item_file_voice.xml" value="0.4509394572025052" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/item_file_voice_main.xml" value="0.25" />
+        <entry key="..\:/voice-changer/app/src/main/res/layout/item_hz.xml" value="0.4" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/item_play_media.xml" value="0.25" />
-        <entry key="..\:/voice-changer/app/src/main/res/layout/layout_custom.xml" value="0.25" />
+        <entry key="..\:/voice-changer/app/src/main/res/layout/layout_basic.xml" value="0.264" />
+        <entry key="..\:/voice-changer/app/src/main/res/layout/layout_custom.xml" value="0.264" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/layout_effect.xml" value="0.264" />
+        <entry key="..\:/voice-changer/app/src/main/res/layout/layout_equalizer.xml" value="0.2882414151925078" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/layout_loading.xml" value="0.25" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/layout_no_item.xml" value="0.25" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/layout_player.xml" value="0.25" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/layout_premium.xml" value="0.3313180169286578" />
+        <entry key="..\:/voice-changer/app/src/main/res/layout/layout_reverb.xml" value="0.4" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/txt_mess.xml" value="0.264" />
         <entry key="..\:/voice-changer/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.121" />
         <entry key="..\:/voice-changer/app/src/main/res/xml/file_paths.xml" value="0.25" />

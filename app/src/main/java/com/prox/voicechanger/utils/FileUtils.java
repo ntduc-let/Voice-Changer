@@ -65,6 +65,13 @@ public class FileUtils {
         return file.getPath();
     }
 
+    public static String getTempCustomFilePath(Context context) {
+        ContextWrapper contextWrapper = new ContextWrapper(context.getApplicationContext());
+        File musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+        File file = new File(musicDirectory, "tempCustom.mp3");
+        return file.getPath();
+    }
+
     public static String getDownloadFolderPath(String folder) {
         File downloadRoot = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOWNLOADS), folder);
@@ -426,30 +433,5 @@ public class FileUtils {
             }
         }
         return ret;
-    }
-
-    public static String getImageFilePath() {
-        File dcimRoot = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DCIM), "VoiceChanger");
-        if (!dcimRoot.exists()) {
-            dcimRoot.mkdirs();
-        }
-
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyhhmmss");
-        String currentDate = sdf.format(new Date());
-        int i = 1;
-
-        File videoFile;
-        do {
-            videoFile = new File(dcimRoot, "Video" + currentDate + i + ".mp4");
-            i++;
-        } while (videoFile.exists());
-
-        try {
-            videoFile.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return videoFile.getPath();
     }
 }

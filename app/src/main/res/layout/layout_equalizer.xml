@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <HorizontalScrollView
+        android:id="@+id/list"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
+
+        <RadioGroup
+            android:id="@+id/rad_group_hz"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radio_500"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:checked="true"
+                android:paddingHorizontal="8dp"
+                android:text="@string/_500hz"
+                android:textColor="@color/black" />
+
+            <RadioButton
+                android:id="@+id/radio_1000"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:checked="false"
+                android:paddingHorizontal="8dp"
+                android:text="@string/_1000hz"
+                android:textColor="@color/black30" />
+
+            <RadioButton
+                android:id="@+id/radio_2000"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:checked="false"
+                android:paddingHorizontal="8dp"
+                android:text="@string/_2000hz"
+                android:textColor="@color/black30" />
+
+            <RadioButton
+                android:id="@+id/radio_3000"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:checked="false"
+                android:paddingHorizontal="8dp"
+                android:text="@string/_3000hz"
+                android:textColor="@color/black30" />
+
+            <RadioButton
+                android:id="@+id/radio_4000"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:checked="false"
+                android:paddingHorizontal="8dp"
+                android:text="@string/_4000hz"
+                android:textColor="@color/black30" />
+
+            <RadioButton
+                android:id="@+id/radio_5000"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:checked="false"
+                android:paddingHorizontal="8dp"
+                android:text="@string/_5000hz"
+                android:textColor="@color/black30" />
+
+            <RadioButton
+                android:id="@+id/radio_6000"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:checked="false"
+                android:paddingHorizontal="8dp"
+                android:text="@string/_6000hz"
+                android:textColor="@color/black30" />
+
+            <RadioButton
+                android:id="@+id/radio_7000"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:checked="false"
+                android:paddingHorizontal="8dp"
+                android:text="@string/_7000hz"
+                android:textColor="@color/black30" />
+
+            <RadioButton
+                android:id="@+id/radio_8000"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:checked="false"
+                android:paddingHorizontal="8dp"
+                android:text="@string/_8000hz"
+                android:textColor="@color/black30" />
+
+        </RadioGroup>
+    </HorizontalScrollView>
+
+    <TextView
+        android:id="@+id/txt_bandwidth"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="end"
+        android:text="@string/bandwidth"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/seek_bandwidth"
+        app:layout_constraintEnd_toStartOf="@+id/seek_bandwidth"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/seek_bandwidth" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/seek_bandwidth"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:stepSize="100"
+        android:value="100"
+        android:valueFrom="100"
+        android:valueTo="2000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/list"
+        app:thumbRadius="5dp" />
+
+    <TextView
+        android:id="@+id/txt_gain"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="end"
+        android:text="@string/gain"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/seek_gain"
+        app:layout_constraintEnd_toStartOf="@+id/seek_gain"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/seek_gain" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/seek_gain"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:stepSize="10"
+        android:value="0"
+        android:valueFrom="-50"
+        android:valueTo="50"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/seek_bandwidth"
+        app:thumbRadius="5dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

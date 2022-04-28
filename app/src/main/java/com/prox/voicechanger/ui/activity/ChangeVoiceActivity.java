@@ -4,19 +4,24 @@ import static com.prox.voicechanger.VoiceChangerApp.TAG;
 import static com.prox.voicechanger.ui.dialog.NameDialog.PATH_FILE;
 import static com.prox.voicechanger.ui.dialog.NameDialog.RECORD_TO_CHANGE_VOICE;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.RadioGroup;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
+import com.google.android.material.slider.Slider;
 import com.prox.voicechanger.R;
 import com.prox.voicechanger.adapter.EffectAdapter;
 import com.prox.voicechanger.databinding.ActivityChangeVoiceBinding;
@@ -42,6 +47,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
     private EffectAdapter effectAdapter;
     private String pathRecording;
     private String pathFFMPEG;
+    private String hzSelect;
     private Effect effectSelected;
     private FileVoiceViewModel model;
 
@@ -74,6 +80,71 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                 binding.btnSave2.setBackgroundResource(R.drawable.bg_button6);
             }
             handler.removeCallbacks(selectEffect);
+        }
+    };
+    private Runnable selectCustom = new Runnable() {
+        @Override
+        public void run() {
+            String cmd = FFMPEGUtils.getCMDCustomEffect(
+                    pathRecording,
+                    FileUtils.getTempCustomFilePath(ChangeVoiceActivity.this),
+                    binding.layoutEffect.layoutCustom.layoutBasic.seekTempoPitch.getValue()/16000,
+                    binding.layoutEffect.layoutCustom.layoutBasic.seekTempoRate.getValue(),
+                    binding.layoutEffect.layoutCustom.layoutBasic.seekPanning.getValue(),
+                    Double.parseDouble(hzSelect),
+                    binding.layoutEffect.layoutCustom.layoutEqualizer.seekBandwidth.getValue(),
+                    binding.layoutEffect.layoutCustom.layoutEqualizer.seekGain.getValue(),
+                    binding.layoutEffect.layoutCustom.layoutReverb.seekInGain.getValue(),
+                    binding.layoutEffect.layoutCustom.layoutReverb.seekOutGain.getValue(),
+                    binding.layoutEffect.layoutCustom.layoutReverb.seekDelay.getValue()==1?0:binding.layoutEffect.layoutCustom.layoutReverb.seekDelay.getValue(),
+                    binding.layoutEffect.layoutCustom.layoutReverb.seekDecay.getValue());
+            if (FFMPEGUtils.executeFFMPEG(cmd)){
+                binding.layoutPlayer.getRoot().setVisibility(View.VISIBLE);
+                binding.layoutLoading.getRoot().setVisibility(View.GONE);
+                binding.layoutLoading.txtProcessing.setText(R.string.processing);
+                binding.layoutLoading.txtProcessing.setTextColor(getResources().getColor(R.color.white30));
+                binding.btnSave2.setEnabled(true);
+                binding.btnSave2.setTextColor(getResources().getColor(R.color.white));
+                binding.btnSave2.setBackgroundResource(R.drawable.bg_button1);
+                startMediaPlayer(FileUtils.getTempCustomFilePath(ChangeVoiceActivity.this));
+            }else {
+                binding.layoutLoading.txtProcessing.setText(R.string.process_error);
+                binding.layoutLoading.txtProcessing.setTextColor(getResources().getColor(R.color.red));
+                binding.btnSave2.setEnabled(false);
+                binding.btnSave2.setTextColor(getResources().getColor(R.color.white30));
+                binding.btnSave2.setBackgroundResource(R.drawable.bg_button6);
+            }
+            handler.removeCallbacks(selectCustom);
+        }
+    };
+    private final RadioGroup.OnCheckedChangeListener RadioGroupOnCheckedChangeListener = (radioGroup, i) -> {
+        stopMediaPlayer();
+        binding.layoutPlayer.getRoot().setVisibility(View.INVISIBLE);
+        binding.layoutLoading.getRoot().setVisibility(View.VISIBLE);
+        handler.post(selectCustom);
+    };
+    private final CompoundButton.OnCheckedChangeListener RadioButtonOnCheckedChangeListener = (compoundButton, b) -> {
+        if (b){
+            compoundButton.setTextColor(getResources().getColor(R.color.black));
+            hzSelect = compoundButton.getText().toString().substring(0, compoundButton.getText().length()-2);
+        }else{
+            compoundButton.setTextColor(getResources().getColor(R.color.black30));
+        }
+    };
+    private  final Slider.OnSliderTouchListener onSliderTouchListener = new Slider.OnSliderTouchListener() {
+        @SuppressLint("RestrictedApi")
+        @Override
+        public void onStartTrackingTouch(@NonNull Slider slider) {
+
+        }
+
+        @SuppressLint("RestrictedApi")
+        @Override
+        public void onStopTrackingTouch(@NonNull Slider slider) {
+            stopMediaPlayer();
+            binding.layoutPlayer.getRoot().setVisibility(View.INVISIBLE);
+            binding.layoutLoading.getRoot().setVisibility(View.VISIBLE);
+            handler.post(selectCustom);
         }
     };
 
@@ -124,13 +195,14 @@ public class ChangeVoiceActivity extends AppCompatActivity {
 
         binding.layoutEffect.btnEffect.setOnClickListener(view -> {
             initClickBtnEffect();
+            effectAdapter.resetEffects();
             startMediaPlayer(pathRecording);
         });
 
         binding.layoutEffect.btnCustom.setOnClickListener(view -> {
             initClickBtnCustom();
-            effectAdapter.resetEffects();
-            startMediaPlayer(pathRecording);
+            startMediaPlayer(FileUtils.getTempRecordingFilePath(ChangeVoiceActivity.this));
+            actionCustomEffect();
         });
     }
 
@@ -192,6 +264,8 @@ public class ChangeVoiceActivity extends AppCompatActivity {
     private void initClickBtnCustom() {
         binding.layoutEffect.btnEffect.setBackgroundResource(R.drawable.bg_button_disable);
         binding.layoutEffect.btnCustom.setBackgroundResource(R.drawable.bg_button_enable);
+        binding.layoutEffect.btnEffect.setEnabled(true);
+        binding.layoutEffect.btnCustom.setEnabled(false);
         binding.layoutEffect.recyclerViewEffects.setVisibility(View.GONE);
         binding.layoutEffect.layoutCustom.getRoot().setVisibility(View.VISIBLE);
     }
@@ -199,6 +273,8 @@ public class ChangeVoiceActivity extends AppCompatActivity {
     private void initClickBtnEffect() {
         binding.layoutEffect.btnEffect.setBackgroundResource(R.drawable.bg_button_enable);
         binding.layoutEffect.btnCustom.setBackgroundResource(R.drawable.bg_button_disable);
+        binding.layoutEffect.btnEffect.setEnabled(false);
+        binding.layoutEffect.btnCustom.setEnabled(true);
         binding.layoutEffect.recyclerViewEffects.setVisibility(View.VISIBLE);
         binding.layoutEffect.layoutCustom.getRoot().setVisibility(View.GONE);
     }
@@ -310,5 +386,112 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         fileVoice.setSize(new File(pathFFMPEG).length());
         fileVoice.setDate(new Date().getTime());
         model.insert(fileVoice);
+    }
+
+    private void actionCustomEffect() {
+        resetCustomEffect();
+
+        actionCustomBasic();
+        actionCustomEqualizer();
+        actionCustomReverb();
+    }
+
+    private void actionCustomBasic() {
+        binding.layoutEffect.layoutCustom.switchBasic.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b){
+                binding.layoutEffect.layoutCustom.switchBasic.setTrackResource(R.drawable.ic_track_enable);
+                binding.layoutEffect.layoutCustom.layoutBasic.getRoot().setVisibility(View.VISIBLE);
+            }else {
+                binding.layoutEffect.layoutCustom.switchBasic.setTrackResource(R.drawable.ic_track_disable);
+                binding.layoutEffect.layoutCustom.layoutBasic.getRoot().setVisibility(View.GONE);
+                resetCustomBasic();
+            }
+        });
+
+        binding.layoutEffect.layoutCustom.layoutBasic.seekTempoPitch.addOnSliderTouchListener(onSliderTouchListener);
+
+        binding.layoutEffect.layoutCustom.layoutBasic.seekTempoRate.addOnSliderTouchListener(onSliderTouchListener);
+
+        binding.layoutEffect.layoutCustom.layoutBasic.seekPanning.addOnSliderTouchListener(onSliderTouchListener);
+    }
+
+    private void actionCustomEqualizer() {
+        binding.layoutEffect.layoutCustom.switchEqualizer.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b){
+                binding.layoutEffect.layoutCustom.switchEqualizer.setTrackResource(R.drawable.ic_track_enable);
+                binding.layoutEffect.layoutCustom.layoutEqualizer.getRoot().setVisibility(View.VISIBLE);
+            }else {
+                binding.layoutEffect.layoutCustom.switchEqualizer.setTrackResource(R.drawable.ic_track_disable);
+                binding.layoutEffect.layoutCustom.layoutEqualizer.getRoot().setVisibility(View.GONE);
+                resetCustomEqualizer();
+            }
+        });
+
+        checkRadio();
+
+        binding.layoutEffect.layoutCustom.layoutEqualizer.seekBandwidth.addOnSliderTouchListener(onSliderTouchListener);
+
+        binding.layoutEffect.layoutCustom.layoutEqualizer.seekGain.addOnSliderTouchListener(onSliderTouchListener);
+    }
+
+    private void actionCustomReverb() {
+        binding.layoutEffect.layoutCustom.switchReverb.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b){
+                binding.layoutEffect.layoutCustom.switchReverb.setTrackResource(R.drawable.ic_track_enable);
+                binding.layoutEffect.layoutCustom.layoutReverb.getRoot().setVisibility(View.VISIBLE);
+            }else {
+                binding.layoutEffect.layoutCustom.switchReverb.setTrackResource(R.drawable.ic_track_disable);
+                binding.layoutEffect.layoutCustom.layoutReverb.getRoot().setVisibility(View.GONE);
+                resetCustomReverb();
+            }
+        });
+    }
+
+    private void checkRadio() {
+        binding.layoutEffect.layoutCustom.layoutEqualizer.radGroupHz.setOnCheckedChangeListener(RadioGroupOnCheckedChangeListener);
+        binding.layoutEffect.layoutCustom.layoutEqualizer.radio500.setOnCheckedChangeListener(RadioButtonOnCheckedChangeListener);
+        binding.layoutEffect.layoutCustom.layoutEqualizer.radio1000.setOnCheckedChangeListener(RadioButtonOnCheckedChangeListener);
+        binding.layoutEffect.layoutCustom.layoutEqualizer.radio2000.setOnCheckedChangeListener(RadioButtonOnCheckedChangeListener);
+        binding.layoutEffect.layoutCustom.layoutEqualizer.radio3000.setOnCheckedChangeListener(RadioButtonOnCheckedChangeListener);
+        binding.layoutEffect.layoutCustom.layoutEqualizer.radio4000.setOnCheckedChangeListener(RadioButtonOnCheckedChangeListener);
+        binding.layoutEffect.layoutCustom.layoutEqualizer.radio5000.setOnCheckedChangeListener(RadioButtonOnCheckedChangeListener);
+        binding.layoutEffect.layoutCustom.layoutEqualizer.radio6000.setOnCheckedChangeListener(RadioButtonOnCheckedChangeListener);
+        binding.layoutEffect.layoutCustom.layoutEqualizer.radio7000.setOnCheckedChangeListener(RadioButtonOnCheckedChangeListener);
+        binding.layoutEffect.layoutCustom.layoutEqualizer.radio8000.setOnCheckedChangeListener(RadioButtonOnCheckedChangeListener);
+    }
+
+    private void resetCustomEffect() {
+        binding.layoutEffect.layoutCustom.switchBasic.setChecked(false);
+        binding.layoutEffect.layoutCustom.switchEqualizer.setChecked(false);
+        binding.layoutEffect.layoutCustom.switchReverb.setChecked(false);
+
+        binding.layoutEffect.layoutCustom.switchBasic.setTrackResource(R.drawable.ic_track_disable);
+        binding.layoutEffect.layoutCustom.switchEqualizer.setTrackResource(R.drawable.ic_track_disable);
+        binding.layoutEffect.layoutCustom.switchReverb.setTrackResource(R.drawable.ic_track_disable);
+
+        binding.layoutEffect.layoutCustom.layoutBasic.getRoot().setVisibility(View.GONE);
+        binding.layoutEffect.layoutCustom.layoutEqualizer.getRoot().setVisibility(View.GONE);
+        binding.layoutEffect.layoutCustom.layoutReverb.getRoot().setVisibility(View.GONE);
+        
+        resetCustomBasic();
+        resetCustomEqualizer();
+        resetCustomReverb();
+    }
+
+    private void resetCustomBasic() {
+        binding.layoutEffect.layoutCustom.layoutBasic.seekTempoPitch.setValue(16000);
+        binding.layoutEffect.layoutCustom.layoutBasic.seekTempoRate.setValue(1);
+        binding.layoutEffect.layoutCustom.layoutBasic.seekPanning.setValue(1);
+    }
+
+    private void resetCustomEqualizer() {
+        binding.layoutEffect.layoutCustom.layoutEqualizer.radio500.setChecked(true);
+        hzSelect = "500";
+        binding.layoutEffect.layoutCustom.layoutEqualizer.seekBandwidth.setValue(100);
+        binding.layoutEffect.layoutCustom.layoutEqualizer.seekGain.setValue(0);
+    }
+
+    private void resetCustomReverb() {
+
     }
 }

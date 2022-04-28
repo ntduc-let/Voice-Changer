@@ -53,4 +53,25 @@
     <string name="create_error">Save errors. Please try again later</string>
     <string name="processing">Processing...</string>
     <string name="process_error">Error processing. Please try again</string>
+    <string name="basic">Basic</string>
+    <string name="equalizer">Equalizer</string>
+    <string name="reverb">Reverb</string>
+    <string name="tempo_pitch">Tempo Pitch</string>
+    <string name="tempo_rate">Tempo Rate</string>
+    <string name="panning">Panning</string>
+    <string name="bandwidth">Bandwidth</string>
+    <string name="gain">Gain</string>
+    <string name="_500hz">500Hz</string>
+    <string name="_1000hz">1000Hz</string>
+    <string name="_2000hz">2000Hz</string>
+    <string name="_3000hz">3000Hz</string>
+    <string name="_4000hz">4000Hz</string>
+    <string name="_5000hz">5000Hz</string>
+    <string name="_6000hz">6000Hz</string>
+    <string name="_7000hz">7000Hz</string>
+    <string name="_8000hz">8000Hz</string>
+    <string name="in_gain">In Gain</string>
+    <string name="out_gain">Out Gain</string>
+    <string name="delay">Delay</string>
+    <string name="decay">Decay</string>
 </resources>

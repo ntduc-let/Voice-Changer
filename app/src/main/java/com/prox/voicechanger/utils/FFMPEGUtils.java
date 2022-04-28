@@ -59,4 +59,20 @@ public class FFMPEGUtils {
 
         return effects;
     }
+
+    public static String getCMDCustomEffect(
+            String fromPath,
+            String toPath,
+            double tempoPitch,
+            double tempoRate,
+            double panning,
+            double hz,
+            double bandwidth,
+            double gain,
+            double inGain,
+            double outGain,
+            double delay,
+            double decay) {
+        return "-y -i \""+fromPath+"\" -af asetrate=16000*"+tempoPitch+",atempo=1/"+tempoPitch+",atempo="+tempoRate+",volume="+panning+",equalizer=f="+hz+":t=h:width="+bandwidth+":g="+gain+",aecho="+inGain+":"+outGain+":"+delay+":"+decay+" \""+toPath+"\"";
+    }
 }

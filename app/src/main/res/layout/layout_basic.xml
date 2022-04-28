@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/txt_tempo_pitch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="end"
+        android:text="@string/tempo_pitch"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/seek_tempo_pitch"
+        app:layout_constraintEnd_toStartOf="@+id/seek_tempo_pitch"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/seek_tempo_pitch" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/seek_tempo_pitch"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:stepSize="2000"
+        android:value="16000"
+        android:valueFrom="4000"
+        android:valueTo="32000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:thumbRadius="5dp" />
+
+    <TextView
+        android:id="@+id/txt_tempo_rate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="end"
+        android:text="@string/tempo_rate"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/seek_tempo_rate"
+        app:layout_constraintEnd_toStartOf="@+id/seek_tempo_rate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/seek_tempo_rate" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/seek_tempo_rate"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:stepSize="0.1"
+        android:value="1"
+        android:valueFrom="0.5"
+        android:valueTo="5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/seek_tempo_pitch"
+        app:thumbRadius="5dp" />
+
+    <TextView
+        android:id="@+id/txt_panning"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="end"
+        android:text="@string/panning"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/seek_panning"
+        app:layout_constraintEnd_toStartOf="@+id/seek_panning"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/seek_panning" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/seek_panning"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:stepSize="0.1"
+        android:value="1"
+        android:valueFrom="0"
+        android:valueTo="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/seek_tempo_rate"
+        app:thumbRadius="5dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
