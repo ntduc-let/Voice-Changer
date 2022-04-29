@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class FFMPEGUtils {
 
     public final static String Original = "Original";
+    public final static String Custom = "Custom";
 
     public static boolean executeFFMPEG(String cmd) {
         FFmpegSession session = FFmpegKit.execute(cmd);
@@ -58,6 +59,10 @@ public class FFMPEGUtils {
         effects.add(new Effect(11, R.drawable.ic_loudspeaker, "Loudspeaker", "stereotools=mlev=64"));
 
         return effects;
+    }
+
+    public static Effect getEffectCustom() {
+        return new Effect(0, R.drawable.ic_custom, Custom, "");
     }
 
     public static String getCMDCustomEffect(

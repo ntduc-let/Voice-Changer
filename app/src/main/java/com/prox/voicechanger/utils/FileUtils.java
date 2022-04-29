@@ -65,13 +65,6 @@ public class FileUtils {
         return file.getPath();
     }
 
-    public static String getTempCustomFilePath(Context context) {
-        ContextWrapper contextWrapper = new ContextWrapper(context.getApplicationContext());
-        File musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-        File file = new File(musicDirectory, "tempCustom.mp3");
-        return file.getPath();
-    }
-
     public static String getDownloadFolderPath(String folder) {
         File downloadRoot = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOWNLOADS), folder);

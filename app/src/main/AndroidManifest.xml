@@ -19,16 +19,19 @@
         android:theme="@style/Theme.VoiceChanger">
         <activity
             android:name=".ui.activity.PlayVideoActivity"
-            android:exported="false" />
+            android:exported="true"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.activity.FileVoiceActivity"
-            android:exported="false" />
+            android:exported="true"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.activity.ChangeVoiceActivity"
-            android:exported="false" />
+            android:exported="true"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.activity.RecordActivity"
-            android:exported="false"
+            android:exported="true"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.SplashActivity"
@@ -38,6 +41,13 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:mimeType="audio/mpeg" />
             </intent-filter>
         </activity>
 

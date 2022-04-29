@@ -2,6 +2,7 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -118,5 +119,38 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/switch_reverb"
             android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/btn_reset_basic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="64dp"
+            app:layout_constraintBottom_toBottomOf="@+id/switch_basic"
+            app:layout_constraintEnd_toEndOf="@+id/switch_basic"
+            app:layout_constraintTop_toTopOf="@+id/switch_basic"
+            app:srcCompat="@drawable/ic_reset_disable"
+            android:visibility="invisible"/>
+
+        <ImageView
+            android:id="@+id/btn_reset_equalizer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="64dp"
+            app:layout_constraintBottom_toBottomOf="@+id/switch_equalizer"
+            app:layout_constraintEnd_toEndOf="@+id/switch_equalizer"
+            app:layout_constraintTop_toTopOf="@+id/switch_equalizer"
+            app:srcCompat="@drawable/ic_reset_disable"
+            android:visibility="invisible"/>
+
+        <ImageView
+            android:id="@+id/btn_reset_reverb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="64dp"
+            app:layout_constraintBottom_toBottomOf="@+id/switch_reverb"
+            app:layout_constraintEnd_toEndOf="@+id/switch_reverb"
+            app:layout_constraintTop_toTopOf="@+id/switch_reverb"
+            app:srcCompat="@drawable/ic_reset_disable"
+            android:visibility="invisible"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

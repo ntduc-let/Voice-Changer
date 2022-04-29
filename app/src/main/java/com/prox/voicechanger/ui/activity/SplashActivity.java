@@ -1,10 +1,12 @@
 package com.prox.voicechanger.ui.activity;
 
 import static com.prox.voicechanger.VoiceChangerApp.TAG;
+import static com.prox.voicechanger.ui.dialog.NameDialog.PATH_FILE;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -15,9 +17,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.prox.voicechanger.R;
 import com.prox.voicechanger.databinding.ActivitySplashBinding;
+import com.prox.voicechanger.utils.FileUtils;
 
 @SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
+    public static final String SPLASH_TO_CHANGE_VOICE = "SPLASH_TO_CHANGE_VOICE";
     private ActivitySplashBinding binding;
 
     @Override
@@ -65,6 +69,16 @@ public class SplashActivity extends AppCompatActivity {
             Log.d(TAG, "SplashActivity: start Intent.ACTION_MAIN");
             Intent goToRecord = new Intent(SplashActivity.this, RecordActivity.class);
             startActivity(goToRecord);
+            finish();
+        }else if (intent.getAction().equals(Intent.ACTION_VIEW)){
+            Log.d(TAG, "SplashActivity: start Intent.ACTION_VIEW");
+            Uri data = getIntent().getData();
+            String filePath = FileUtils.getUriRealPath(this, data);
+
+            Intent goToChangeVoice = new Intent(SplashActivity.this, ChangeVoiceActivity.class);
+            goToChangeVoice.setAction(SPLASH_TO_CHANGE_VOICE);
+            goToChangeVoice.putExtra(PATH_FILE, filePath);
+            startActivity(goToChangeVoice);
             finish();
         }
 
