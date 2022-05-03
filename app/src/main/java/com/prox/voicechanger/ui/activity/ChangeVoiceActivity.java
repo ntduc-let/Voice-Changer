@@ -1,5 +1,6 @@
 package com.prox.voicechanger.ui.activity;
 
+import static com.prox.voicechanger.VoiceChangerApp.FOLDER_APP;
 import static com.prox.voicechanger.VoiceChangerApp.TAG;
 import static com.prox.voicechanger.ui.activity.SplashActivity.SPLASH_TO_CHANGE_VOICE;
 import static com.prox.voicechanger.ui.dialog.NameDialog.PATH_FILE;
@@ -27,6 +28,8 @@ import com.prox.voicechanger.R;
 import com.prox.voicechanger.adapter.EffectAdapter;
 import com.prox.voicechanger.databinding.ActivityChangeVoiceBinding;
 import com.prox.voicechanger.databinding.DialogLoadingBinding;
+import com.prox.voicechanger.interfaces.FFmpegExecuteCallback;
+import com.prox.voicechanger.media.Player;
 import com.prox.voicechanger.model.Effect;
 import com.prox.voicechanger.model.FileVoice;
 import com.prox.voicechanger.ui.dialog.LoadingDialog;
@@ -40,11 +43,13 @@ import java.io.IOException;
 import java.util.Date;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import space.siy.waveformview.WaveFormData;
+import space.siy.waveformview.WaveFormView;
 
 @AndroidEntryPoint
 public class ChangeVoiceActivity extends AppCompatActivity {
     private ActivityChangeVoiceBinding binding;
-    private MediaPlayer player;
+    private Player player;
     private EffectAdapter effectAdapter;
     private String pathRecording;
     private String pathFFMPEG;
@@ -52,96 +57,36 @@ public class ChangeVoiceActivity extends AppCompatActivity {
     private Effect effectSelected;
     private FileVoiceViewModel model;
 
-    private Handler handler = new Handler();
-    private Runnable updateTime = new Runnable() {
+    private final Handler handler = new Handler();
+    private final Runnable updateTime = new Runnable() {
         @Override
         public void run() {
+            binding.layoutPlayer.visualizer.setPosition(player.getCurrentPosition());
             binding.layoutPlayer.txtCurrentTime.setText(NumberUtils.formatAsTime(player.getCurrentPosition()));
-            handler.postDelayed(this, 1000);
-        }
-    };
-    private Runnable selectEffect = new Runnable() {
-        @Override
-        public void run() {
-            String cmd = FFMPEGUtils.getCMDAddEffect(pathRecording, FileUtils.getTempEffectFilePath(ChangeVoiceActivity.this), effectSelected);
-            if (FFMPEGUtils.executeFFMPEG(cmd)){
-                binding.layoutPlayer.getRoot().setVisibility(View.VISIBLE);
-                binding.layoutLoading.getRoot().setVisibility(View.GONE);
-                binding.layoutLoading.txtProcessing.setText(R.string.processing);
-                binding.layoutLoading.txtProcessing.setTextColor(getResources().getColor(R.color.white30));
-                binding.btnSave2.setEnabled(true);
-                binding.btnSave2.setTextColor(getResources().getColor(R.color.white));
-                binding.btnSave2.setBackgroundResource(R.drawable.bg_button1);
-                startMediaPlayer(FileUtils.getTempEffectFilePath(ChangeVoiceActivity.this));
-            }else {
-                binding.layoutLoading.txtProcessing.setText(R.string.process_error);
-                binding.layoutLoading.txtProcessing.setTextColor(getResources().getColor(R.color.red));
-                binding.btnSave2.setEnabled(false);
-                binding.btnSave2.setTextColor(getResources().getColor(R.color.white30));
-                binding.btnSave2.setBackgroundResource(R.drawable.bg_button6);
-            }
-            handler.removeCallbacks(selectEffect);
-        }
-    };
-    private Runnable selectCustom = new Runnable() {
-        @Override
-        public void run() {
-            String cmd = FFMPEGUtils.getCMDCustomEffect(
-                    pathRecording,
-                    FileUtils.getTempEffectFilePath(ChangeVoiceActivity.this),
-                    binding.layoutEffect.layoutCustom.layoutBasic.seekTempoPitch.getValue()/16000,
-                    binding.layoutEffect.layoutCustom.layoutBasic.seekTempoRate.getValue(),
-                    binding.layoutEffect.layoutCustom.layoutBasic.seekPanning.getValue(),
-                    Double.parseDouble(hzSelect),
-                    binding.layoutEffect.layoutCustom.layoutEqualizer.seekBandwidth.getValue(),
-                    binding.layoutEffect.layoutCustom.layoutEqualizer.seekGain.getValue(),
-                    binding.layoutEffect.layoutCustom.layoutReverb.seekInGain.getValue(),
-                    binding.layoutEffect.layoutCustom.layoutReverb.seekOutGain.getValue(),
-                    binding.layoutEffect.layoutCustom.layoutReverb.seekDelay.getValue()==0?1:binding.layoutEffect.layoutCustom.layoutReverb.seekDelay.getValue(),
-                    binding.layoutEffect.layoutCustom.layoutReverb.seekDecay.getValue()==0?0.01:binding.layoutEffect.layoutCustom.layoutReverb.seekDecay.getValue());
-            if (FFMPEGUtils.executeFFMPEG(cmd)){
-                binding.layoutPlayer.getRoot().setVisibility(View.VISIBLE);
-                binding.layoutLoading.getRoot().setVisibility(View.GONE);
-                binding.layoutLoading.txtProcessing.setText(R.string.processing);
-                binding.layoutLoading.txtProcessing.setTextColor(getResources().getColor(R.color.white30));
-                binding.btnSave2.setEnabled(true);
-                binding.btnSave2.setTextColor(getResources().getColor(R.color.white));
-                binding.btnSave2.setBackgroundResource(R.drawable.bg_button1);
-                startMediaPlayer(FileUtils.getTempEffectFilePath(ChangeVoiceActivity.this));
-            }else {
-                binding.layoutLoading.txtProcessing.setText(R.string.process_error);
-                binding.layoutLoading.txtProcessing.setTextColor(getResources().getColor(R.color.red));
-                binding.btnSave2.setEnabled(false);
-                binding.btnSave2.setTextColor(getResources().getColor(R.color.white30));
-                binding.btnSave2.setBackgroundResource(R.drawable.bg_button6);
-            }
-            handler.removeCallbacks(selectCustom);
+            handler.post(this);
         }
     };
     private final RadioGroup.OnCheckedChangeListener RadioGroupOnCheckedChangeListener = (radioGroup, i) -> {
-        stopMediaPlayer();
-        binding.layoutPlayer.getRoot().setVisibility(View.INVISIBLE);
-        binding.layoutLoading.getRoot().setVisibility(View.VISIBLE);
         if (binding.layoutEffect.layoutCustom.layoutEqualizer.radio500.isChecked()
                 && binding.layoutEffect.layoutCustom.layoutEqualizer.seekBandwidth.getValue() == 100
-                && binding.layoutEffect.layoutCustom.layoutEqualizer.seekGain.getValue() == 0){
+                && binding.layoutEffect.layoutCustom.layoutEqualizer.seekGain.getValue() == 0) {
             binding.layoutEffect.layoutCustom.btnResetEqualizer.setImageResource(R.drawable.ic_reset_disable);
             binding.layoutEffect.layoutCustom.btnResetEqualizer.setEnabled(false);
-        }else {
+        } else {
             binding.layoutEffect.layoutCustom.btnResetEqualizer.setImageResource(R.drawable.ic_reset_enable);
             binding.layoutEffect.layoutCustom.btnResetEqualizer.setEnabled(true);
         }
-        handler.post(selectCustom);
+        selectCustom();
     };
     private final CompoundButton.OnCheckedChangeListener RadioButtonOnCheckedChangeListener = (compoundButton, b) -> {
-        if (b){
+        if (b) {
             compoundButton.setTextColor(getResources().getColor(R.color.black));
-            hzSelect = compoundButton.getText().toString().substring(0, compoundButton.getText().length()-2);
-        }else{
+            hzSelect = compoundButton.getText().toString().substring(0, compoundButton.getText().length() - 2);
+        } else {
             compoundButton.setTextColor(getResources().getColor(R.color.black30));
         }
     };
-    private  final Slider.OnSliderTouchListener onSliderTouchListener = new Slider.OnSliderTouchListener() {
+    private final Slider.OnSliderTouchListener onSliderTouchListener = new Slider.OnSliderTouchListener() {
         @SuppressLint("RestrictedApi")
         @Override
         public void onStartTrackingTouch(@NonNull Slider slider) {
@@ -151,11 +96,8 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         @SuppressLint("RestrictedApi")
         @Override
         public void onStopTrackingTouch(@NonNull Slider slider) {
-            stopMediaPlayer();
-            binding.layoutPlayer.getRoot().setVisibility(View.INVISIBLE);
-            binding.layoutLoading.getRoot().setVisibility(View.VISIBLE);
             enableReset();
-            handler.post(selectCustom);
+            selectCustom();
         }
     };
 
@@ -167,6 +109,14 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         model = new ViewModelProvider(this).get(FileVoiceViewModel.class);
+        model.getPathPlayer().observe(this, path -> {
+            if (path != null) {
+                startPlayer(path);
+            }else {
+                binding.layoutLoading.txtProcessing.setText(R.string.process_error);
+                binding.layoutLoading.txtProcessing.setTextColor(getResources().getColor(R.color.red));
+            }
+        });
 
         init();
 
@@ -179,66 +129,83 @@ public class ChangeVoiceActivity extends AppCompatActivity {
             );
             dialog.show();
 
-            if (pathFFMPEG != null){
-                new Handler().post(() -> {
-                    String cmd = FFMPEGUtils.getCMDConvertRecording(FileUtils.getTempEffectFilePath(this), pathFFMPEG);
-                    if (FFMPEGUtils.executeFFMPEG(cmd)){
+            if (pathFFMPEG != null) {
+                String cmd = FFMPEGUtils.getCMDConvertRecording(FileUtils.getTempEffectFilePath(this), pathFFMPEG);
+                FFMPEGUtils.executeFFMPEG(cmd, new FFmpegExecuteCallback() {
+                    @Override
+                    public void onSuccess() {
                         insertEffectToDB();
-                        startActivity(new Intent(this, FileVoiceActivity.class));
+                        startActivity(new Intent(ChangeVoiceActivity.this, FileVoiceActivity.class));
+                        Log.d(TAG, "ChangeVoiceActivity: To FileVoiceActivity");
+                        finish();
+                        dialog.cancel();
+                    }
+
+                    @Override
+                    public void onFailed() {
+                        startActivity(new Intent(ChangeVoiceActivity.this, FileVoiceActivity.class));
+                        Log.d(TAG, "ChangeVoiceActivity: To FileVoiceActivity");
                         finish();
                         dialog.cancel();
                     }
                 });
-            }else {
+            } else {
                 startActivity(new Intent(this, FileVoiceActivity.class));
+                Log.d(TAG, "ChangeVoiceActivity: To FileVoiceActivity");
                 finish();
                 dialog.cancel();
             }
         });
 
+        binding.layoutPlayer.visualizer.setCallback(new WaveFormView.Callback() {
+            @Override
+            public void onPlayPause() {
+
+            }
+
+            @Override
+            public void onSeek(long l) {
+                player.seekTo(l);
+                binding.layoutPlayer.txtCurrentTime.setText(NumberUtils.formatAsTime(player.getCurrentPosition()));
+            }
+        });
+
         binding.layoutPlayer.btnPauseOrResume.setOnClickListener(view -> {
-            if (player.isPlaying()){
-                pauseMediaPlayer();
-            }else {
-                resumeMediaPlayer();
+            if (player.isPlaying()) {
+                pausePlayer();
+            } else {
+                resumePlayer();
             }
         });
 
         binding.layoutEffect.btnEffect.setOnClickListener(view -> {
             initClickBtnEffect();
-            effectAdapter.resetEffects();
-            stopMediaPlayer();
-            startMediaPlayer(pathRecording);
+            selectEffect(FFMPEGUtils.getEffects().get(0));
         });
 
         binding.layoutEffect.btnCustom.setOnClickListener(view -> {
             initClickBtnCustom();
-            stopMediaPlayer();
-            binding.layoutPlayer.getRoot().setVisibility(View.INVISIBLE);
-            binding.layoutLoading.getRoot().setVisibility(View.VISIBLE);
-            handler.post(selectCustom);
-            actionCustomEffect();
+            selectCustom();
         });
+
+        actionCustomEffect();
     }
 
     @Override
     protected void onDestroy() {
         Log.d(TAG, "ChangeVoiceActivity: onDestroy");
-        if (player != null){
-            if (player.isPlaying()){
-                stopMediaPlayer();
+        if (player != null) {
+            if (player.isPlaying()) {
+                stopPlayer();
             }
             player.release();
         }
-
-        updateTime = null;
-        selectEffect = null;
-        selectCustom = null;
-        handler = null;
         player = null;
         effectAdapter = null;
         pathRecording = null;
         pathFFMPEG = null;
+        hzSelect = null;
+        effectSelected = null;
         model = null;
         binding = null;
         super.onDestroy();
@@ -247,15 +214,16 @@ public class ChangeVoiceActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Log.d(TAG, "ChangeVoiceActivity: onBackPressed");
-        if (player != null){
-            if (player.isPlaying()){
-                stopMediaPlayer();
+        if (player != null) {
+            if (player.isPlaying()) {
+                stopPlayer();
             }
         }
 
         Intent intent = new Intent(this, RecordActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+        Log.d(TAG, "ChangeVoiceActivity: To RecordActivity");
         finish();
     }
 
@@ -266,40 +234,44 @@ public class ChangeVoiceActivity extends AppCompatActivity {
             Log.d(TAG, "ChangeVoiceActivity: start intent null");
             return;
         }
+
+        player = new Player();
+
+        binding.layoutPlayer.getRoot().setVisibility(View.INVISIBLE);
+
+        binding.layoutLoading.getRoot().setVisibility(View.VISIBLE);
+        binding.layoutLoading.txtProcessing.setText(R.string.processing);
+        binding.layoutLoading.txtProcessing.setTextColor(getResources().getColor(R.color.white30));
+
+        binding.btnSave2.setEnabled(false);
+        binding.btnSave2.setTextColor(getResources().getColor(R.color.white30));
+        binding.btnSave2.setBackgroundResource(R.drawable.bg_button6);
+
         if (intent.getAction().equals(RECORD_TO_CHANGE_VOICE)) {
             pathRecording = intent.getStringExtra(PATH_FILE);
             binding.layoutPlayer.txtName2.setText(FileUtils.getName(pathRecording));
 
-            player = new MediaPlayer();
-            startMediaPlayer(pathRecording);
+            startPlayer(pathRecording);
 
             insertOriginToDB();
-        }else if (intent.getAction().equals(SPLASH_TO_CHANGE_VOICE)){
+        } else if (intent.getAction().equals(SPLASH_TO_CHANGE_VOICE)) {
             String path = intent.getStringExtra(PATH_FILE);
-            pathRecording = FileUtils.getDownloadFolderPath("VoiceChanger") + "/" + FileUtils.getName(path)+"."+FileUtils.getType(path);
+            pathRecording = FileUtils.getDownloadFolderPath(FOLDER_APP) + "/" + FileUtils.getName(path) + ".mp3";
             binding.layoutPlayer.txtName2.setText(FileUtils.getName(pathRecording));
-            binding.layoutPlayer.getRoot().setVisibility(View.INVISIBLE);
-            binding.layoutLoading.getRoot().setVisibility(View.VISIBLE);
 
-            new Handler().post(() -> {
-                String cmd = FFMPEGUtils.getCMDConvertRecording(path, pathRecording);
-                if (FFMPEGUtils.executeFFMPEG(cmd)){
-                    binding.layoutPlayer.getRoot().setVisibility(View.VISIBLE);
-                    binding.layoutLoading.getRoot().setVisibility(View.GONE);
-                    binding.layoutLoading.txtProcessing.setText(R.string.processing);
-                    binding.layoutLoading.txtProcessing.setTextColor(getResources().getColor(R.color.white30));
-                    binding.btnSave2.setEnabled(true);
-                    binding.btnSave2.setTextColor(getResources().getColor(R.color.white));
-                    binding.btnSave2.setBackgroundResource(R.drawable.bg_button1);
-                    player = new MediaPlayer();
-                    startMediaPlayer(pathRecording);
-                    insertOriginToDB();
-                }else {
-                    binding.layoutLoading.txtProcessing.setText(R.string.process_error);
-                    binding.layoutLoading.txtProcessing.setTextColor(getResources().getColor(R.color.red));
-                    binding.btnSave2.setEnabled(false);
-                    binding.btnSave2.setTextColor(getResources().getColor(R.color.white30));
-                    binding.btnSave2.setBackgroundResource(R.drawable.bg_button6);
+            String cmd = FFMPEGUtils.getCMDConvertRecording(path, pathRecording);
+            FFMPEGUtils.executeFFMPEG(cmd, new FFmpegExecuteCallback() {
+                @Override
+                public void onSuccess() {
+                    model.setPathPlayer(pathRecording);
+                    if (model.check(pathRecording).isEmpty()) {
+                        insertOriginToDB();
+                    }
+                }
+
+                @Override
+                public void onFailed() {
+                    model.setPathPlayer(null);
                 }
             });
         }
@@ -316,110 +288,172 @@ public class ChangeVoiceActivity extends AppCompatActivity {
 
     private void initClickBtnCustom() {
         binding.layoutEffect.btnEffect.setBackgroundResource(R.drawable.bg_button_disable);
-        binding.layoutEffect.btnCustom.setBackgroundResource(R.drawable.bg_button_enable);
         binding.layoutEffect.btnEffect.setEnabled(true);
+
+        binding.layoutEffect.btnCustom.setBackgroundResource(R.drawable.bg_button_enable);
         binding.layoutEffect.btnCustom.setEnabled(false);
+
         binding.layoutEffect.recyclerViewEffects.setVisibility(View.GONE);
         binding.layoutEffect.layoutCustom.getRoot().setVisibility(View.VISIBLE);
+
         effectSelected = FFMPEGUtils.getEffectCustom();
 
         File file;
         String name;
         int i = 1;
-        do{
-            name = FileUtils.getName(pathRecording)+"Custom"+i+"."+FileUtils.getType(pathRecording);
+        do {
+            name = FileUtils.getName(pathRecording) + "Custom" + i;
             i++;
-            file = new File(FileUtils.getDownloadFolderPath("VoiceChanger") + "/" + name);
-        }while (file.exists());
+            file = new File(FileUtils.getDownloadFolderPath(FOLDER_APP) + "/" + name + ".mp3");
+        } while (file.exists());
         pathFFMPEG = file.getPath();
         binding.layoutPlayer.txtName2.setText(FileUtils.getName(pathFFMPEG));
+
+        resetCustomEffect();
     }
 
     private void initClickBtnEffect() {
         binding.layoutEffect.btnEffect.setBackgroundResource(R.drawable.bg_button_enable);
-        binding.layoutEffect.btnCustom.setBackgroundResource(R.drawable.bg_button_disable);
         binding.layoutEffect.btnEffect.setEnabled(false);
+
+        binding.layoutEffect.btnCustom.setBackgroundResource(R.drawable.bg_button_disable);
         binding.layoutEffect.btnCustom.setEnabled(true);
+
         binding.layoutEffect.recyclerViewEffects.setVisibility(View.VISIBLE);
         binding.layoutEffect.layoutCustom.getRoot().setVisibility(View.GONE);
-
-        binding.layoutPlayer.txtName2.setText(FileUtils.getName(pathRecording));
-        pathFFMPEG = null;
     }
 
     private void selectEffect(Effect effect) {
-        Log.d(TAG, "ChangeVoiceActivity: selectEffect "+effect.getTitle());
+        Log.d(TAG, "ChangeVoiceActivity: selectEffect " + effect.getTitle());
         effectSelected = effect;
-        stopMediaPlayer();
+        stopPlayer();
+
+        binding.layoutPlayer.getRoot().setVisibility(View.INVISIBLE);
+
+        binding.layoutLoading.getRoot().setVisibility(View.VISIBLE);
+        binding.layoutLoading.txtProcessing.setText(R.string.processing);
+        binding.layoutLoading.txtProcessing.setTextColor(getResources().getColor(R.color.white30));
+
+        binding.btnSave2.setEnabled(false);
+        binding.btnSave2.setTextColor(getResources().getColor(R.color.white30));
+        binding.btnSave2.setBackgroundResource(R.drawable.bg_button6);
 
         if (effect.getTitle().equals(FFMPEGUtils.Original)) {
-            binding.layoutPlayer.getRoot().setVisibility(View.VISIBLE);
-            binding.layoutLoading.getRoot().setVisibility(View.GONE);
             binding.layoutPlayer.txtName2.setText(FileUtils.getName(pathRecording));
-            binding.btnSave2.setEnabled(true);
-            binding.btnSave2.setTextColor(getResources().getColor(R.color.white));
-            binding.btnSave2.setBackgroundResource(R.drawable.bg_button1);
-            startMediaPlayer(pathRecording);
+
+            startPlayer(pathRecording);
             pathFFMPEG = null;
-        }else {
-            binding.layoutPlayer.getRoot().setVisibility(View.INVISIBLE);
-            binding.layoutLoading.getRoot().setVisibility(View.VISIBLE);
+        } else {
             File file;
             String name;
             int i = 1;
-            do{
-                name = FileUtils.getName(pathRecording)+effect.getTitle()+i+"."+FileUtils.getType(pathRecording);
+            do {
+                name = FileUtils.getName(pathRecording) + effect.getTitle() + i;
                 i++;
-                file = new File(FileUtils.getDownloadFolderPath("VoiceChanger") + "/" + name);
-            }while (file.exists());
+                file = new File(FileUtils.getDownloadFolderPath(FOLDER_APP) + "/" + name + ".mp3");
+            } while (file.exists());
             pathFFMPEG = file.getPath();
             binding.layoutPlayer.txtName2.setText(FileUtils.getName(pathFFMPEG));
-            handler.post(selectEffect);
-        }
-    }
 
-    private void startMediaPlayer(String path) {
-        Log.d(TAG, "ChangeVoiceActivity: startMediaPlayer "+path);
-        try {
-            player.reset();
-            player.setDataSource(path);
-            player.setLooping(true);
-            player.prepare();
-            player.setOnPreparedListener(mediaPlayer -> {
-                mediaPlayer.start();
-                binding.layoutPlayer.btnPauseOrResume.setImageResource(R.drawable.ic_pause);
+            String cmd = FFMPEGUtils.getCMDAddEffect(pathRecording, FileUtils.getTempEffectFilePath(this), effectSelected);
+            FFMPEGUtils.executeFFMPEG(cmd, new FFmpegExecuteCallback() {
+                @Override
+                public void onSuccess() {
+                    model.setPathPlayer(FileUtils.getTempEffectFilePath(ChangeVoiceActivity.this));
+                }
+
+                @Override
+                public void onFailed() {
+                    model.setPathPlayer(null);
+                }
             });
-        } catch (IOException e) {
-            Log.d(TAG, "startMediaPlayer: "+e.getMessage());
         }
-        updateTime();
     }
 
-    private void stopMediaPlayer() {
-        Log.d(TAG, "ChangeVoiceActivity: stopMediaPlayer");
-        player.stop();
-        handler.removeCallbacks(updateTime);
+    private void selectCustom() {
+        stopPlayer();
 
-        binding.layoutPlayer.btnPauseOrResume.setImageResource(R.drawable.ic_resume);
+        binding.layoutPlayer.getRoot().setVisibility(View.INVISIBLE);
+
+        binding.layoutLoading.getRoot().setVisibility(View.VISIBLE);
+        binding.layoutLoading.txtProcessing.setText(R.string.processing);
+        binding.layoutLoading.txtProcessing.setTextColor(getResources().getColor(R.color.white30));
+
+        String cmd = FFMPEGUtils.getCMDCustomEffect(
+                pathRecording,
+                FileUtils.getTempEffectFilePath(this),
+                binding.layoutEffect.layoutCustom.layoutBasic.seekTempoPitch.getValue() / 16000,
+                binding.layoutEffect.layoutCustom.layoutBasic.seekTempoRate.getValue(),
+                binding.layoutEffect.layoutCustom.layoutBasic.seekPanning.getValue(),
+                Double.parseDouble(hzSelect),
+                binding.layoutEffect.layoutCustom.layoutEqualizer.seekBandwidth.getValue(),
+                binding.layoutEffect.layoutCustom.layoutEqualizer.seekGain.getValue(),
+                binding.layoutEffect.layoutCustom.layoutReverb.seekInGain.getValue(),
+                binding.layoutEffect.layoutCustom.layoutReverb.seekOutGain.getValue(),
+                binding.layoutEffect.layoutCustom.layoutReverb.seekDelay.getValue() == 0 ? 1 : binding.layoutEffect.layoutCustom.layoutReverb.seekDelay.getValue(),
+                binding.layoutEffect.layoutCustom.layoutReverb.seekDecay.getValue() == 0 ? 0.01 : binding.layoutEffect.layoutCustom.layoutReverb.seekDecay.getValue());
+
+        FFMPEGUtils.executeFFMPEG(cmd, new FFmpegExecuteCallback() {
+            @Override
+            public void onSuccess() {
+                model.setPathPlayer(FileUtils.getTempEffectFilePath(ChangeVoiceActivity.this));
+            }
+
+            @Override
+            public void onFailed() {
+                model.setPathPlayer(null);
+            }
+        });
     }
 
-    private void pauseMediaPlayer() {
-        Log.d(TAG, "ChangeVoiceActivity: pauseMediaPlayer");
-        player.pause();
-        handler.removeCallbacks(updateTime);
+    private void startPlayer(String path) {
+        new WaveFormData.Factory(path).build(new WaveFormData.Factory.Callback() {
+            @Override
+            public void onComplete(@NonNull WaveFormData waveFormData) {
+                binding.layoutPlayer.visualizer.setData(waveFormData);
 
-        binding.layoutPlayer.btnPauseOrResume.setImageResource(R.drawable.ic_resume);
-    }
+                binding.layoutPlayer.getRoot().setVisibility(View.VISIBLE);
 
-    private void resumeMediaPlayer() {
-        Log.d(TAG, "ChangeVoiceActivity: resumeMediaPlayer");
-        player.start();
-        updateTime();
+                binding.layoutLoading.getRoot().setVisibility(View.GONE);
 
+                binding.btnSave2.setEnabled(true);
+                binding.btnSave2.setTextColor(getResources().getColor(R.color.white));
+                binding.btnSave2.setBackgroundResource(R.drawable.bg_button1);
+
+                player.start(path);
+            }
+
+            @Override
+            public void onProgress(float v) {
+
+            }
+        });
         binding.layoutPlayer.btnPauseOrResume.setImageResource(R.drawable.ic_pause);
+        updateTime();
     }
 
-    private void updateTime(){
+    private void stopPlayer() {
+        Log.d(TAG, "ChangeVoiceActivity: stopPlayer");
+        player.stop();
+        binding.layoutPlayer.btnPauseOrResume.setImageResource(R.drawable.ic_resume);
+        handler.removeCallbacks(updateTime);
+    }
+
+    private void pausePlayer() {
+        Log.d(TAG, "ChangeVoiceActivity: pausePlayer");
+        player.pause();
+        binding.layoutPlayer.btnPauseOrResume.setImageResource(R.drawable.ic_resume);
+        handler.removeCallbacks(updateTime);
+    }
+
+    private void resumePlayer() {
+        Log.d(TAG, "ChangeVoiceActivity: resumePlayer");
+        player.resume();
+        binding.layoutPlayer.btnPauseOrResume.setImageResource(R.drawable.ic_pause);
+        updateTime();
+    }
+
+    private void updateTime() {
         Log.d(TAG, "ChangeVoiceActivity: updateTime");
         binding.layoutPlayer.txtTotalTime.setText(NumberUtils.formatAsTime(player.getDuration()));
         handler.post(updateTime);
@@ -430,7 +464,16 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         fileVoice.setSrc(R.drawable.ic_original);
         fileVoice.setName(FileUtils.getName(pathRecording));
         fileVoice.setPath(pathRecording);
-        fileVoice.setDuration(player.getDuration());
+
+        MediaPlayer playerOrigin = new MediaPlayer();
+        try {
+            playerOrigin.setDataSource(pathRecording);
+            playerOrigin.prepare();
+        } catch (IOException e) {
+            Log.d(TAG, "insertEffectToDB: " + e.getMessage());
+            return;
+        }
+        fileVoice.setDuration(playerOrigin.getDuration());
         fileVoice.setSize(new File(pathRecording).length());
         fileVoice.setDate(new Date().getTime());
         model.insert(fileVoice);
@@ -447,18 +490,16 @@ public class ChangeVoiceActivity extends AppCompatActivity {
             playerEffect.setDataSource(pathFFMPEG);
             playerEffect.prepare();
         } catch (IOException e) {
-            Log.d(TAG, "insertEffectToDB: "+e.getMessage());
+            Log.d(TAG, "insertEffectToDB: " + e.getMessage());
             return;
         }
         fileVoice.setDuration(playerEffect.getDuration());
         fileVoice.setSize(new File(pathFFMPEG).length());
         fileVoice.setDate(new Date().getTime());
-        model.insert(fileVoice);
+        model.insertBG(fileVoice);
     }
 
     private void actionCustomEffect() {
-        resetCustomEffect();
-
         actionCustomBasic();
         actionCustomEqualizer();
         actionCustomReverb();
@@ -466,19 +507,21 @@ public class ChangeVoiceActivity extends AppCompatActivity {
 
     private void actionCustomBasic() {
         binding.layoutEffect.layoutCustom.switchBasic.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (b){
+            if (b) {
                 binding.layoutEffect.layoutCustom.switchBasic.setTrackResource(R.drawable.ic_track_enable);
                 binding.layoutEffect.layoutCustom.layoutBasic.getRoot().setVisibility(View.VISIBLE);
                 binding.layoutEffect.layoutCustom.btnResetBasic.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 binding.layoutEffect.layoutCustom.switchBasic.setTrackResource(R.drawable.ic_track_disable);
                 binding.layoutEffect.layoutCustom.layoutBasic.getRoot().setVisibility(View.GONE);
                 binding.layoutEffect.layoutCustom.btnResetBasic.setVisibility(View.INVISIBLE);
-                binding.layoutEffect.layoutCustom.btnResetBasic.setImageResource(R.drawable.ic_reset_disable);
-                binding.layoutEffect.layoutCustom.btnResetBasic.setEnabled(false);
-                resetCustomBasic();
-                stopMediaPlayer();
-                handler.post(selectCustom);
+                if (binding.layoutEffect.layoutCustom.btnResetBasic.isEnabled()) {
+                    binding.layoutEffect.layoutCustom.btnResetBasic.setImageResource(R.drawable.ic_reset_disable);
+                    binding.layoutEffect.layoutCustom.btnResetBasic.setEnabled(false);
+
+                    resetCustomBasic();
+                    selectCustom();
+                }
             }
         });
 
@@ -486,8 +529,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
             resetCustomBasic();
             binding.layoutEffect.layoutCustom.btnResetBasic.setImageResource(R.drawable.ic_reset_disable);
             binding.layoutEffect.layoutCustom.btnResetBasic.setEnabled(false);
-            stopMediaPlayer();
-            handler.post(selectCustom);
+            selectCustom();
         });
 
         binding.layoutEffect.layoutCustom.layoutBasic.seekTempoPitch.addOnSliderTouchListener(onSliderTouchListener);
@@ -497,19 +539,21 @@ public class ChangeVoiceActivity extends AppCompatActivity {
 
     private void actionCustomEqualizer() {
         binding.layoutEffect.layoutCustom.switchEqualizer.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (b){
+            if (b) {
                 binding.layoutEffect.layoutCustom.switchEqualizer.setTrackResource(R.drawable.ic_track_enable);
                 binding.layoutEffect.layoutCustom.layoutEqualizer.getRoot().setVisibility(View.VISIBLE);
                 binding.layoutEffect.layoutCustom.btnResetEqualizer.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 binding.layoutEffect.layoutCustom.switchEqualizer.setTrackResource(R.drawable.ic_track_disable);
                 binding.layoutEffect.layoutCustom.layoutEqualizer.getRoot().setVisibility(View.GONE);
                 binding.layoutEffect.layoutCustom.btnResetEqualizer.setVisibility(View.INVISIBLE);
-                binding.layoutEffect.layoutCustom.btnResetEqualizer.setImageResource(R.drawable.ic_reset_disable);
-                binding.layoutEffect.layoutCustom.btnResetEqualizer.setEnabled(false);
-                resetCustomEqualizer();
-                stopMediaPlayer();
-                handler.post(selectCustom);
+                if (binding.layoutEffect.layoutCustom.btnResetEqualizer.isEnabled()) {
+                    binding.layoutEffect.layoutCustom.btnResetEqualizer.setImageResource(R.drawable.ic_reset_disable);
+                    binding.layoutEffect.layoutCustom.btnResetEqualizer.setEnabled(false);
+
+                    resetCustomEqualizer();
+                    selectCustom();
+                }
             }
         });
 
@@ -517,8 +561,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
             resetCustomEqualizer();
             binding.layoutEffect.layoutCustom.btnResetEqualizer.setImageResource(R.drawable.ic_reset_disable);
             binding.layoutEffect.layoutCustom.btnResetEqualizer.setEnabled(false);
-            stopMediaPlayer();
-            handler.post(selectCustom);
+            selectCustom();
         });
 
         checkRadio();
@@ -528,19 +571,21 @@ public class ChangeVoiceActivity extends AppCompatActivity {
 
     private void actionCustomReverb() {
         binding.layoutEffect.layoutCustom.switchReverb.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (b){
+            if (b) {
                 binding.layoutEffect.layoutCustom.switchReverb.setTrackResource(R.drawable.ic_track_enable);
                 binding.layoutEffect.layoutCustom.layoutReverb.getRoot().setVisibility(View.VISIBLE);
                 binding.layoutEffect.layoutCustom.btnResetReverb.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 binding.layoutEffect.layoutCustom.switchReverb.setTrackResource(R.drawable.ic_track_disable);
                 binding.layoutEffect.layoutCustom.layoutReverb.getRoot().setVisibility(View.GONE);
                 binding.layoutEffect.layoutCustom.btnResetReverb.setVisibility(View.INVISIBLE);
-                binding.layoutEffect.layoutCustom.btnResetReverb.setImageResource(R.drawable.ic_reset_disable);
-                binding.layoutEffect.layoutCustom.btnResetReverb.setEnabled(false);
-                resetCustomReverb();
-                stopMediaPlayer();
-                handler.post(selectCustom);
+                if (binding.layoutEffect.layoutCustom.btnResetReverb.isEnabled()) {
+                    binding.layoutEffect.layoutCustom.btnResetReverb.setImageResource(R.drawable.ic_reset_disable);
+                    binding.layoutEffect.layoutCustom.btnResetReverb.setEnabled(false);
+
+                    resetCustomReverb();
+                    selectCustom();
+                }
             }
         });
 
@@ -548,8 +593,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
             resetCustomReverb();
             binding.layoutEffect.layoutCustom.btnResetReverb.setImageResource(R.drawable.ic_reset_disable);
             binding.layoutEffect.layoutCustom.btnResetReverb.setEnabled(false);
-            stopMediaPlayer();
-            handler.post(selectCustom);
+            selectCustom();
         });
 
         binding.layoutEffect.layoutCustom.layoutReverb.seekInGain.addOnSliderTouchListener(onSliderTouchListener);
@@ -583,7 +627,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         binding.layoutEffect.layoutCustom.layoutBasic.getRoot().setVisibility(View.GONE);
         binding.layoutEffect.layoutCustom.layoutEqualizer.getRoot().setVisibility(View.GONE);
         binding.layoutEffect.layoutCustom.layoutReverb.getRoot().setVisibility(View.GONE);
-        
+
         resetCustomBasic();
         resetCustomEqualizer();
         resetCustomReverb();
@@ -612,20 +656,20 @@ public class ChangeVoiceActivity extends AppCompatActivity {
     private void enableReset() {
         if (binding.layoutEffect.layoutCustom.layoutBasic.seekTempoPitch.getValue() == 16000
                 && binding.layoutEffect.layoutCustom.layoutBasic.seekTempoRate.getValue() == 1
-                && binding.layoutEffect.layoutCustom.layoutBasic.seekPanning.getValue() == 1){
+                && binding.layoutEffect.layoutCustom.layoutBasic.seekPanning.getValue() == 1) {
             binding.layoutEffect.layoutCustom.btnResetBasic.setImageResource(R.drawable.ic_reset_disable);
             binding.layoutEffect.layoutCustom.btnResetBasic.setEnabled(false);
-        }else {
+        } else {
             binding.layoutEffect.layoutCustom.btnResetBasic.setImageResource(R.drawable.ic_reset_enable);
             binding.layoutEffect.layoutCustom.btnResetBasic.setEnabled(true);
         }
 
         if (binding.layoutEffect.layoutCustom.layoutEqualizer.radio500.isChecked()
                 && binding.layoutEffect.layoutCustom.layoutEqualizer.seekBandwidth.getValue() == 100
-                && binding.layoutEffect.layoutCustom.layoutEqualizer.seekGain.getValue() == 0){
+                && binding.layoutEffect.layoutCustom.layoutEqualizer.seekGain.getValue() == 0) {
             binding.layoutEffect.layoutCustom.btnResetEqualizer.setImageResource(R.drawable.ic_reset_disable);
             binding.layoutEffect.layoutCustom.btnResetEqualizer.setEnabled(false);
-        }else {
+        } else {
             binding.layoutEffect.layoutCustom.btnResetEqualizer.setImageResource(R.drawable.ic_reset_enable);
             binding.layoutEffect.layoutCustom.btnResetEqualizer.setEnabled(true);
         }
@@ -633,10 +677,10 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         if (binding.layoutEffect.layoutCustom.layoutReverb.seekInGain.getValue() == 1
                 && binding.layoutEffect.layoutCustom.layoutReverb.seekOutGain.getValue() == 1
                 && binding.layoutEffect.layoutCustom.layoutReverb.seekDelay.getValue() == 0
-                && binding.layoutEffect.layoutCustom.layoutReverb.seekDecay.getValue() == 1){
+                && binding.layoutEffect.layoutCustom.layoutReverb.seekDecay.getValue() == 1) {
             binding.layoutEffect.layoutCustom.btnResetReverb.setImageResource(R.drawable.ic_reset_disable);
             binding.layoutEffect.layoutCustom.btnResetReverb.setEnabled(false);
-        }else {
+        } else {
             binding.layoutEffect.layoutCustom.btnResetReverb.setImageResource(R.drawable.ic_reset_enable);
             binding.layoutEffect.layoutCustom.btnResetReverb.setEnabled(true);
         }

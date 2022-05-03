@@ -1,4 +1,4 @@
-package com.prox.voicechanger.recorder;
+package com.prox.voicechanger.media;
 
 import static com.prox.voicechanger.VoiceChangerApp.TAG;
 

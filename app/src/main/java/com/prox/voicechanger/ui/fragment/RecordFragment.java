@@ -28,8 +28,8 @@ public class RecordFragment extends Fragment {
     private FragmentRecordBinding binding;
     private FileVoiceViewModel model;
 
-    private Handler handler;
-    private Runnable runnable;
+    private final Handler handler = new Handler();
+    private Runnable runnableAnimation;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -44,13 +44,20 @@ public class RecordFragment extends Fragment {
         binding.btnRecord.setOnClickListener(view -> {
             if (PermissionUtils.checkPermission(requireContext(), requireActivity())){
                 Navigation.findNavController(binding.getRoot()).navigate(R.id.action_recordFragment_to_stopRecordFragment);
+                Log.d(TAG, "RecordFragment: To StopRecordFragment");
             }
         });
 
-        binding.btnMore.setOnClickListener(view ->
-                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_recordFragment_to_settingFragment));
+        binding.btnMore.setOnClickListener(view -> {
+            Navigation.findNavController(binding.getRoot()).navigate(R.id.action_recordFragment_to_settingFragment);
+            Log.d(TAG, "RecordFragment: To SettingFragment");
+        });
 
-        binding.btnFile.setOnClickListener(view -> startActivity(new Intent(requireActivity(), FileVoiceActivity.class)));
+
+        binding.btnFile.setOnClickListener(view -> {
+            startActivity(new Intent(requireActivity(), FileVoiceActivity.class));
+            Log.d(TAG, "RecordFragment: To FileVoiceActivity");
+        });
 
         return binding.getRoot();
     }
@@ -59,9 +66,8 @@ public class RecordFragment extends Fragment {
     public void onDestroyView() {
         Log.d(TAG, "RecordFragment: onDestroyView");
         super.onDestroyView();
-        handler.removeCallbacks(runnable);
-        runnable = null;
-        handler = null;
+        handler.removeCallbacks(runnableAnimation);
+        runnableAnimation = null;
         model = null;
         binding = null;
     }
@@ -85,7 +91,7 @@ public class RecordFragment extends Fragment {
         Animation translate1Animation = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_translate1);
         binding.aniRecord.icAniRecord.startAnimation(translate1Animation);
 
-        new Handler().postDelayed(() -> {
+        handler.postDelayed(() -> {
             binding.btnMore.setVisibility(View.VISIBLE);
             model.getFileVoices().observe(requireActivity(), fileVoices -> {
                 if(fileVoices.size()!=0){
@@ -99,15 +105,14 @@ public class RecordFragment extends Fragment {
             binding.txtMess.getRoot().setVisibility(View.VISIBLE);
 
             Animation translate2Animation = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_translate2);
-            handler = new Handler();
-            runnable = new Runnable() {
+            runnableAnimation = new Runnable() {
                 @Override
                 public void run() {
                     binding.txtMess.getRoot().startAnimation(translate2Animation);
                     handler.postDelayed(this, 1000);
                 }
             };
-            handler.post(runnable);
+            handler.post(runnableAnimation);
         }, 1500);
     }
 }

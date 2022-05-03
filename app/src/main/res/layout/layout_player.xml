@@ -17,22 +17,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.imn.iivisu.RecorderVisualizer
+    <space.siy.waveformview.WaveFormView
         android:id="@+id/visualizer"
         android:layout_width="0dp"
         android:layout_height="150dp"
         android:layout_marginTop="8dp"
-        android:background="#0D0B29"
-        app:approximateBarDuration="75"
-        app:backgroundBarPrimeColor="#0D0B29"
-        app:barWidth="3dp"
+        app:blockColor="@color/white30"
+        app:blockColorPlayed="@color/white"
+        app:showTimeText="false"
+        app:blockWidth="10"
+        app:topBlockScale="3"
+        app:bottomBlockScale="0.5"
+        app:peakMode="peakmode_average"
+        app:secPerBlock="0.1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_name2"
-        app:loadedBarPrimeColor="@color/white"
-        app:maxAmp="100"
-        app:spaceBetweenBar="2dp" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_name2" />
 
     <TextView
         android:id="@+id/txt_current_time"

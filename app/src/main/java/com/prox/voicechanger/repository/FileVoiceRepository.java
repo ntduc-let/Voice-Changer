@@ -23,6 +23,12 @@ public class FileVoiceRepository {
         return data;
     }
 
+    public MutableLiveData<List<FileVoice>> getFileVoicesBG(){
+        MutableLiveData<List<FileVoice>> data = new MutableLiveData<>();
+        data.postValue(dao.getAll());
+        return data;
+    }
+
     public List<FileVoice> check(String path){
         return dao.check(path);
     }

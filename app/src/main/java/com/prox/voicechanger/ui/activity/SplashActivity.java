@@ -22,6 +22,7 @@ import com.prox.voicechanger.utils.FileUtils;
 @SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
     public static final String SPLASH_TO_CHANGE_VOICE = "SPLASH_TO_CHANGE_VOICE";
+
     private ActivitySplashBinding binding;
 
     @Override
@@ -63,24 +64,26 @@ public class SplashActivity extends AppCompatActivity {
     private void goToMain() {
         Intent intent = getIntent();
         if (intent==null){
-            Log.d(TAG, "SplashActivity: start Intent null");
+            Log.d(TAG, "SplashActivity: Intent null");
             finish();
         }else if (intent.getAction().equals(Intent.ACTION_MAIN)){
-            Log.d(TAG, "SplashActivity: start Intent.ACTION_MAIN");
+            Log.d(TAG, "SplashActivity: Intent.ACTION_MAIN");
             Intent goToRecord = new Intent(SplashActivity.this, RecordActivity.class);
             startActivity(goToRecord);
+            Log.d(TAG, "SplashActivity: To RecordActivity");
             finish();
         }else if (intent.getAction().equals(Intent.ACTION_VIEW)){
-            Log.d(TAG, "SplashActivity: start Intent.ACTION_VIEW");
+            Log.d(TAG, "SplashActivity: Intent.ACTION_VIEW");
             Uri data = getIntent().getData();
             String filePath = FileUtils.getUriRealPath(this, data);
+            Log.d(TAG, "SplashActivity: filePath "+filePath);
 
             Intent goToChangeVoice = new Intent(SplashActivity.this, ChangeVoiceActivity.class);
             goToChangeVoice.setAction(SPLASH_TO_CHANGE_VOICE);
             goToChangeVoice.putExtra(PATH_FILE, filePath);
             startActivity(goToChangeVoice);
+            Log.d(TAG, "SplashActivity: To ChangeVoiceActivity");
             finish();
         }
-
     }
 }

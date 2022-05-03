@@ -125,12 +125,12 @@ public class FileVoiceActivity extends AppCompatActivity {
                     String pathVideo = FileUtils.getDCIMFolderPath("VoiceChanger") + "/"+FileUtils.getVideoFileName();
                     new Handler().post(() -> {
                         String cmd = FFMPEGUtils.getCMDAddImage(OptionDialog.fileVoice.getPath(), pathImage, pathVideo);
-                        if (FFMPEGUtils.executeFFMPEG(cmd)){
-                            dialog.cancel();
-                            Intent intent = new Intent(this, PlayVideoActivity.class);
-                            intent.putExtra(PATH_VIDEO, pathVideo);
-                            startActivity(intent);
-                        }
+//                        if (FFMPEGUtils.executeFFMPEG(cmd)){
+//                            dialog.cancel();
+//                            Intent intent = new Intent(this, PlayVideoActivity.class);
+//                            intent.putExtra(PATH_VIDEO, pathVideo);
+//                            startActivity(intent);
+//                        }
                     });
                 }
             } else if (resultCode == Activity.RESULT_CANCELED)  {

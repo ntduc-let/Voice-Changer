@@ -31,7 +31,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_back"
-        app:loadedBarPrimeColor="#B3F7277E"
+        app:loadedBarPrimeColor="@color/white"
         app:maxAmp="100"
         app:spaceBetweenBar="2dp" />
 

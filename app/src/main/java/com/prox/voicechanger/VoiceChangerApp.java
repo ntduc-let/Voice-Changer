@@ -7,4 +7,5 @@ import dagger.hilt.android.HiltAndroidApp;
 @HiltAndroidApp
 public class VoiceChangerApp extends Application {
     public static final String TAG = "ntduc";
+    public static final String FOLDER_APP = "Voice Changer";
 }

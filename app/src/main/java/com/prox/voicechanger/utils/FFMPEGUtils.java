@@ -5,9 +5,9 @@ import static com.prox.voicechanger.VoiceChangerApp.TAG;
 import android.util.Log;
 
 import com.arthenica.ffmpegkit.FFmpegKit;
-import com.arthenica.ffmpegkit.FFmpegSession;
 import com.arthenica.ffmpegkit.ReturnCode;
 import com.prox.voicechanger.R;
+import com.prox.voicechanger.interfaces.FFmpegExecuteCallback;
 import com.prox.voicechanger.model.Effect;
 
 import java.util.ArrayList;
@@ -17,23 +17,20 @@ public class FFMPEGUtils {
     public final static String Original = "Original";
     public final static String Custom = "Custom";
 
-    public static boolean executeFFMPEG(String cmd) {
-        FFmpegSession session = FFmpegKit.execute(cmd);
-
-        if (ReturnCode.isSuccess(session.getReturnCode())) {
-            Log.i(TAG, "executeFFMPEG: Success");
-            return true;
-        } else if (ReturnCode.isCancel(session.getReturnCode())) {
-            Log.i(TAG, "executeFFMPEG: Cancel");
-            return false;
-        }else {
-            Log.i(TAG, "executeFFMPEG: Failed");
-            return false;
-        }
+    public static void executeFFMPEG(String cmd, FFmpegExecuteCallback executeCallback) {
+        FFmpegKit.executeAsync(cmd, session -> {
+            if (ReturnCode.isSuccess(session.getReturnCode())) {
+                Log.i(TAG, "executeFFMPEG: Success");
+                executeCallback.onSuccess();
+            }else {
+                Log.i(TAG, "executeFFMPEG: Failed");
+                executeCallback.onFailed();
+            }
+        });
     }
 
     public static String getCMDConvertRecording(String fromPath, String toPath) {
-        return "-i \""+fromPath+"\" -c:v libx264 -ar 16000 \""+toPath+"\"";
+        return "-y -i \""+fromPath+"\" -c:v libx264 -ar 16000 \""+toPath+"\"";
     }
 
     public static String getCMDAddEffect(String fromPath, String toPath, Effect effect) {

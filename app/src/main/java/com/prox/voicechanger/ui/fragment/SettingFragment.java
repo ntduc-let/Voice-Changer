@@ -28,6 +28,8 @@ public class SettingFragment extends Fragment {
     private static final String URI_FACEBOOK = "https://www.facebook.com/Proxglobalstudio";
     private static final String EMAIL_FEEDBACK = "elaineeyui@gmail.com";
     private static final String URI_POLICY = "https://hellowordapp.github.io/policy/privacy.html";
+    private static final String URI_TERMS = "https://hellowordapp.github.io/policy/privacy.html";
+
     private FragmentSettingBinding binding;
 
     @Override
@@ -41,6 +43,7 @@ public class SettingFragment extends Fragment {
         binding.btnClose.setOnClickListener(view -> {
             NavController navController= Navigation.findNavController(requireActivity(), R.id.nav_host_record_activity);
             navController.popBackStack();
+            Log.d(TAG, "SettingFragment: To RecordFragment");
         });
 
         binding.btnRate.setOnClickListener(view -> {
@@ -48,15 +51,17 @@ public class SettingFragment extends Fragment {
                     requireContext(),
                     DialogRateBinding.inflate(requireActivity().getLayoutInflater()));
             dialog.show();
+            Log.d(TAG, "SettingFragment: Show RateDialog");
         });
 
         binding.btnFacebook.setOnClickListener(view -> {
             try {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(ID_FACEBOOK)));
             } catch (Exception e) {
-                Log.e(TAG, "Application not intalled.");
+                Log.d(TAG, "SettingFragment: Application not installed");
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(URI_FACEBOOK)));
             }
+            Log.d(TAG, "SettingFragment: To "+URI_FACEBOOK);
         });
 
         binding.btnContact.setOnClickListener(view -> {
@@ -69,12 +74,17 @@ public class SettingFragment extends Fragment {
             emailIntent.setSelector(selectorIntent);
 
             startActivity(Intent.createChooser(emailIntent, getResources().getString(R.string.notification_send_mail)));
+            Log.d(TAG, "SettingFragment: To Mail");
         });
 
-        binding.btnPolicy.setOnClickListener(view -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(URI_POLICY))));
+        binding.btnPolicy.setOnClickListener(view -> {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(URI_POLICY)));
+            Log.d(TAG, "SettingFragment: To "+URI_POLICY);
+        });
 
         binding.btnTerms.setOnClickListener(view -> {
-
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(URI_TERMS)));
+            Log.d(TAG, "SettingFragment: To "+URI_TERMS);
         });
 
         return binding.getRoot();
