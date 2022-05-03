@@ -73,4 +73,5 @@
     <string name="out_gain">Out Gain</string>
     <string name="delay">Delay</string>
     <string name="decay">Decay</string>
+    <string name="canceled">Canceled</string>
 </resources>

@@ -1,12 +1,12 @@
 package com.prox.voicechanger.ui.activity;
 
+import static com.prox.voicechanger.VoiceChangerApp.FOLDER_APP;
 import static com.prox.voicechanger.VoiceChangerApp.TAG;
 import static com.prox.voicechanger.ui.dialog.OptionDialog.SELECT_IMAGE;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -22,6 +22,7 @@ import com.prox.voicechanger.adapter.FileVoiceAdapter;
 import com.prox.voicechanger.databinding.ActivityFileVoiceBinding;
 import com.prox.voicechanger.databinding.DialogDeleteAllBinding;
 import com.prox.voicechanger.databinding.DialogLoadingBinding;
+import com.prox.voicechanger.interfaces.FFmpegExecuteCallback;
 import com.prox.voicechanger.ui.dialog.DeleteAllDialog;
 import com.prox.voicechanger.ui.dialog.LoadingDialog;
 import com.prox.voicechanger.ui.dialog.OptionDialog;
@@ -122,19 +123,25 @@ public class FileVoiceActivity extends AppCompatActivity {
                     dialog.show();
 
                     String pathImage = FileUtils.getUriRealPath(this, data.getData());
-                    String pathVideo = FileUtils.getDCIMFolderPath("VoiceChanger") + "/"+FileUtils.getVideoFileName();
-                    new Handler().post(() -> {
-                        String cmd = FFMPEGUtils.getCMDAddImage(OptionDialog.fileVoice.getPath(), pathImage, pathVideo);
-//                        if (FFMPEGUtils.executeFFMPEG(cmd)){
-//                            dialog.cancel();
-//                            Intent intent = new Intent(this, PlayVideoActivity.class);
-//                            intent.putExtra(PATH_VIDEO, pathVideo);
-//                            startActivity(intent);
-//                        }
+                    String pathVideo = FileUtils.getDCIMFolderPath(FOLDER_APP) + "/"+FileUtils.getVideoFileName();
+                    String cmd = FFMPEGUtils.getCMDAddImage(OptionDialog.fileVoice.getPath(), pathImage, pathVideo);
+                    FFMPEGUtils.executeFFMPEG(cmd, new FFmpegExecuteCallback() {
+                        @Override
+                        public void onSuccess() {
+                            dialog.cancel();
+                            Intent intent = new Intent(FileVoiceActivity.this, PlayVideoActivity.class);
+                            intent.putExtra(PATH_VIDEO, pathVideo);
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onFailed() {
+                            Toast.makeText(FileVoiceActivity.this, R.string.process_error, Toast.LENGTH_SHORT).show();
+                        }
                     });
                 }
             } else if (resultCode == Activity.RESULT_CANCELED)  {
-                Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.canceled, Toast.LENGTH_SHORT).show();
             }
         }
     }
