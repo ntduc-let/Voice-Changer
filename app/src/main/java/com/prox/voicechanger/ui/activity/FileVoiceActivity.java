@@ -59,6 +59,7 @@ public class FileVoiceActivity extends AppCompatActivity {
                 binding.btnDeleteAll.setBackgroundResource(R.drawable.bg_button1);
             }
             adapter.setFileVoices(fileVoices);
+            binding.recyclerViewFileVoice.setItemViewCacheSize(fileVoices.size());
         });
 
         init();
@@ -99,7 +100,6 @@ public class FileVoiceActivity extends AppCompatActivity {
         Log.d(TAG, "FileVoiceActivity: init");
         adapter = new FileVoiceAdapter( this, this, model);
         binding.recyclerViewFileVoice.setAdapter(adapter);
-        binding.recyclerViewFileVoice.setHasFixedSize(true);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         binding.recyclerViewFileVoice.setLayoutManager(linearLayoutManager);

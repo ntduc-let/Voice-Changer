@@ -32,11 +32,6 @@ public class EffectAdapter extends RecyclerView.Adapter<EffectAdapter.EffectView
         notifyDataSetChanged();
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    public void resetEffects(){
-        notifyDataSetChanged();
-    }
-
     @NonNull
     @Override
     public EffectViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
