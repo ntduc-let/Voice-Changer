@@ -44,14 +44,14 @@ public class FFMPEGUtils {
     public static ArrayList<Effect> getEffects() {
         ArrayList<Effect> effects = new ArrayList<>();
         effects.add(new Effect(1, R.drawable.ic_original, Original, ""));
-        effects.add(new Effect(2, R.drawable.ic_original, "Helium", "asetrate=16000*2,atempo=1/2"));
+        effects.add(new Effect(2, R.drawable.ic_helium, "Helium", "asetrate=16000*2,atempo=1/2"));
         effects.add(new Effect(3, R.drawable.ic_robot, "Robot", "afftfilt=\"real='hypot(re,im)*sin(0)':imag='hypot(re,im)*cos(0)':win_size=512:overlap=0.75\""));
         effects.add(new Effect(4, R.drawable.ic_radio, "Radio", "atempo=1"));
         effects.add(new Effect(5, R.drawable.ic_backward, "Backward", "areverse"));
         effects.add(new Effect(6, R.drawable.ic_cave, "Cave", "aecho=0.8:0.9:1000:0.3"));
-        effects.add(new Effect(7, R.drawable.ic_original, "Whisper", "afftfilt=\"real='hypot(re,im)*cos((random(0)*2-1)*2*3.14)':imag='hypot(re,im)*sin((random(1)*2-1)*2*3.14)':win_size=128:overlap=0.8\""));
-        effects.add(new Effect(8, R.drawable.ic_original, "Chipmunk", "asetrate=2*22100"));
-        effects.add(new Effect(9, R.drawable.ic_original, "Hexafluoride", "asetrate=16000*10/11,atempo=11/10"));
+        effects.add(new Effect(7, R.drawable.ic_whisper, "Whisper", "afftfilt=\"real='hypot(re,im)*cos((random(0)*2-1)*2*3.14)':imag='hypot(re,im)*sin((random(1)*2-1)*2*3.14)':win_size=128:overlap=0.8\""));
+        effects.add(new Effect(8, R.drawable.ic_chipmunk, "Chipmunk", "asetrate=2*22100"));
+        effects.add(new Effect(9, R.drawable.ic_hexafluoride, "Hexafluoride", "asetrate=16000*10/11,atempo=11/10"));
         effects.add(new Effect(10, R.drawable.ic_slowmotion, "SlowMotion", "asetrate=16000/2"));
         effects.add(new Effect(11, R.drawable.ic_loudspeaker, "Loudspeaker", "stereotools=mlev=64"));
 
