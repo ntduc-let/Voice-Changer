@@ -75,7 +75,7 @@ public class SplashActivity extends AppCompatActivity {
         }else if (intent.getAction().equals(Intent.ACTION_VIEW)){
             Log.d(TAG, "SplashActivity: Intent.ACTION_VIEW");
             Uri data = getIntent().getData();
-            String filePath = FileUtils.getUriRealPath(this, data);
+            String filePath = FileUtils.getFilePathForN(this, data);
             Log.d(TAG, "SplashActivity: filePath "+filePath);
 
             Intent goToChangeVoice = new Intent(SplashActivity.this, ChangeVoiceActivity.class);

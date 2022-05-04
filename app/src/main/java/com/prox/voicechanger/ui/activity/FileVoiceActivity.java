@@ -122,7 +122,7 @@ public class FileVoiceActivity extends AppCompatActivity {
                     );
                     dialog.show();
 
-                    String pathImage = FileUtils.getUriRealPath(this, data.getData());
+                    String pathImage = FileUtils.getFilePathForN(this, data.getData());
                     String pathVideo = FileUtils.getDCIMFolderPath(FOLDER_APP) + "/"+FileUtils.getVideoFileName();
                     String cmd = FFMPEGUtils.getCMDAddImage(OptionDialog.fileVoice.getPath(), pathImage, pathVideo);
                     FFMPEGUtils.executeFFMPEG(cmd, new FFmpegExecuteCallback() {

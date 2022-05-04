@@ -87,7 +87,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginBottom="32dp"
         android:background="@drawable/bg_button_enable"
-        android:text="@string/rate_now"
+        android:text="Comming soon"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="18sp"
