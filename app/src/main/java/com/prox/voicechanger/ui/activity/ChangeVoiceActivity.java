@@ -511,10 +511,12 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                 binding.layoutEffect.layoutCustom.switchBasic.setTrackResource(R.drawable.ic_track_enable);
                 binding.layoutEffect.layoutCustom.layoutBasic.getRoot().setVisibility(View.VISIBLE);
                 binding.layoutEffect.layoutCustom.btnResetBasic.setVisibility(View.VISIBLE);
+                binding.layoutEffect.layoutCustom.switchBasic.setThumbResource(R.drawable.ic_thumb2);
             } else {
                 binding.layoutEffect.layoutCustom.switchBasic.setTrackResource(R.drawable.ic_track_disable);
                 binding.layoutEffect.layoutCustom.layoutBasic.getRoot().setVisibility(View.GONE);
                 binding.layoutEffect.layoutCustom.btnResetBasic.setVisibility(View.INVISIBLE);
+                binding.layoutEffect.layoutCustom.switchBasic.setThumbResource(R.drawable.ic_thumb);
                 if (binding.layoutEffect.layoutCustom.btnResetBasic.isEnabled()) {
                     binding.layoutEffect.layoutCustom.btnResetBasic.setImageResource(R.drawable.ic_reset_disable);
                     binding.layoutEffect.layoutCustom.btnResetBasic.setEnabled(false);
@@ -543,10 +545,12 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                 binding.layoutEffect.layoutCustom.switchEqualizer.setTrackResource(R.drawable.ic_track_enable);
                 binding.layoutEffect.layoutCustom.layoutEqualizer.getRoot().setVisibility(View.VISIBLE);
                 binding.layoutEffect.layoutCustom.btnResetEqualizer.setVisibility(View.VISIBLE);
+                binding.layoutEffect.layoutCustom.switchEqualizer.setThumbResource(R.drawable.ic_thumb2);
             } else {
                 binding.layoutEffect.layoutCustom.switchEqualizer.setTrackResource(R.drawable.ic_track_disable);
                 binding.layoutEffect.layoutCustom.layoutEqualizer.getRoot().setVisibility(View.GONE);
                 binding.layoutEffect.layoutCustom.btnResetEqualizer.setVisibility(View.INVISIBLE);
+                binding.layoutEffect.layoutCustom.switchEqualizer.setThumbResource(R.drawable.ic_thumb);
                 if (binding.layoutEffect.layoutCustom.btnResetEqualizer.isEnabled()) {
                     binding.layoutEffect.layoutCustom.btnResetEqualizer.setImageResource(R.drawable.ic_reset_disable);
                     binding.layoutEffect.layoutCustom.btnResetEqualizer.setEnabled(false);
@@ -575,10 +579,12 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                 binding.layoutEffect.layoutCustom.switchReverb.setTrackResource(R.drawable.ic_track_enable);
                 binding.layoutEffect.layoutCustom.layoutReverb.getRoot().setVisibility(View.VISIBLE);
                 binding.layoutEffect.layoutCustom.btnResetReverb.setVisibility(View.VISIBLE);
+                binding.layoutEffect.layoutCustom.switchReverb.setThumbResource(R.drawable.ic_thumb2);
             } else {
                 binding.layoutEffect.layoutCustom.switchReverb.setTrackResource(R.drawable.ic_track_disable);
                 binding.layoutEffect.layoutCustom.layoutReverb.getRoot().setVisibility(View.GONE);
                 binding.layoutEffect.layoutCustom.btnResetReverb.setVisibility(View.INVISIBLE);
+                binding.layoutEffect.layoutCustom.switchReverb.setThumbResource(R.drawable.ic_thumb);
                 if (binding.layoutEffect.layoutCustom.btnResetReverb.isEnabled()) {
                     binding.layoutEffect.layoutCustom.btnResetReverb.setImageResource(R.drawable.ic_reset_disable);
                     binding.layoutEffect.layoutCustom.btnResetReverb.setEnabled(false);

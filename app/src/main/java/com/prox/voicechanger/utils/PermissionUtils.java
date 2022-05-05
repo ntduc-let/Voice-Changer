@@ -18,7 +18,7 @@ import androidx.core.content.ContextCompat;
 import com.prox.voicechanger.BuildConfig;
 
 public class PermissionUtils {
-    private static final int REQUEST_PERMISSION = 10;
+    public static final int REQUEST_PERMISSION = 10;
 
     public static boolean checkPermission(Context context, Activity activity){
         if (permission(context)) {

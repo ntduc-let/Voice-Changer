@@ -1,10 +1,14 @@
 package com.prox.voicechanger.ui.activity;
 
 import static com.prox.voicechanger.VoiceChangerApp.TAG;
+import static com.prox.voicechanger.utils.PermissionUtils.REQUEST_PERMISSION;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -57,5 +61,21 @@ public class RecordActivity extends AppCompatActivity {
         }
 
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_PERMISSION) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                navController.navigate(R.id.action_recordFragment_to_stopRecordFragment);
+                Log.d(TAG, "RecordActivity: To StopRecordFragment");
+            } else {
+                Toast.makeText(this, R.string.request_write_setting, Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

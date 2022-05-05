@@ -2,6 +2,7 @@ package com.prox.voicechanger.ui.fragment;
 
 import static com.prox.voicechanger.VoiceChangerApp.TAG;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.view.animation.AnimationUtils;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -20,12 +22,15 @@ import com.prox.voicechanger.R;
 import com.prox.voicechanger.databinding.DialogNameBinding;
 import com.prox.voicechanger.databinding.FragmentStopRecordBinding;
 import com.prox.voicechanger.media.Recorder;
+import com.prox.voicechanger.ui.activity.FileVoiceActivity;
 import com.prox.voicechanger.ui.dialog.NameDialog;
 import com.prox.voicechanger.utils.NumberUtils;
+import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
 
 public class StopRecordFragment extends Fragment {
     private FragmentStopRecordBinding binding;
     private Recorder recorder;
+    private FileVoiceViewModel model;
 
     private final Handler handler = new Handler();
     private Runnable runnableAnimation, runnableTime;
@@ -36,9 +41,24 @@ public class StopRecordFragment extends Fragment {
         Log.d(TAG, "StopRecordFragment: onCreateView");
         binding = FragmentStopRecordBinding.inflate(inflater, container, false);
 
+        model = new ViewModelProvider(requireActivity()).get(FileVoiceViewModel.class);
+        model.getFileVoices().observe(requireActivity(), fileVoices -> {
+            if(fileVoices.size()!=0){
+                binding.btnFile.setVisibility(View.VISIBLE);
+            }
+        });
+
         init();
 
         recording();
+
+        binding.btnFile.setOnClickListener(view -> {
+            stopRecord();
+
+            startActivity(new Intent(requireActivity(), FileVoiceActivity.class));
+            Log.d(TAG, "StopRecordFragment: To FileVoiceActivity");
+            requireActivity().finish();
+        });
 
         binding.btnBack.setOnClickListener(view -> {
             stopRecord();

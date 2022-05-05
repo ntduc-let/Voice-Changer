@@ -74,7 +74,7 @@
     <Button
         android:id="@+id/btn_ring_noti"
         style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-        android:layout_width="350dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
