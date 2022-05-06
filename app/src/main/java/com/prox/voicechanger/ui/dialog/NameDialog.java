@@ -25,7 +25,7 @@ import java.io.File;
 
 public class NameDialog extends CustomDialog {
     public static final String RECORD_TO_CHANGE_VOICE = "RECORD_TO_CHANGE_VOICE";
-    public static final String PATH_FILE = "PATH_FILE";
+    public static final String NAME_FILE = "NAME_FILE";
 
     public NameDialog(@NonNull Context context, Activity activity, DialogNameBinding binding) {
         super(context, binding.getRoot());
@@ -63,13 +63,13 @@ public class NameDialog extends CustomDialog {
             binding.btnSave.setTextColor(context.getResources().getColor(R.color.white30));
             binding.btnCancel.setEnabled(false);
 
-            String cmd = FFMPEGUtils.getCMDConvertRecording(FileUtils.getTempRecordingFilePath(context), file.getPath());
+            String cmd = FFMPEGUtils.getCMDConvertRecording(FileUtils.getTempRecordingFilePath(context), FileUtils.getTempRecording2FilePath(context));
             FFMPEGUtils.executeFFMPEG(cmd, new FFmpegExecuteCallback() {
                 @Override
                 public void onSuccess() {
                     Intent intent = new Intent(activity, ChangeVoiceActivity.class);
                     intent.setAction(RECORD_TO_CHANGE_VOICE);
-                    intent.putExtra(PATH_FILE, file.getPath());
+                    intent.putExtra(NAME_FILE, FileUtils.getName(path));
                     activity.startActivity(intent);
                     cancel();
                 }

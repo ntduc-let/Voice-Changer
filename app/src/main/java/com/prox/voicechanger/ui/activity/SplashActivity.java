@@ -1,7 +1,7 @@
 package com.prox.voicechanger.ui.activity;
 
 import static com.prox.voicechanger.VoiceChangerApp.TAG;
-import static com.prox.voicechanger.ui.dialog.NameDialog.PATH_FILE;
+import static com.prox.voicechanger.ui.activity.ChangeVoiceActivity.PATH_FILE;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -65,6 +65,15 @@ public class SplashActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent==null){
             Log.d(TAG, "SplashActivity: Intent null");
+            Intent goToRecord = new Intent(SplashActivity.this, RecordActivity.class);
+            startActivity(goToRecord);
+            Log.d(TAG, "SplashActivity: To RecordActivity");
+            finish();
+        }else if (intent.getAction()==null){
+            Log.d(TAG, "SplashActivity: Action null");
+            Intent goToRecord = new Intent(SplashActivity.this, RecordActivity.class);
+            startActivity(goToRecord);
+            Log.d(TAG, "SplashActivity: To RecordActivity");
             finish();
         }else if (intent.getAction().equals(Intent.ACTION_MAIN)){
             Log.d(TAG, "SplashActivity: Intent.ACTION_MAIN");

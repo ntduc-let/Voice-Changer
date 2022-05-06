@@ -90,6 +90,8 @@ public class StopRecordFragment extends Fragment {
         stopRecord();
         runnableAnimation=null;
         runnableTime=null;
+        model = null;
+        binding = null;
     }
 
     private void init() {

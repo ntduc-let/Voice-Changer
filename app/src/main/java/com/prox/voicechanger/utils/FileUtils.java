@@ -61,10 +61,24 @@ public class FileUtils {
         return file.getPath();
     }
 
+    public static String getTempRecording2FilePath(Context context) {
+        ContextWrapper contextWrapper = new ContextWrapper(context.getApplicationContext());
+        File musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+        File file = new File(musicDirectory, "tempRecording2.mp3");
+        return file.getPath();
+    }
+
     public static String getTempEffectFilePath(Context context) {
         ContextWrapper contextWrapper = new ContextWrapper(context.getApplicationContext());
         File musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
         File file = new File(musicDirectory, "tempEffect.mp3");
+        return file.getPath();
+    }
+
+    public static String getTempCustomFilePath(Context context) {
+        ContextWrapper contextWrapper = new ContextWrapper(context.getApplicationContext());
+        File musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+        File file = new File(musicDirectory, "tempCustom.mp3");
         return file.getPath();
     }
 

@@ -14,16 +14,13 @@ import java.util.ArrayList;
 
 public class FFMPEGUtils {
 
-    public final static String Original = "Original";
-    public final static String Custom = "Custom";
-
     public static void executeFFMPEG(String cmd, FFmpegExecuteCallback executeCallback) {
         FFmpegKit.executeAsync(cmd, session -> {
             if (ReturnCode.isSuccess(session.getReturnCode())) {
-                Log.i(TAG, "executeFFMPEG: Success");
+                Log.d(TAG, "executeFFMPEG: Success");
                 executeCallback.onSuccess();
             }else {
-                Log.i(TAG, "executeFFMPEG: Failed");
+                Log.d(TAG, "executeFFMPEG: Failed");
                 executeCallback.onFailed();
             }
         });
@@ -34,7 +31,7 @@ public class FFMPEGUtils {
     }
 
     public static String getCMDAddEffect(String fromPath, String toPath, Effect effect) {
-        return "-y -i \""+fromPath+"\" -af "+effect.getChangeVoice()+" \""+toPath+"\"";
+        return "-y -i \""+fromPath+"\" "+effect.getChangeVoice()+" \""+toPath+"\"";
     }
 
     public static String getCMDAddImage(String fromPathMusic, String fromPathImage, String toPath) {
@@ -43,23 +40,19 @@ public class FFMPEGUtils {
 
     public static ArrayList<Effect> getEffects() {
         ArrayList<Effect> effects = new ArrayList<>();
-        effects.add(new Effect(1, R.drawable.ic_original, Original, ""));
-        effects.add(new Effect(2, R.drawable.ic_helium, "Helium", "asetrate=16000*2,atempo=1/2"));
-        effects.add(new Effect(3, R.drawable.ic_robot, "Robot", "afftfilt=\"real='hypot(re,im)*sin(0)':imag='hypot(re,im)*cos(0)':win_size=512:overlap=0.75\""));
-        effects.add(new Effect(4, R.drawable.ic_radio, "Radio", "atempo=1"));
-        effects.add(new Effect(5, R.drawable.ic_backward, "Backward", "areverse"));
-        effects.add(new Effect(6, R.drawable.ic_cave, "Cave", "aecho=0.8:0.9:1000:0.3"));
-        effects.add(new Effect(7, R.drawable.ic_whisper, "Whisper", "afftfilt=\"real='hypot(re,im)*cos((random(0)*2-1)*2*3.14)':imag='hypot(re,im)*sin((random(1)*2-1)*2*3.14)':win_size=128:overlap=0.8\""));
-        effects.add(new Effect(8, R.drawable.ic_chipmunk, "Chipmunk", "asetrate=2*22100"));
-        effects.add(new Effect(9, R.drawable.ic_hexafluoride, "Hexafluoride", "asetrate=16000*10/11,atempo=11/10"));
-        effects.add(new Effect(10, R.drawable.ic_slowmotion, "SlowMotion", "asetrate=16000/2"));
-        effects.add(new Effect(11, R.drawable.ic_loudspeaker, "Loudspeaker", "stereotools=mlev=64"));
+        effects.add(new Effect(1, R.drawable.ic_original, "Original", "-c:a copy"));
+        effects.add(new Effect(2, R.drawable.ic_helium, "Helium", "-af asetrate=16000*2,atempo=1/2"));
+        effects.add(new Effect(3, R.drawable.ic_robot, "Robot", "-af afftfilt=\"real='hypot(re,im)*sin(0)':imag='hypot(re,im)*cos(0)':win_size=512:overlap=0.75\""));
+        effects.add(new Effect(4, R.drawable.ic_radio, "Radio", "-af atempo=1"));
+        effects.add(new Effect(5, R.drawable.ic_backward, "Backward", "-af areverse"));
+        effects.add(new Effect(6, R.drawable.ic_cave, "Cave", "-af aecho=0.8:0.9:1000:0.3"));
+        effects.add(new Effect(7, R.drawable.ic_whisper, "Whisper", "-af afftfilt=\"real='hypot(re,im)*cos((random(0)*2-1)*2*3.14)':imag='hypot(re,im)*sin((random(1)*2-1)*2*3.14)':win_size=128:overlap=0.8\""));
+        effects.add(new Effect(8, R.drawable.ic_chipmunk, "Chipmunk", "-af asetrate=2*22100"));
+        effects.add(new Effect(9, R.drawable.ic_hexafluoride, "Hexaride", "-af asetrate=16000*10/11,atempo=11/10"));
+        effects.add(new Effect(10, R.drawable.ic_slowmotion, "S-Motion", "-af asetrate=16000/2"));
+        effects.add(new Effect(11, R.drawable.ic_loudspeaker, "L-Speak", "-af stereotools=mlev=64"));
 
         return effects;
-    }
-
-    public static Effect getEffectCustom() {
-        return new Effect(0, R.drawable.ic_custom, Custom, "");
     }
 
     public static String getCMDCustomEffect(

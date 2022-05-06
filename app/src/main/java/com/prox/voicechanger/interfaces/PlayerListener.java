@@ -1,7 +1,8 @@
 package com.prox.voicechanger.interfaces;
 
 public interface PlayerListener {
-    void start(String path);
+    void setNewPath(String path);
+    void start();
     void pause();
     void resume();
     void stop();

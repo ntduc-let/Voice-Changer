@@ -33,29 +33,35 @@ public class Player implements PlayerListener {
     }
 
     @Override
-    public void start(String path) {
-        Log.d(TAG, "Player: start " + path);
+    public void setNewPath(String path) {
+        Log.d(TAG, "Player: setNewPath " + path);
         if (player == null){
-            Log.d(TAG, "Player: start null");
+            Log.d(TAG, "Player: player null");
             return;
         }
-        if (!player.isPlaying()){
-            try {
-                player.reset();
-                player.setDataSource(path);
-                player.setLooping(true);
-                player.prepare();
-                player.start();
-            } catch (IOException e) {
-                Log.d(TAG, "Player: start error " + e.getMessage());
-            }
+        try {
+            player.reset();
+            player.setDataSource(path);
+            player.setLooping(true);
+            player.prepare();
+        } catch (IOException e) {
+            Log.d(TAG, "Player: setNewPath error " + e.getMessage());
         }
+    }
+
+    @Override
+    public void start() {
+        if (player == null){
+            Log.d(TAG, "Player: player null");
+            return;
+        }
+        player.start();
     }
 
     @Override
     public void pause() {
         if (player == null){
-            Log.d(TAG, "Player: pause null");
+            Log.d(TAG, "Player: player null");
             return;
         }
 
@@ -67,7 +73,7 @@ public class Player implements PlayerListener {
     @Override
     public void resume() {
         if (player == null){
-            Log.d(TAG, "Player: resume null");
+            Log.d(TAG, "Player: player null");
             return;
         }
 
@@ -79,7 +85,7 @@ public class Player implements PlayerListener {
     @Override
     public void stop() {
         if (player == null){
-            Log.d(TAG, "Player: stop null");
+            Log.d(TAG, "Player: player null");
             return;
         }
 
@@ -91,7 +97,7 @@ public class Player implements PlayerListener {
     @Override
     public void release() {
         if (player == null){
-            Log.d(TAG, "Player: release null");
+            Log.d(TAG, "Player: player null");
             return;
         }
         if (player.isPlaying()){
@@ -99,6 +105,6 @@ public class Player implements PlayerListener {
         }
         player.release();
         player = null;
-        Log.d(TAG, "Recorder: release");
+        Log.d(TAG, "Player: release");
     }
 }
