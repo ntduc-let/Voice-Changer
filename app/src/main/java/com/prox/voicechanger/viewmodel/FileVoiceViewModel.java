@@ -23,7 +23,6 @@ public class FileVoiceViewModel extends ViewModel {
     private final FileVoiceRepository repository;
 
     private final MutableLiveData<List<FileVoice>> fileVoices;
-    private final MutableLiveData<Boolean> isExecute = new MutableLiveData<>();
     private final MutableLiveData<String> pathPlayer = new MutableLiveData<>();
 
     @Inject
@@ -37,16 +36,8 @@ public class FileVoiceViewModel extends ViewModel {
         return fileVoices;
     }
 
-    public List<FileVoice> check(String path){
+    public FileVoice check(String path){
         return repository.check(path);
-    }
-
-    public LiveData<Boolean> isExecute() {
-        return isExecute;
-    }
-
-    public void setExecute(Boolean b){
-        isExecute.postValue(b);
     }
 
     public LiveData<String> getPathPlayer() {
@@ -60,24 +51,18 @@ public class FileVoiceViewModel extends ViewModel {
     public void insert(FileVoice fileVoice){
         Log.d(TAG, "FileVoiceViewModel: insert "+fileVoice.getPath());
         repository.insert(fileVoice);
-        fileVoices.setValue(repository.getFileVoices().getValue());
-    }
-
-    public void insertBG(FileVoice fileVoice){
-        Log.d(TAG, "FileVoiceViewModel: insert "+fileVoice.getPath());
-        repository.insert(fileVoice);
         fileVoices.postValue(repository.getFileVoicesBG().getValue());
     }
 
     public void update(FileVoice fileVoice){
         Log.d(TAG, "FileVoiceViewModel: update "+fileVoice.getPath());
         repository.update(fileVoice);
-        fileVoices.setValue(repository.getFileVoices().getValue());
+        fileVoices.postValue(repository.getFileVoices().getValue());
     }
 
     public void delete(FileVoice fileVoice){
         Log.d(TAG, "FileVoiceViewModel: delete "+fileVoice.getPath());
         repository.delete(fileVoice);
-        fileVoices.setValue(repository.getFileVoices().getValue());
+        fileVoices.postValue(repository.getFileVoices().getValue());
     }
 }

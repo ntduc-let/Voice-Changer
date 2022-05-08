@@ -25,5 +25,5 @@ public interface FileVoiceDAO {
     List<FileVoice> getAll();
 
     @Query("SELECT * FROM filevoice WHERE path= :path")
-    List<FileVoice> check(String path);
+    FileVoice check(String path);
 }

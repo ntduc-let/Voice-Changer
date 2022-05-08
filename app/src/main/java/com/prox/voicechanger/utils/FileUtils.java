@@ -88,7 +88,6 @@ public class FileUtils {
         if (!downloadRoot.exists()) {
             downloadRoot.mkdirs();
         }
-
         return downloadRoot.getPath();
     }
 

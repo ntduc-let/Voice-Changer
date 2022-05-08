@@ -48,7 +48,7 @@ public class FileVoiceActivity extends AppCompatActivity {
 
         model = new ViewModelProvider(this).get(FileVoiceViewModel.class);
         model.getFileVoices().observe(this, fileVoices -> {
-            if (fileVoices.size()==0){
+            if (fileVoices == null || fileVoices.size()==0){
                 binding.layoutNoItem.getRoot().setVisibility(View.VISIBLE);
                 binding.btnDeleteAll.setEnabled(false);
                 binding.btnDeleteAll.setTextColor(getResources().getColor(R.color.white30));
@@ -60,12 +60,14 @@ public class FileVoiceActivity extends AppCompatActivity {
                 binding.btnDeleteAll.setBackgroundResource(R.drawable.bg_button1);
             }
             adapter.setFileVoices(fileVoices);
-            binding.recyclerViewFileVoice.setItemViewCacheSize(fileVoices.size());
+            if (fileVoices != null){
+                binding.recyclerViewFileVoice.setItemViewCacheSize(fileVoices.size());
+            }
         });
 
         init();
 
-        binding.btnBack3.setOnClickListener(view -> onBackPressed());
+        binding.btnBack3.setOnClickListener(view -> finish());
 
         binding.btnDeleteAll.setOnClickListener(view -> {
             adapter.release();
@@ -76,7 +78,7 @@ public class FileVoiceActivity extends AppCompatActivity {
             dialog.show();
         });
 
-        binding.layoutNoItem.btnRecordNow.setOnClickListener(view -> onBackPressed());
+        binding.layoutNoItem.btnRecordNow.setOnClickListener(view -> goToRecord());
     }
 
     @Override
@@ -89,8 +91,7 @@ public class FileVoiceActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    @Override
-    public void onBackPressed() {
+    private void goToRecord() {
         Intent intent = new Intent(this, RecordActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);

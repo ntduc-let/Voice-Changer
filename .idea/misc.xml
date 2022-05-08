@@ -82,14 +82,14 @@
         <entry key="..\:/voice-changer/app/src/main/res/layout/fragment_record.xml" value="0.25" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/fragment_recording.xml" value="0.264" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/fragment_setting.xml" value="0.264" />
-        <entry key="..\:/voice-changer/app/src/main/res/layout/fragment_stop_record.xml" value="0.13802083333333334" />
+        <entry key="..\:/voice-changer/app/src/main/res/layout/fragment_stop_record.xml" value="0.176" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/ic_ani_record.xml" value="0.25" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/item_effect.xml" value="0.264" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/item_file_voice.xml" value="0.264" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/item_file_voice_main.xml" value="0.25" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/item_hz.xml" value="0.4" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/item_play_media.xml" value="0.25" />
-        <entry key="..\:/voice-changer/app/src/main/res/layout/layout_basic.xml" value="0.264" />
+        <entry key="..\:/voice-changer/app/src/main/res/layout/layout_basic.xml" value="0.536" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/layout_custom.xml" value="0.264" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/layout_effect.xml" value="0.264" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/layout_equalizer.xml" value="0.2882414151925078" />

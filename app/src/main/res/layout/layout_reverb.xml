@@ -31,11 +31,11 @@
         app:trackColorInactive="#A4A4A4"
         app:tickColorActive="#4B5DFC"
         app:tickColorInactive="#A4A4A4"
-
         android:stepSize="0.1"
         android:value="1"
         android:valueFrom="0"
         android:valueTo="1"
+        app:trackHeight="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:thumbRadius="5dp" />
@@ -70,6 +70,7 @@
         android:value="1"
         android:valueFrom="0"
         android:valueTo="1"
+        app:trackHeight="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/seek_in_gain"
         app:thumbRadius="5dp" />
@@ -104,6 +105,7 @@
         android:value="0"
         android:valueFrom="0"
         android:valueTo="1000"
+        app:trackHeight="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/seek_out_gain"
         app:thumbRadius="5dp" />
@@ -138,8 +140,97 @@
         android:value="1"
         android:valueFrom="0"
         android:valueTo="1"
+        app:trackHeight="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seek_delay"
         app:thumbRadius="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:text="0"
+        android:textColor="@color/black30"
+        android:textSize="10sp"
+        android:translationZ="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/seek_in_gain"
+        app:layout_constraintStart_toStartOf="@+id/seek_in_gain" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:text="1"
+        android:textColor="@color/black30"
+        android:textSize="10sp"
+        android:translationZ="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/seek_in_gain"
+        app:layout_constraintEnd_toEndOf="@+id/seek_in_gain" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:text="0"
+        android:textColor="@color/black30"
+        android:textSize="10sp"
+        android:translationZ="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/seek_out_gain"
+        app:layout_constraintStart_toStartOf="@+id/seek_out_gain" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:text="1"
+        android:textColor="@color/black30"
+        android:textSize="10sp"
+        android:translationZ="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/seek_out_gain"
+        app:layout_constraintEnd_toEndOf="@+id/seek_out_gain" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:text="0"
+        android:textColor="@color/black30"
+        android:textSize="10sp"
+        android:translationZ="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/seek_delay"
+        app:layout_constraintStart_toStartOf="@+id/seek_delay" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:text="1000"
+        android:textColor="@color/black30"
+        android:textSize="10sp"
+        android:translationZ="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/seek_delay"
+        app:layout_constraintEnd_toEndOf="@+id/seek_delay" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:text="0"
+        android:textColor="@color/black30"
+        android:textSize="10sp"
+        android:translationZ="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/seek_decay"
+        app:layout_constraintStart_toStartOf="@+id/seek_decay" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:text="1"
+        android:textColor="@color/black30"
+        android:textSize="10sp"
+        android:translationZ="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/seek_decay"
+        app:layout_constraintEnd_toEndOf="@+id/seek_decay" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

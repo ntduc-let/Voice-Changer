@@ -94,7 +94,9 @@ public class RecordFragment extends Fragment {
         handler.postDelayed(() -> {
             binding.btnMore.setVisibility(View.VISIBLE);
             model.getFileVoices().observe(requireActivity(), fileVoices -> {
-                if(fileVoices.size()!=0){
+                if(fileVoices == null || fileVoices.size()==0){
+                    binding.btnFile.setVisibility(View.INVISIBLE);
+                }else{
                     binding.btnFile.setVisibility(View.VISIBLE);
                 }
             });

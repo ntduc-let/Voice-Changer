@@ -19,7 +19,7 @@ public class FileVoiceRepository {
 
     public MutableLiveData<List<FileVoice>> getFileVoices(){
         MutableLiveData<List<FileVoice>> data = new MutableLiveData<>();
-        data.setValue(dao.getAll());
+        data.postValue(dao.getAll());
         return data;
     }
 
@@ -29,7 +29,7 @@ public class FileVoiceRepository {
         return data;
     }
 
-    public List<FileVoice> check(String path){
+    public FileVoice check(String path){
         return dao.check(path);
     }
 

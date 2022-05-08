@@ -27,15 +27,15 @@ public class FFMPEGUtils {
     }
 
     public static String getCMDConvertRecording(String fromPath, String toPath) {
-        return "-y -i \""+fromPath+"\" -c:v libx264 -ar 16000 \""+toPath+"\"";
+        return "-y -i \""+fromPath+"\" -ar 16000 \""+toPath+"\"";
     }
 
     public static String getCMDAddEffect(String fromPath, String toPath, Effect effect) {
-        return "-y -i \""+fromPath+"\" "+effect.getChangeVoice()+" \""+toPath+"\"";
+        return "-y -i \""+fromPath+"\" "+effect.getChangeVoice()+" -ar 16000 \""+toPath+"\"";
     }
 
     public static String getCMDAddImage(String fromPathMusic, String fromPathImage, String toPath) {
-        return "-loop 1 -y -i \"" + fromPathImage + "\" -i \"" + fromPathMusic + "\" -c:v libx264 -crf 27 -tune stillimage -c:a aac -pix_fmt yuv420p -preset ultrafast -shortest -vf pad=\"width=ceil(iw/2)*2:height=ceil(ih/2)*2\" \"" + toPath + "\"";
+        return "-loop 1 -y -i \"" + fromPathImage + "\" -i \"" + fromPathMusic + "\" -pix_fmt yuv420p -preset ultrafast -shortest -vf pad=\"width=ceil(iw/2)*2:height=ceil(ih/2)*2\" \"" + toPath + "\"";
     }
 
     public static ArrayList<Effect> getEffects() {

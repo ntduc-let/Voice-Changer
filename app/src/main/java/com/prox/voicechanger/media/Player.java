@@ -2,6 +2,7 @@ package com.prox.voicechanger.media;
 
 import static com.prox.voicechanger.VoiceChangerApp.TAG;
 
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.util.Log;
 
@@ -42,6 +43,7 @@ public class Player implements PlayerListener {
         try {
             player.reset();
             player.setDataSource(path);
+            player.setAudioStreamType(AudioManager.STREAM_MUSIC);
             player.setLooping(true);
             player.prepare();
         } catch (IOException e) {

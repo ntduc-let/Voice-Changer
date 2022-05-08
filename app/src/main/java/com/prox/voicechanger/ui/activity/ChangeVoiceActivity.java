@@ -52,8 +52,10 @@ public class ChangeVoiceActivity extends AppCompatActivity {
 
     private ActivityChangeVoiceBinding binding;
     private Player player;
+    private boolean isPlaying;
+    private double current;
     private EffectAdapter effectAdapter;
-    private String hzSelect;
+    private String hzSelect = "500";
     private String nameFile;
     private Effect effectSelected;
     private FileVoiceViewModel model;
@@ -62,6 +64,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
     private final Runnable updateTime = new Runnable() {
         @Override
         public void run() {
+            current = (double)player.getCurrentPosition()/player.getDuration();
             binding.layoutPlayer.visualizer.setPosition(player.getCurrentPosition());
             binding.layoutPlayer.txtCurrentTime.setText(NumberUtils.formatAsTime(player.getCurrentPosition()));
             handler.post(this);
@@ -73,7 +76,8 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                 && binding.layoutEffect.layoutCustom.layoutEqualizer.seekGain.getValue() == 0) {
             binding.layoutEffect.layoutCustom.btnResetEqualizer.setImageResource(R.drawable.ic_reset_disable);
             binding.layoutEffect.layoutCustom.btnResetEqualizer.setEnabled(false);
-        } else {
+        }
+        else {
             binding.layoutEffect.layoutCustom.btnResetEqualizer.setImageResource(R.drawable.ic_reset_enable);
             binding.layoutEffect.layoutCustom.btnResetEqualizer.setEnabled(true);
         }
@@ -83,7 +87,8 @@ public class ChangeVoiceActivity extends AppCompatActivity {
             compoundButton.setTextColor(getResources().getColor(R.color.black));
             hzSelect = compoundButton.getText().toString().substring(0, compoundButton.getText().length() - 2);
             selectCustom();
-        } else {
+        }
+        else {
             compoundButton.setTextColor(getResources().getColor(R.color.black30));
         }
     };
@@ -112,8 +117,9 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         model = new ViewModelProvider(this).get(FileVoiceViewModel.class);
         model.getPathPlayer().observe(this, path -> {
             if (path != null) {
-                setNewPlayer(path, player.isPlaying());
-            } else {
+                setNewPlayer(path);
+            }
+            else {
                 binding.layoutLoading.txtProcessing.setText(R.string.process_error);
                 binding.layoutLoading.txtProcessing.setTextColor(getResources().getColor(R.color.red));
             }
@@ -142,10 +148,18 @@ public class ChangeVoiceActivity extends AppCompatActivity {
             FFMPEGUtils.executeFFMPEG(cmd, new FFmpegExecuteCallback() {
                 @Override
                 public void onSuccess() {
-                    insertEffectToDB(path);
+                    FileVoice fileVoice = model.check(path);
+                    if(fileVoice == null){
+                        insertEffectToDB(path);
+                    }else {
+                        fileVoice.setDuration(player.getDuration());
+                        fileVoice.setSize(new File(path).length());
+                        fileVoice.setDate(new Date().getTime());
+                        model.update(fileVoice);
+                    }
+
                     startActivity(new Intent(ChangeVoiceActivity.this, FileVoiceActivity.class));
                     Log.d(TAG, "ChangeVoiceActivity: To FileVoiceActivity");
-                    finish();
                     dialog.cancel();
                 }
 
@@ -173,10 +187,12 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         });
 
         binding.layoutPlayer.btnPauseOrResume.setOnClickListener(view -> {
-            if (player.isPlaying()) {
+            if (isPlaying) {
                 pausePlayer();
+                isPlaying = false;
             } else {
                 resumePlayer();
+                isPlaying = true;
             }
         });
 
@@ -185,9 +201,10 @@ public class ChangeVoiceActivity extends AppCompatActivity {
             if (!binding.layoutEffect.layoutCustom.btnResetBasic.isEnabled()
                 && !binding.layoutEffect.layoutCustom.btnResetEqualizer.isEnabled()
                 && !binding.layoutEffect.layoutCustom.btnResetReverb.isEnabled()){
-                startPlayer(player.isPlaying());
-            }else {
-                setNewPlayer(FileUtils.getTempRecording2FilePath(this), player.isPlaying());
+
+            }
+            else {
+                setNewPlayer(FileUtils.getTempEffectFilePath(this));
             }
             resetCustomEffect();
         });
@@ -197,6 +214,22 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         });
 
         actionCustomEffect();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (isPlaying){
+            resumePlayer();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (isPlaying){
+            pausePlayer();
+        }
     }
 
     @Override
@@ -213,6 +246,8 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         hzSelect = null;
         nameFile = null;
         effectSelected = null;
+        isPlaying = false;
+        current = 0;
         model = null;
         binding = null;
         super.onDestroy();
@@ -243,6 +278,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         }
 
         player = new Player();
+        isPlaying = true;
         binding.layoutEffect.btnEffect.setEnabled(false);
         binding.layoutEffect.layoutCustom.btnResetBasic.setEnabled(false);
         binding.layoutEffect.layoutCustom.btnResetEqualizer.setEnabled(false);
@@ -250,7 +286,8 @@ public class ChangeVoiceActivity extends AppCompatActivity {
 
         if (intent.getAction().equals(RECORD_TO_CHANGE_VOICE)) {
             nameFile = intent.getStringExtra(NAME_FILE);
-        } else if (intent.getAction().equals(SPLASH_TO_CHANGE_VOICE)) {
+        }
+        else if (intent.getAction().equals(SPLASH_TO_CHANGE_VOICE)) {
             String path = intent.getStringExtra(PATH_FILE);
             nameFile = FileUtils.getName(path);
 
@@ -309,6 +346,8 @@ public class ChangeVoiceActivity extends AppCompatActivity {
 
         binding.layoutEffect.recyclerViewEffects.setVisibility(View.VISIBLE);
         binding.layoutEffect.layoutCustom.getRoot().setVisibility(View.GONE);
+
+        binding.layoutPlayer.txtName2.setText(nameFile +"-"+ effectSelected.getTitle());
     }
 
     private void selectEffect(Effect effect) {
@@ -368,7 +407,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         FFMPEGUtils.executeFFMPEG(cmd, new FFmpegExecuteCallback() {
             @Override
             public void onSuccess() {
-                model.setPathPlayer(FileUtils.getTempEffectFilePath(ChangeVoiceActivity.this));
+                model.setPathPlayer(FileUtils.getTempCustomFilePath(ChangeVoiceActivity.this));
             }
 
             @Override
@@ -378,7 +417,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         });
     }
 
-    private void setNewPlayer(String path, boolean isPlaying) {
+    private void setNewPlayer(String path) {
         new WaveFormData.Factory(path).build(new WaveFormData.Factory.Callback() {
             @Override
             public void onComplete(@NonNull WaveFormData waveFormData) {
@@ -392,9 +431,10 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                 binding.btnSave2.setTextColor(getResources().getColor(R.color.white));
                 binding.btnSave2.setBackgroundResource(R.drawable.bg_button1);
                 player.setNewPath(path);
-                player.start();
-                binding.layoutPlayer.btnPauseOrResume.setImageResource(R.drawable.ic_pause);
-                updateTime();
+                startPlayer();
+                player.seekTo((long) (current*player.getDuration()));
+                binding.layoutPlayer.visualizer.setPosition(player.getCurrentPosition());
+                binding.layoutPlayer.txtCurrentTime.setText(NumberUtils.formatAsTime(player.getCurrentPosition()));
 
                 if (!isPlaying) {
                     pausePlayer();
@@ -408,13 +448,10 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         });
     }
 
-    private void startPlayer(boolean isPlaying) {
+    private void startPlayer() {
         player.start();
         binding.layoutPlayer.btnPauseOrResume.setImageResource(R.drawable.ic_pause);
         updateTime();
-        if (!isPlaying) {
-            pausePlayer();
-        }
     }
 
     private void stopPlayer() {
@@ -461,7 +498,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         fileVoice.setDuration(playerEffect.getDuration());
         fileVoice.setSize(new File(path).length());
         fileVoice.setDate(new Date().getTime());
-        model.insertBG(fileVoice);
+        model.insert(fileVoice);
     }
 
     private void actionCustomEffect() {
@@ -477,7 +514,8 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                 binding.layoutEffect.layoutCustom.layoutBasic.getRoot().setVisibility(View.VISIBLE);
                 binding.layoutEffect.layoutCustom.btnResetBasic.setVisibility(View.VISIBLE);
                 binding.layoutEffect.layoutCustom.switchBasic.setThumbResource(R.drawable.ic_thumb2);
-            } else {
+            }
+            else {
                 binding.layoutEffect.layoutCustom.switchBasic.setTrackResource(R.drawable.ic_track_disable);
                 binding.layoutEffect.layoutCustom.layoutBasic.getRoot().setVisibility(View.GONE);
                 binding.layoutEffect.layoutCustom.btnResetBasic.setVisibility(View.INVISIBLE);
@@ -511,7 +549,8 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                 binding.layoutEffect.layoutCustom.layoutEqualizer.getRoot().setVisibility(View.VISIBLE);
                 binding.layoutEffect.layoutCustom.btnResetEqualizer.setVisibility(View.VISIBLE);
                 binding.layoutEffect.layoutCustom.switchEqualizer.setThumbResource(R.drawable.ic_thumb2);
-            } else {
+            }
+            else {
                 binding.layoutEffect.layoutCustom.switchEqualizer.setTrackResource(R.drawable.ic_track_disable);
                 binding.layoutEffect.layoutCustom.layoutEqualizer.getRoot().setVisibility(View.GONE);
                 binding.layoutEffect.layoutCustom.btnResetEqualizer.setVisibility(View.INVISIBLE);
@@ -545,7 +584,8 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                 binding.layoutEffect.layoutCustom.layoutReverb.getRoot().setVisibility(View.VISIBLE);
                 binding.layoutEffect.layoutCustom.btnResetReverb.setVisibility(View.VISIBLE);
                 binding.layoutEffect.layoutCustom.switchReverb.setThumbResource(R.drawable.ic_thumb2);
-            } else {
+            }
+            else {
                 binding.layoutEffect.layoutCustom.switchReverb.setTrackResource(R.drawable.ic_track_disable);
                 binding.layoutEffect.layoutCustom.layoutReverb.getRoot().setVisibility(View.GONE);
                 binding.layoutEffect.layoutCustom.btnResetReverb.setVisibility(View.INVISIBLE);
@@ -630,7 +670,8 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                 && binding.layoutEffect.layoutCustom.layoutBasic.seekPanning.getValue() == 1) {
             binding.layoutEffect.layoutCustom.btnResetBasic.setImageResource(R.drawable.ic_reset_disable);
             binding.layoutEffect.layoutCustom.btnResetBasic.setEnabled(false);
-        } else {
+        }
+        else {
             binding.layoutEffect.layoutCustom.btnResetBasic.setImageResource(R.drawable.ic_reset_enable);
             binding.layoutEffect.layoutCustom.btnResetBasic.setEnabled(true);
         }
@@ -640,7 +681,8 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                 && binding.layoutEffect.layoutCustom.layoutEqualizer.seekGain.getValue() == 0) {
             binding.layoutEffect.layoutCustom.btnResetEqualizer.setImageResource(R.drawable.ic_reset_disable);
             binding.layoutEffect.layoutCustom.btnResetEqualizer.setEnabled(false);
-        } else {
+        }
+        else {
             binding.layoutEffect.layoutCustom.btnResetEqualizer.setImageResource(R.drawable.ic_reset_enable);
             binding.layoutEffect.layoutCustom.btnResetEqualizer.setEnabled(true);
         }
@@ -651,7 +693,8 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                 && binding.layoutEffect.layoutCustom.layoutReverb.seekDecay.getValue() == 1) {
             binding.layoutEffect.layoutCustom.btnResetReverb.setImageResource(R.drawable.ic_reset_disable);
             binding.layoutEffect.layoutCustom.btnResetReverb.setEnabled(false);
-        } else {
+        }
+        else {
             binding.layoutEffect.layoutCustom.btnResetReverb.setImageResource(R.drawable.ic_reset_enable);
             binding.layoutEffect.layoutCustom.btnResetReverb.setEnabled(true);
         }

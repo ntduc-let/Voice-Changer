@@ -43,7 +43,9 @@ public class StopRecordFragment extends Fragment {
 
         model = new ViewModelProvider(requireActivity()).get(FileVoiceViewModel.class);
         model.getFileVoices().observe(requireActivity(), fileVoices -> {
-            if(fileVoices.size()!=0){
+            if(fileVoices == null || fileVoices.size()==0){
+                binding.btnFile.setVisibility(View.INVISIBLE);
+            }else{
                 binding.btnFile.setVisibility(View.VISIBLE);
             }
         });

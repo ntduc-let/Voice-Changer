@@ -35,6 +35,7 @@
         android:value="16000"
         android:valueFrom="4000"
         android:valueTo="32000"
+        app:trackHeight="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:thumbRadius="5dp" />
@@ -69,6 +70,7 @@
         android:value="1"
         android:valueFrom="0.5"
         android:valueTo="5"
+        app:trackHeight="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/seek_tempo_pitch"
         app:thumbRadius="5dp" />
@@ -104,9 +106,76 @@
         android:value="1"
         android:valueFrom="0"
         android:valueTo="1"
+        app:trackHeight="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/seek_tempo_rate"
         app:thumbRadius="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:text="4000"
+        android:textColor="@color/black30"
+        android:textSize="10sp"
+        android:translationZ="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/seek_tempo_pitch"
+        app:layout_constraintStart_toStartOf="@+id/seek_tempo_pitch" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:text="32000"
+        android:textColor="@color/black30"
+        android:textSize="10sp"
+        android:translationZ="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/seek_tempo_pitch"
+        app:layout_constraintEnd_toEndOf="@+id/seek_tempo_pitch" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:text="0.5"
+        android:textColor="@color/black30"
+        android:textSize="10sp"
+        android:translationZ="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/seek_tempo_rate"
+        app:layout_constraintStart_toStartOf="@+id/seek_tempo_rate" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:text="5"
+        android:textColor="@color/black30"
+        android:textSize="10sp"
+        android:translationZ="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/seek_tempo_rate"
+        app:layout_constraintEnd_toEndOf="@+id/seek_tempo_rate" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:text="0"
+        android:textColor="@color/black30"
+        android:textSize="10sp"
+        android:translationZ="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/seek_panning"
+        app:layout_constraintStart_toStartOf="@+id/seek_panning" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:text="1"
+        android:textColor="@color/black30"
+        android:textSize="10sp"
+        android:translationZ="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/seek_panning"
+        app:layout_constraintEnd_toEndOf="@+id/seek_panning" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
