@@ -54,7 +54,7 @@ dependencies {
     kapt "com.google.dagger:hilt-compiler:2.38.1"
 
     implementation 'com.github.imnirdst:iivisu:1.1.0'
-    implementation 'com.arthenica:ffmpeg-kit-audio:4.5.1.LTS'
+    implementation 'com.arthenica:ffmpeg-kit-full:4.5.1.LTS'
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
 
     implementation 'space.siy:waveformview:1.0.0'

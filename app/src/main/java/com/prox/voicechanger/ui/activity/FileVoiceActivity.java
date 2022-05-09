@@ -82,6 +82,18 @@ public class FileVoiceActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        adapter.resume();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.pause();
+    }
+
+    @Override
     protected void onDestroy() {
         Log.d(TAG, "FileVoiceActivity: onDestroy");
         adapter.release();

@@ -5,6 +5,7 @@ import static com.prox.voicechanger.VoiceChangerApp.TAG;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.util.Log;
@@ -32,12 +33,20 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
     private final Context context;
     private final Activity activity;
     private final FileVoiceViewModel model;
+    private boolean isPlaying;
 
     private MediaPlayer player;
     private FileVoiceViewHolder holderSelect;
 
-    private Handler handler;
-    private Runnable updateTime;
+    private final Handler handler = new Handler();
+    private final Runnable updateTime = new Runnable() {
+        @Override
+        public void run() {
+            holderSelect.binding.itemPlayMedia.txtCurrentTime2.setText(NumberUtils.formatAsTime(player.getCurrentPosition()));
+            holderSelect.binding.itemPlayMedia.seekTime.setProgress(player.getCurrentPosition());
+            handler.postDelayed(this, 1000);
+        }
+    };
 
     public FileVoiceAdapter(Context context, Activity activity, FileVoiceViewModel model){
         this.context = context;
@@ -85,16 +94,20 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
                 holderSelect = holder;
                 player = new MediaPlayer();
                 startMediaPlayer(fileVoice.getPath());
+                isPlaying = true;
             }else if (holderSelect.equals(holder)){
                 if (player.isPlaying()){
                     pauseMediaPlayer();
+                    isPlaying = false;
                 }else {
                     resumeMediaPlayer();
+                    isPlaying = true;
                 }
             }else {
                 stopMediaPlayer();
                 holderSelect = holder;
                 startMediaPlayer(fileVoice.getPath());
+                isPlaying = true;
             }
         });
         holder.binding.itemPlayMedia.seekTime.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -128,6 +141,18 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
         return fileVoices.size();
     }
 
+    public void pause(){
+        if (isPlaying){
+            pauseMediaPlayer();
+        }
+    }
+
+    public void resume(){
+        if (isPlaying){
+            resumeMediaPlayer();
+        }
+    }
+
     public static class FileVoiceViewHolder extends RecyclerView.ViewHolder{
         private final ItemFileVoiceBinding binding;
 
@@ -142,6 +167,7 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
         try {
             player.reset();
             player.setDataSource(path);
+            player.setAudioStreamType(AudioManager.STREAM_MUSIC);
             player.setLooping(true);
             player.prepare();
             player.setOnPreparedListener(mediaPlayer -> {
@@ -192,8 +218,6 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
         }
 
         player.release();
-        updateTime = null;
-        handler = null;
         player = null;
         holderSelect = null;
     }
@@ -202,15 +226,7 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
         Log.d(TAG, "FileVoiceAdapter: updateTime");
         holderSelect.binding.itemPlayMedia.seekTime.setMax(player.getDuration());
         holderSelect.binding.itemPlayMedia.txtTotalTime2.setText(NumberUtils.formatAsTime(player.getDuration()));
-        handler = new Handler();
-        updateTime = new Runnable() {
-            @Override
-            public void run() {
-                holderSelect.binding.itemPlayMedia.txtCurrentTime2.setText(NumberUtils.formatAsTime(player.getCurrentPosition()));
-                holderSelect.binding.itemPlayMedia.seekTime.setProgress(player.getCurrentPosition());
-                handler.postDelayed(this, 1000);
-            }
-        };
+
         handler.post(updateTime);
     }
 }
