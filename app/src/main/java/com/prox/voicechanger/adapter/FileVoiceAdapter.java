@@ -44,7 +44,7 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
         public void run() {
             holderSelect.binding.itemPlayMedia.txtCurrentTime2.setText(NumberUtils.formatAsTime(player.getCurrentPosition()));
             holderSelect.binding.itemPlayMedia.seekTime.setProgress(player.getCurrentPosition());
-            handler.postDelayed(this, 1000);
+            handler.post(this);
         }
     };
 
@@ -113,8 +113,10 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
         holder.binding.itemPlayMedia.seekTime.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                player.seekTo(i);
-                holder.binding.itemPlayMedia.txtCurrentTime2.setText(NumberUtils.formatAsTime(player.getCurrentPosition()));
+                if (b){
+                    player.seekTo(i);
+                    holder.binding.itemPlayMedia.txtCurrentTime2.setText(NumberUtils.formatAsTime(player.getCurrentPosition()));
+                }
             }
 
             @Override
