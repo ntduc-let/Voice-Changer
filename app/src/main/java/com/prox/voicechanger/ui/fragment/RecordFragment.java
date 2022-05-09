@@ -49,8 +49,10 @@ public class RecordFragment extends Fragment {
         });
 
         binding.btnMore.setOnClickListener(view -> {
-            Navigation.findNavController(binding.getRoot()).navigate(R.id.action_recordFragment_to_settingFragment);
-            Log.d(TAG, "RecordFragment: To SettingFragment");
+            if (PermissionUtils.checkPermission(requireContext(), requireActivity())){
+                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_recordFragment_to_settingFragment);
+                Log.d(TAG, "RecordFragment: To SettingFragment");
+            }
         });
 
 

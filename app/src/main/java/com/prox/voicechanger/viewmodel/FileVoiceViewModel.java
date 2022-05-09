@@ -24,6 +24,7 @@ public class FileVoiceViewModel extends ViewModel {
 
     private final MutableLiveData<List<FileVoice>> fileVoices;
     private final MutableLiveData<String> pathPlayer = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isExecute = new MutableLiveData<>();
 
     @Inject
     public FileVoiceViewModel(@NonNull FileVoiceRepository repository) {
@@ -46,6 +47,14 @@ public class FileVoiceViewModel extends ViewModel {
 
     public void setPathPlayer(String path){
         pathPlayer.postValue(path);
+    }
+
+    public void setExecute(Boolean b){
+        isExecute.postValue(b);
+    }
+
+    public LiveData<Boolean> isExecute() {
+        return isExecute;
     }
 
     public void insert(FileVoice fileVoice){

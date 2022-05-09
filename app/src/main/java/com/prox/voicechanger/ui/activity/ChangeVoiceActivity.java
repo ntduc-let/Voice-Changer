@@ -124,6 +124,11 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                 binding.layoutLoading.txtProcessing.setTextColor(getResources().getColor(R.color.red));
             }
         });
+        model.isExecute().observe(this, execute -> {
+            if (execute){
+                selectEffect(FFMPEGUtils.getEffects().get(0));
+            }
+        });
 
         init();
 
@@ -284,8 +289,18 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         binding.layoutEffect.layoutCustom.btnResetEqualizer.setEnabled(false);
         binding.layoutEffect.layoutCustom.btnResetReverb.setEnabled(false);
 
+        effectAdapter = new EffectAdapter(this::selectEffect);
+
+        FlexboxLayoutManager flexboxLayoutManager = new FlexboxLayoutManager(this);
+        flexboxLayoutManager.setFlexWrap(FlexWrap.WRAP);
+        flexboxLayoutManager.setJustifyContent(JustifyContent.FLEX_START);
+        binding.layoutEffect.recyclerViewEffects.setLayoutManager(flexboxLayoutManager);
+        binding.layoutEffect.recyclerViewEffects.setAdapter(effectAdapter);
+        effectAdapter.setEffects(FFMPEGUtils.getEffects());
+
         if (intent.getAction().equals(RECORD_TO_CHANGE_VOICE)) {
             nameFile = intent.getStringExtra(NAME_FILE);
+            selectEffect(FFMPEGUtils.getEffects().get(0));
         }
         else if (intent.getAction().equals(SPLASH_TO_CHANGE_VOICE)) {
             String path = intent.getStringExtra(PATH_FILE);
@@ -305,23 +320,15 @@ public class ChangeVoiceActivity extends AppCompatActivity {
             FFMPEGUtils.executeFFMPEG(cmd, new FFmpegExecuteCallback() {
                 @Override
                 public void onSuccess() {
+                    model.setExecute(true);
                 }
 
                 @Override
                 public void onFailed() {
+                    model.setExecute(false);
                 }
             });
         }
-
-        effectAdapter = new EffectAdapter(this::selectEffect);
-
-        FlexboxLayoutManager flexboxLayoutManager = new FlexboxLayoutManager(this);
-        flexboxLayoutManager.setFlexWrap(FlexWrap.WRAP);
-        flexboxLayoutManager.setJustifyContent(JustifyContent.FLEX_START);
-        binding.layoutEffect.recyclerViewEffects.setLayoutManager(flexboxLayoutManager);
-        binding.layoutEffect.recyclerViewEffects.setAdapter(effectAdapter);
-        effectAdapter.setEffects(FFMPEGUtils.getEffects());
-        selectEffect(FFMPEGUtils.getEffects().get(0));
     }
 
     private void initClickBtnCustom() {
