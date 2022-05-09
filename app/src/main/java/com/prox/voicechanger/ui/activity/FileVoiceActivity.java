@@ -137,19 +137,30 @@ public class FileVoiceActivity extends AppCompatActivity {
 
                     String pathImage = FileUtils.getFilePathForN(this, data.getData());
                     String pathVideo = FileUtils.getDCIMFolderPath(FOLDER_APP) + "/"+FileUtils.getVideoFileName();
-                    String cmd = FFMPEGUtils.getCMDAddImage(OptionDialog.fileVoice.getPath(), pathImage, pathVideo);
-                    FFMPEGUtils.executeFFMPEG(cmd, new FFmpegExecuteCallback() {
+                    String cmdConvertImage = FFMPEGUtils.getCMDConvertImage(pathImage, FileUtils.getTempImagePath(this));
+                    FFMPEGUtils.executeFFMPEG(cmdConvertImage, new FFmpegExecuteCallback() {
                         @Override
                         public void onSuccess() {
-                            dialog.cancel();
-                            Intent intent = new Intent(FileVoiceActivity.this, PlayVideoActivity.class);
-                            intent.putExtra(PATH_VIDEO, pathVideo);
-                            startActivity(intent);
+                            String cmd = FFMPEGUtils.getCMDAddImage(OptionDialog.fileVoice.getPath(), FileUtils.getTempImagePath(FileVoiceActivity.this), pathVideo);
+                            FFMPEGUtils.executeFFMPEG(cmd, new FFmpegExecuteCallback() {
+                                @Override
+                                public void onSuccess() {
+                                    dialog.cancel();
+                                    Intent intent = new Intent(FileVoiceActivity.this, PlayVideoActivity.class);
+                                    intent.putExtra(PATH_VIDEO, pathVideo);
+                                    startActivity(intent);
+                                }
+
+                                @Override
+                                public void onFailed() {
+
+                                }
+                            });
                         }
 
                         @Override
                         public void onFailed() {
-                            Toast.makeText(FileVoiceActivity.this, R.string.process_error, Toast.LENGTH_SHORT).show();
+
                         }
                     });
                 }

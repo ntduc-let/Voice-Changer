@@ -166,6 +166,9 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
 
     private void startMediaPlayer(String path) {
         Log.d(TAG, "FileVoiceAdapter: startMediaPlayer "+path);
+        if (player == null){
+            return;
+        }
         try {
             player.reset();
             player.setDataSource(path);
@@ -185,6 +188,9 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
 
     private void pauseMediaPlayer() {
         Log.d(TAG, "FileVoiceAdapter: pauseMediaPlayer");
+        if (player == null){
+            return;
+        }
         player.pause();
         handler.removeCallbacks(updateTime);
 
@@ -193,6 +199,9 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
 
     private void resumeMediaPlayer() {
         Log.d(TAG, "FileVoiceAdapter: resumeMediaPlayer");
+        if (player == null){
+            return;
+        }
         player.start();
         updateTime();
 
@@ -201,6 +210,9 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
 
     private void stopMediaPlayer() {
         Log.d(TAG, "FileVoiceAdapter: stopMediaPlayer");
+        if (player == null){
+            return;
+        }
         player.stop();
         handler.removeCallbacks(updateTime);
 

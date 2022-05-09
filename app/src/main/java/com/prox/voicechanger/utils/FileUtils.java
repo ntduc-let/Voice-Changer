@@ -82,6 +82,13 @@ public class FileUtils {
         return file.getPath();
     }
 
+    public static String getTempImagePath(Context context) {
+        ContextWrapper contextWrapper = new ContextWrapper(context.getApplicationContext());
+        File picturesDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File file = new File(picturesDirectory, "tempImage.png");
+        return file.getPath();
+    }
+
     public static String getDownloadFolderPath(String folder) {
         File downloadRoot = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOWNLOADS), folder);

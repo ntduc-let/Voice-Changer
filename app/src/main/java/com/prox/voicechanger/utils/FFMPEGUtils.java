@@ -35,7 +35,11 @@ public class FFMPEGUtils {
     }
 
     public static String getCMDAddImage(String fromPathMusic, String fromPathImage, String toPath) {
-        return "-loop 1 -y -i \"" + fromPathImage + "\" -i \"" + fromPathMusic + "\" -pix_fmt yuv420p -preset ultrafast -shortest -vf pad=\"width=ceil(iw/2)*2:height=ceil(ih/2)*2\" \"" + toPath + "\"";
+        return "-loop 1 -framerate 1 -y -i \"" + fromPathImage + "\" -i \"" + fromPathMusic + "\" -tune stillimage -preset ultrafast -crf 18 -c:a copy -vf format=yuv420p -r 5 -shortest \"" + toPath + "\"";
+    }
+
+    public static String getCMDConvertImage(String fromPath, String toPath) {
+        return "-y -i \"" + fromPath + "\" -preset ultrafast -vf \"scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2\" \"" + toPath + "\"";
     }
 
     public static ArrayList<Effect> getEffects() {
