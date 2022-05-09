@@ -42,23 +42,23 @@ public class RecordFragment extends Fragment {
         init();
 
         binding.btnRecord.setOnClickListener(view -> {
-            if (PermissionUtils.checkPermission(requireContext(), requireActivity())){
+            if (PermissionUtils.checkPermission(requireContext(), requireActivity())) {
                 Navigation.findNavController(binding.getRoot()).navigate(R.id.action_recordFragment_to_stopRecordFragment);
                 Log.d(TAG, "RecordFragment: To StopRecordFragment");
             }
         });
 
         binding.btnMore.setOnClickListener(view -> {
-            if (PermissionUtils.checkPermission(requireContext(), requireActivity())){
-                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_recordFragment_to_settingFragment);
-                Log.d(TAG, "RecordFragment: To SettingFragment");
-            }
+            Navigation.findNavController(binding.getRoot()).navigate(R.id.action_recordFragment_to_settingFragment);
+            Log.d(TAG, "RecordFragment: To SettingFragment");
         });
 
 
         binding.btnFile.setOnClickListener(view -> {
-            startActivity(new Intent(requireActivity(), FileVoiceActivity.class));
-            Log.d(TAG, "RecordFragment: To FileVoiceActivity");
+            if (PermissionUtils.checkPermission(requireContext(), requireActivity())){
+                startActivity(new Intent(requireActivity(), FileVoiceActivity.class));
+                Log.d(TAG, "RecordFragment: To FileVoiceActivity");
+            }
         });
 
         return binding.getRoot();
@@ -96,9 +96,9 @@ public class RecordFragment extends Fragment {
         handler.postDelayed(() -> {
             binding.btnMore.setVisibility(View.VISIBLE);
             model.getFileVoices().observe(requireActivity(), fileVoices -> {
-                if(fileVoices == null || fileVoices.size()==0){
+                if (fileVoices == null || fileVoices.size() == 0) {
                     binding.btnFile.setVisibility(View.INVISIBLE);
-                }else{
+                } else {
                     binding.btnFile.setVisibility(View.VISIBLE);
                 }
             });

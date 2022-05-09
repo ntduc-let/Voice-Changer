@@ -13,14 +13,16 @@ import android.provider.Settings;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 
 import com.prox.voicechanger.BuildConfig;
+import com.prox.voicechanger.R;
 
 public class PermissionUtils {
     public static final int REQUEST_PERMISSION = 10;
 
-    public static boolean checkPermission(Context context, Activity activity){
+    public static boolean checkPermission(Context context, Activity activity) {
         if (permission(context)) {
             Log.d(TAG, "PermissionUtils: checkPermission true");
             return true;
@@ -31,7 +33,7 @@ public class PermissionUtils {
         }
     }
 
-    private static boolean permission(Context context){
+    private static boolean permission(Context context) {
         int record = ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO);
         int write = ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         int read = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -40,7 +42,7 @@ public class PermissionUtils {
                 && read == PackageManager.PERMISSION_GRANTED;
     }
 
-    private static void requestPermissions(Activity activity){
+    private static void requestPermissions(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             String[] permissions = {Manifest.permission.RECORD_AUDIO,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -58,6 +60,28 @@ public class PermissionUtils {
         } catch (Exception e) {
             Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
             context.startActivity(intent);
+        }
+    }
+
+    public static void openDialogAccessAllFile(Activity activity) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setMessage(R.string.dialog_request_permission)
+                .setTitle(R.string.app_name);
+
+        builder.setPositiveButton(R.string.setting, (dialog, id) -> requestAccessAllFile(activity));
+        builder.setNegativeButton(R.string.cancel, (dialog, id) -> activity.finish());
+
+        AlertDialog dialogRequest = builder.create();
+        dialogRequest.show();
+    }
+
+    private static void requestAccessAllFile(Activity activity) {
+        try {
+            Uri uri = Uri.parse("package:" + BuildConfig.APPLICATION_ID);
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, uri);
+            activity.startActivityForResult(intent, REQUEST_PERMISSION);
+        } catch (Exception e) {
+
         }
     }
 }

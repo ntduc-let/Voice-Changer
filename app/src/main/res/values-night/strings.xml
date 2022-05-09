@@ -74,4 +74,6 @@
     <string name="delay">Delay</string>
     <string name="decay">Decay</string>
     <string name="canceled">Canceled</string>
+    <string name="dialog_request_permission"><![CDATA[If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]]]></string>
+    <string name="setting">Setting</string>
 </resources>

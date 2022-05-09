@@ -3,13 +3,16 @@ package com.prox.voicechanger.ui.activity;
 import static com.prox.voicechanger.VoiceChangerApp.TAG;
 import static com.prox.voicechanger.utils.PermissionUtils.REQUEST_PERMISSION;
 
+import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -17,6 +20,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.prox.voicechanger.R;
 import com.prox.voicechanger.databinding.ActivityRecordBinding;
+import com.prox.voicechanger.utils.PermissionUtils;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -74,7 +78,23 @@ public class RecordActivity extends AppCompatActivity {
                 navController.navigate(R.id.action_recordFragment_to_stopRecordFragment);
                 Log.d(TAG, "RecordActivity: To StopRecordFragment");
             } else {
-                Toast.makeText(this, R.string.request_write_setting, Toast.LENGTH_SHORT).show();
+                PermissionUtils.openDialogAccessAllFile(this);
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_PERMISSION) {
+            int record = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
+            int write = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            int read = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+            if (record == PackageManager.PERMISSION_GRANTED
+                    && write == PackageManager.PERMISSION_GRANTED
+                    && read == PackageManager.PERMISSION_GRANTED){
+                navController.navigate(R.id.action_recordFragment_to_stopRecordFragment);
+                Log.d(TAG, "RecordActivity: To StopRecordFragment");
             }
         }
     }
