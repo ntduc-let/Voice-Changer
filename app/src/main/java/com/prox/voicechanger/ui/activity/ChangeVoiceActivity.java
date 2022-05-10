@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -124,9 +125,20 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                 binding.layoutLoading.txtProcessing.setTextColor(getResources().getColor(R.color.red));
             }
         });
-        model.isExecute().observe(this, execute -> {
+        model.isExecuteConvertRecording().observe(this, execute -> {
             if (execute){
                 selectEffect(FFMPEGUtils.getEffects().get(0));
+            }
+        });
+        model.isExecuteSave().observe(this, execute -> {
+            if (execute){
+                startActivity(new Intent(ChangeVoiceActivity.this, FileVoiceActivity.class));
+                Toast.makeText(this, R.string.save_success, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "ChangeVoiceActivity: To FileVoiceActivity");
+            }else{
+                startActivity(new Intent(ChangeVoiceActivity.this, FileVoiceActivity.class));
+                Log.d(TAG, "ChangeVoiceActivity: To FileVoiceActivity");
+                Toast.makeText(this, R.string.save_fail, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -162,17 +174,13 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                         fileVoice.setDate(new Date().getTime());
                         model.update(fileVoice);
                     }
-
-                    startActivity(new Intent(ChangeVoiceActivity.this, FileVoiceActivity.class));
-                    Log.d(TAG, "ChangeVoiceActivity: To FileVoiceActivity");
+                    model.setExecuteSave(true);
                     dialog.cancel();
                 }
 
                 @Override
                 public void onFailed() {
-                    startActivity(new Intent(ChangeVoiceActivity.this, FileVoiceActivity.class));
-                    Log.d(TAG, "ChangeVoiceActivity: To FileVoiceActivity");
-                    finish();
+                    model.setExecuteSave(false);
                     dialog.cancel();
                 }
             });
@@ -320,12 +328,12 @@ public class ChangeVoiceActivity extends AppCompatActivity {
             FFMPEGUtils.executeFFMPEG(cmd, new FFmpegExecuteCallback() {
                 @Override
                 public void onSuccess() {
-                    model.setExecute(true);
+                    model.setExecuteConvertRecording(true);
                 }
 
                 @Override
                 public void onFailed() {
-                    model.setExecute(false);
+                    model.setExecuteConvertRecording(false);
                 }
             });
         }

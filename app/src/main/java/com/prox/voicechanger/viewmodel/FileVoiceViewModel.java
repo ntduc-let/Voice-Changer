@@ -24,7 +24,9 @@ public class FileVoiceViewModel extends ViewModel {
 
     private final MutableLiveData<List<FileVoice>> fileVoices;
     private final MutableLiveData<String> pathPlayer = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> isExecute = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isExecuteConvertRecording = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isExecuteSave = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isExecuteAddImage = new MutableLiveData<>();
 
     @Inject
     public FileVoiceViewModel(@NonNull FileVoiceRepository repository) {
@@ -49,12 +51,28 @@ public class FileVoiceViewModel extends ViewModel {
         pathPlayer.postValue(path);
     }
 
-    public void setExecute(Boolean b){
-        isExecute.postValue(b);
+    public void setExecuteConvertRecording(Boolean b){
+        isExecuteConvertRecording.postValue(b);
     }
 
-    public LiveData<Boolean> isExecute() {
-        return isExecute;
+    public LiveData<Boolean> isExecuteConvertRecording() {
+        return isExecuteConvertRecording;
+    }
+
+    public void setExecuteSave(Boolean b){
+        isExecuteSave.postValue(b);
+    }
+
+    public LiveData<Boolean> isExecuteSave() {
+        return isExecuteSave;
+    }
+
+    public void setExecuteAddImage(Boolean b){
+        isExecuteAddImage.postValue(b);
+    }
+
+    public LiveData<Boolean> isExecuteAddImage() {
+        return isExecuteAddImage;
     }
 
     public void insert(FileVoice fileVoice){

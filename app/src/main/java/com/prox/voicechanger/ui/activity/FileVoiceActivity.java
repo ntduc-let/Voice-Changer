@@ -22,10 +22,12 @@ import com.prox.voicechanger.adapter.FileVoiceAdapter;
 import com.prox.voicechanger.databinding.ActivityFileVoiceBinding;
 import com.prox.voicechanger.databinding.DialogDeleteAllBinding;
 import com.prox.voicechanger.databinding.DialogLoadingBinding;
+import com.prox.voicechanger.databinding.DialogPlayVideoBinding;
 import com.prox.voicechanger.interfaces.FFmpegExecuteCallback;
 import com.prox.voicechanger.ui.dialog.DeleteAllDialog;
 import com.prox.voicechanger.ui.dialog.LoadingDialog;
 import com.prox.voicechanger.ui.dialog.OptionDialog;
+import com.prox.voicechanger.ui.dialog.PlayVideoDialog;
 import com.prox.voicechanger.utils.FFMPEGUtils;
 import com.prox.voicechanger.utils.FileUtils;
 import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
@@ -38,6 +40,8 @@ public class FileVoiceActivity extends AppCompatActivity {
     private ActivityFileVoiceBinding binding;
     private FileVoiceAdapter adapter;
     private FileVoiceViewModel model;
+    private String pathVideo;
+    private PlayVideoDialog playVideoDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +66,19 @@ public class FileVoiceActivity extends AppCompatActivity {
             adapter.setFileVoices(fileVoices);
             if (fileVoices != null){
                 binding.recyclerViewFileVoice.setItemViewCacheSize(fileVoices.size());
+            }
+        });
+        model.isExecuteAddImage().observe(this, execute -> {
+            if (execute){
+                playVideoDialog = new PlayVideoDialog(
+                        FileVoiceActivity.this,
+                        DialogPlayVideoBinding.inflate(getLayoutInflater()),
+                        pathVideo
+                );
+                playVideoDialog.show();
+                Toast.makeText(this, "Save: "+pathVideo, Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(this, R.string.video_creation_failed, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -91,6 +108,9 @@ public class FileVoiceActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         adapter.pause();
+        if (playVideoDialog!=null){
+            playVideoDialog.stop();
+        }
     }
 
     @Override
@@ -136,7 +156,7 @@ public class FileVoiceActivity extends AppCompatActivity {
                     dialog.show();
 
                     String pathImage = FileUtils.getFilePathForN(this, data.getData());
-                    String pathVideo = FileUtils.getDCIMFolderPath(FOLDER_APP) + "/"+FileUtils.getVideoFileName();
+                    pathVideo = FileUtils.getDCIMFolderPath(FOLDER_APP) + "/"+FileUtils.getVideoFileName();
                     String cmdConvertImage = FFMPEGUtils.getCMDConvertImage(pathImage, FileUtils.getTempImagePath(this));
                     FFMPEGUtils.executeFFMPEG(cmdConvertImage, new FFmpegExecuteCallback() {
                         @Override
@@ -146,14 +166,13 @@ public class FileVoiceActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess() {
                                     dialog.cancel();
-                                    Intent intent = new Intent(FileVoiceActivity.this, PlayVideoActivity.class);
-                                    intent.putExtra(PATH_VIDEO, pathVideo);
-                                    startActivity(intent);
+                                    model.setExecuteAddImage(true);
                                 }
 
                                 @Override
                                 public void onFailed() {
-
+                                    dialog.cancel();
+                                    model.setExecuteAddImage(false);
                                 }
                             });
                         }
