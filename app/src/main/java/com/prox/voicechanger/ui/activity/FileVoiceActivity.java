@@ -24,6 +24,7 @@ import com.prox.voicechanger.databinding.DialogDeleteAllBinding;
 import com.prox.voicechanger.databinding.DialogLoadingBinding;
 import com.prox.voicechanger.databinding.DialogPlayVideoBinding;
 import com.prox.voicechanger.interfaces.FFmpegExecuteCallback;
+import com.prox.voicechanger.model.FileVoice;
 import com.prox.voicechanger.ui.dialog.DeleteAllDialog;
 import com.prox.voicechanger.ui.dialog.LoadingDialog;
 import com.prox.voicechanger.ui.dialog.OptionDialog;
@@ -31,6 +32,8 @@ import com.prox.voicechanger.ui.dialog.PlayVideoDialog;
 import com.prox.voicechanger.utils.FFMPEGUtils;
 import com.prox.voicechanger.utils.FileUtils;
 import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
+
+import java.io.File;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -84,7 +87,7 @@ public class FileVoiceActivity extends AppCompatActivity {
 
         init();
 
-        binding.btnBack3.setOnClickListener(view -> finish());
+        binding.btnBack3.setOnClickListener(view -> onBackPressed());
 
         binding.btnDeleteAll.setOnClickListener(view -> {
             adapter.release();
@@ -100,12 +103,22 @@ public class FileVoiceActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        Log.d(TAG, "FileVoiceActivity: onStart");
         super.onStart();
+        if (adapter.getFileVoices() == null){
+            return;
+        }
+        for (FileVoice fileVoice : adapter.getFileVoices()){
+            if (!(new File(fileVoice.getPath()).exists())){
+                model.delete(fileVoice);
+            }
+        }
         adapter.resume();
     }
 
     @Override
     protected void onStop() {
+        Log.d(TAG, "FileVoiceActivity: onStop");
         super.onStop();
         adapter.pause();
         if (playVideoDialog!=null){
@@ -187,5 +200,12 @@ public class FileVoiceActivity extends AppCompatActivity {
                 Toast.makeText(this, R.string.canceled, Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "FileVoiceActivity: onBackPressed");
+        adapter.release();
+        finish();
     }
 }

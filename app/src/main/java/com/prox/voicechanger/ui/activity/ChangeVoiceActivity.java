@@ -150,6 +150,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         binding.btnBack2.setOnClickListener(view -> onBackPressed());
 
         binding.btnSave2.setOnClickListener(view -> {
+            pausePlayer();
             LoadingDialog dialog = new LoadingDialog(
                     this,
                     DialogLoadingBinding.inflate(getLayoutInflater())
@@ -234,6 +235,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        Log.d(TAG, "ChangeVoiceActivity: onStart");
         super.onStart();
         if (isPlaying){
             resumePlayer();
@@ -242,6 +244,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
+        Log.d(TAG, "ChangeVoiceActivity: onStop");
         super.onStop();
         if (isPlaying){
             pausePlayer();

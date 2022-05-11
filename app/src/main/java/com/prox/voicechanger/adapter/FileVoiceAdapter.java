@@ -25,6 +25,7 @@ import com.prox.voicechanger.ui.dialog.OptionDialog;
 import com.prox.voicechanger.utils.NumberUtils;
 import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
     private final Activity activity;
     private final FileVoiceViewModel model;
     private boolean isPlaying;
+    private String path;
 
     private MediaPlayer player;
     private FileVoiceViewHolder holderSelect;
@@ -92,6 +94,7 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
             if (holderSelect == null){
                 holderSelect = holder;
                 player = new MediaPlayer();
+                path = fileVoice.getPath();
                 startMediaPlayer(fileVoice.getPath());
                 isPlaying = true;
             }else if (holderSelect.equals(holder)){
@@ -105,7 +108,8 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
             }else {
                 stopMediaPlayer();
                 holderSelect = holder;
-                startMediaPlayer(fileVoice.getPath());
+                path = fileVoice.getPath();
+                startMediaPlayer(path);
                 isPlaying = true;
             }
         });
@@ -149,6 +153,18 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
     }
 
     public void resume(){
+        if (path == null){
+            return;
+        }
+        if (!(new File(path).exists())){
+            isPlaying = false;
+            handler.removeCallbacks(updateTime);
+
+//            holderSelect.binding.btnPlayOrPause.setText(R.string.play);
+//            holderSelect.binding.itemPlayMedia.getRoot().setVisibility(View.GONE);
+//            holderSelect = null;
+            return;
+        }
         if (isPlaying){
             resumeMediaPlayer();
         }

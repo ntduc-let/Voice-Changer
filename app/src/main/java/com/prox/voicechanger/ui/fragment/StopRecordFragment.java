@@ -142,6 +142,8 @@ public class StopRecordFragment extends Fragment {
     }
 
     private void popBackStack() {
+        stopRecord();
+
         NavController navController= Navigation.findNavController(requireActivity(), R.id.nav_host_record_activity);
         navController.popBackStack();
         Log.d(TAG, "StopRecordFragment: To RecordFragment");
