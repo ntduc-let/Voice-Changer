@@ -19,6 +19,8 @@ import com.prox.voicechanger.R;
 import com.prox.voicechanger.databinding.ActivitySplashBinding;
 import com.prox.voicechanger.utils.FileUtils;
 
+import java.io.File;
+
 @SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
     public static final String SPLASH_TO_CHANGE_VOICE = "SPLASH_TO_CHANGE_VOICE";
@@ -30,6 +32,7 @@ public class SplashActivity extends AppCompatActivity {
         Log.d(TAG, "SplashActivity: onCreate");
         super.onCreate(savedInstanceState);
         binding = ActivitySplashBinding.inflate(getLayoutInflater());
+        recreate();
         setContentView(binding.getRoot());
 
         init();
@@ -65,34 +68,44 @@ public class SplashActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent==null){
             Log.d(TAG, "SplashActivity: Intent null");
-            Intent goToRecord = new Intent(SplashActivity.this, RecordActivity.class);
-            startActivity(goToRecord);
-            Log.d(TAG, "SplashActivity: To RecordActivity");
-            finish();
+            goToRecord();
         }else if (intent.getAction()==null){
             Log.d(TAG, "SplashActivity: Action null");
-            Intent goToRecord = new Intent(SplashActivity.this, RecordActivity.class);
-            startActivity(goToRecord);
-            Log.d(TAG, "SplashActivity: To RecordActivity");
-            finish();
+            goToRecord();
         }else if (intent.getAction().equals(Intent.ACTION_MAIN)){
             Log.d(TAG, "SplashActivity: Intent.ACTION_MAIN");
-            Intent goToRecord = new Intent(SplashActivity.this, RecordActivity.class);
-            startActivity(goToRecord);
-            Log.d(TAG, "SplashActivity: To RecordActivity");
-            finish();
+            goToRecord();
         }else if (intent.getAction().equals(Intent.ACTION_VIEW)){
             Log.d(TAG, "SplashActivity: Intent.ACTION_VIEW");
             Uri data = getIntent().getData();
+            if (data == null){
+                Log.d(TAG, "SplashActivity: data null");
+                goToRecord();
+            }
             String filePath = FileUtils.getFilePathForN(this, data);
-            Log.d(TAG, "SplashActivity: filePath "+filePath);
+            if (filePath.isEmpty()){
+                Log.d(TAG, "SplashActivity: filePath isEmpty");
+                goToRecord();
+            }else if(!(new File(filePath).exists())){
+                Log.d(TAG, "SplashActivity: filePath not exists");
+                goToRecord();
+            }else{
+                Log.d(TAG, "SplashActivity: filePath "+filePath);
 
-            Intent goToChangeVoice = new Intent(SplashActivity.this, ChangeVoiceActivity.class);
-            goToChangeVoice.setAction(SPLASH_TO_CHANGE_VOICE);
-            goToChangeVoice.putExtra(PATH_FILE, filePath);
-            startActivity(goToChangeVoice);
-            Log.d(TAG, "SplashActivity: To ChangeVoiceActivity");
-            finish();
+                Intent goToChangeVoice = new Intent(SplashActivity.this, ChangeVoiceActivity.class);
+                goToChangeVoice.setAction(SPLASH_TO_CHANGE_VOICE);
+                goToChangeVoice.putExtra(PATH_FILE, filePath);
+                startActivity(goToChangeVoice);
+                Log.d(TAG, "SplashActivity: To ChangeVoiceActivity");
+                finish();
+            }
         }
+    }
+
+    private void goToRecord(){
+        Intent goToRecord = new Intent(SplashActivity.this, RecordActivity.class);
+        startActivity(goToRecord);
+        Log.d(TAG, "SplashActivity: To RecordActivity");
+        finish();
     }
 }

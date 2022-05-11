@@ -81,7 +81,7 @@ public class PermissionUtils {
             Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, uri);
             activity.startActivityForResult(intent, REQUEST_PERMISSION);
         } catch (Exception e) {
-
+            Log.d(TAG, "requestAccessAllFile: error "+e.getMessage());
         }
     }
 }

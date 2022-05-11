@@ -31,7 +31,15 @@ public class StopRecordFragment extends Fragment {
     private boolean isStop;
 
     private final Handler handler = new Handler();
-    private Runnable runnableAnimation, runnableTime;
+    private Runnable runnableAnimation;
+    private Runnable runnableTime = new Runnable() {
+        @Override
+        public void run() {
+            binding.timelineTextView.setText(NumberUtils.formatAsTime(recorder.getCurrentTime()));
+            binding.visualizer.addAmp(recorder.getMaxAmplitude(), recorder.getTickDuration());
+            handler.post(this);
+        }
+    };
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -118,15 +126,6 @@ public class StopRecordFragment extends Fragment {
         Log.d(TAG, "StopRecordFragment: recording");
         recorder = new Recorder(requireContext());
         recorder.start();
-
-        runnableTime = new Runnable() {
-            @Override
-            public void run() {
-                binding.timelineTextView.setText(NumberUtils.formatAsTime(recorder.getCurrentTime()));
-                binding.visualizer.addAmp(recorder.getMaxAmplitude(), recorder.getTickDuration());
-                handler.post(this);
-            }
-        };
         handler.post(runnableTime);
     }
 

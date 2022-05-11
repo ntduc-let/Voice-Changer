@@ -48,7 +48,6 @@ public class RecordFragment extends Fragment {
             Log.d(TAG, "RecordFragment: To SettingFragment");
         });
 
-
         binding.btnMoreOption.setOnClickListener(view -> {
             MoreOptionDialog dialog = new MoreOptionDialog(
                     requireContext(),
@@ -66,7 +65,6 @@ public class RecordFragment extends Fragment {
         Log.d(TAG, "RecordFragment: onDestroyView");
         super.onDestroyView();
         handler.removeCallbacks(runnableAnimation);
-        runnableAnimation = null;
         binding = null;
     }
 
