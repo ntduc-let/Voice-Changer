@@ -98,8 +98,6 @@ public class StopRecordFragment extends Fragment {
         Log.d(TAG, "StopRecordFragment: onDestroyView");
         super.onDestroyView();
         stopRecord();
-        runnableAnimation=null;
-        runnableTime=null;
         binding = null;
         isStop = false;
     }

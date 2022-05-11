@@ -100,7 +100,10 @@ public class Recorder implements RecorderListener {
     }
 
     public int getMaxAmplitude() {
-        return recorder.getMaxAmplitude();
+        if (recorder != null){
+            return recorder.getMaxAmplitude();
+        }
+        return 0;
     }
 
     public String getPath() {
