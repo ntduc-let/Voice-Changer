@@ -147,6 +147,7 @@ public class FileVoiceActivity extends AppCompatActivity {
         Intent intent = new Intent(this, RecordActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+        overridePendingTransition(R.anim.anim_left_right_1, R.anim.anim_left_right_2);
         finish();
     }
 
@@ -229,5 +230,6 @@ public class FileVoiceActivity extends AppCompatActivity {
         Log.d(TAG, "FileVoiceActivity: onBackPressed");
         adapter.release();
         finish();
+        overridePendingTransition(R.anim.anim_left_right_1, R.anim.anim_left_right_2);
     }
 }

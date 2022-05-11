@@ -12,10 +12,18 @@
         tools:layout="@layout/fragment_record" >
         <action
             android:id="@+id/action_recordFragment_to_stopRecordFragment"
-            app:destination="@id/stopRecordFragment" />
+            app:destination="@id/stopRecordFragment"
+            app:popEnterAnim="@anim/anim_left_right_1"
+            app:popExitAnim="@anim/anim_left_right_2"
+            app:enterAnim="@anim/anim_right_left_1"
+            app:exitAnim="@anim/anim_right_left_2" />
         <action
             android:id="@+id/action_recordFragment_to_settingFragment"
-            app:destination="@id/settingFragment" />
+            app:destination="@id/settingFragment"
+            app:popEnterAnim="@anim/anim_left_right_1"
+            app:popExitAnim="@anim/anim_left_right_2"
+            app:enterAnim="@anim/anim_right_left_1"
+            app:exitAnim="@anim/anim_right_left_2" />
     </fragment>
     <fragment
         android:id="@+id/stopRecordFragment"

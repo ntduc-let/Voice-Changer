@@ -133,6 +133,7 @@ public class RecordActivity extends AppCompatActivity {
                         goToChangeVoice.setAction(IMPORT_TO_CHANGE_VOICE);
                         goToChangeVoice.putExtra(PATH_FILE, filePath);
                         startActivity(goToChangeVoice);
+                        overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
                         Log.d(TAG, "RecordActivity: To ChangeVoiceActivity");
                     }
                 }

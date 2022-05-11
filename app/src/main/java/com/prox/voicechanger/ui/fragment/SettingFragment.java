@@ -61,6 +61,7 @@ public class SettingFragment extends Fragment {
                 Log.d(TAG, "SettingFragment: Application not installed");
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(URI_FACEBOOK)));
             }
+            requireActivity().overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
             Log.d(TAG, "SettingFragment: To "+URI_FACEBOOK);
         });
 
@@ -79,11 +80,13 @@ public class SettingFragment extends Fragment {
 
         binding.btnPolicy.setOnClickListener(view -> {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(URI_POLICY)));
+            requireActivity().overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
             Log.d(TAG, "SettingFragment: To "+URI_POLICY);
         });
 
         binding.btnTerms.setOnClickListener(view -> {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(URI_TERMS)));
+            requireActivity().overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
             Log.d(TAG, "SettingFragment: To "+URI_TERMS);
         });
 

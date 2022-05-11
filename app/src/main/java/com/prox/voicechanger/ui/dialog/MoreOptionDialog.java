@@ -16,6 +16,7 @@ import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 
+import com.prox.voicechanger.R;
 import com.prox.voicechanger.databinding.DialogMoreOptionBinding;
 import com.prox.voicechanger.databinding.DialogTextToVoiceBinding;
 import com.prox.voicechanger.ui.activity.FileVoiceActivity;
@@ -35,6 +36,7 @@ public class MoreOptionDialog extends Dialog {
         layoutParams.gravity = Gravity.TOP|Gravity.END;
         layoutParams.y = 32;
         layoutParams.x = 16;
+        layoutParams.windowAnimations = R.style.MoreOptionDialogAnimation;
         getWindow().setAttributes(layoutParams);
         setCancelable(true);
 
@@ -42,6 +44,7 @@ public class MoreOptionDialog extends Dialog {
             Log.d(TAG, "MoreOptionDialog: Import pre-recorded sound");
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
             activity.startActivityForResult(intent, SELECT_AUDIO);
+            activity.overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
             cancel();
         });
 
@@ -60,6 +63,7 @@ public class MoreOptionDialog extends Dialog {
             Log.d(TAG, "MoreOptionDialog: Recorded file");
             activity.startActivity(new Intent(activity, FileVoiceActivity.class));
             Log.d(TAG, "MoreOptionDialog: To FileVoiceActivity");
+            activity.overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
             cancel();
         });
     }

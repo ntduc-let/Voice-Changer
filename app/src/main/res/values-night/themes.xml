@@ -10,7 +10,16 @@
         <item name="colorSecondaryVariant">@color/teal_200</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor" >?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+    </style>
+
+    <style name="MoreOptionDialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/anim_right_left_1</item>
+        <item name="android:windowExitAnimation">@anim/anim_left_right_2</item>
+    </style>
+    <style name="CustomDialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/anim_bottom_top_1</item>
+        <item name="android:windowExitAnimation">@anim/anim_top_bottom_2</item>
     </style>
 </resources>

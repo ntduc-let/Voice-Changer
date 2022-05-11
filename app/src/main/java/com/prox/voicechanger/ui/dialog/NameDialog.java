@@ -71,6 +71,7 @@ public class NameDialog extends CustomDialog {
                     intent.setAction(RECORD_TO_CHANGE_VOICE);
                     intent.putExtra(NAME_FILE, FileUtils.getName(path));
                     activity.startActivity(intent);
+                    activity.overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
                     cancel();
                 }
 

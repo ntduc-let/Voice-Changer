@@ -137,10 +137,12 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         model.isExecuteSave().observe(this, execute -> {
             if (execute) {
                 startActivity(new Intent(ChangeVoiceActivity.this, FileVoiceActivity.class));
+                overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
                 Toast.makeText(this, R.string.save_success, Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "ChangeVoiceActivity: To FileVoiceActivity");
             } else {
                 startActivity(new Intent(ChangeVoiceActivity.this, FileVoiceActivity.class));
+                overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
                 Log.d(TAG, "ChangeVoiceActivity: To FileVoiceActivity");
                 Toast.makeText(this, R.string.save_fail, Toast.LENGTH_SHORT).show();
             }
@@ -288,6 +290,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         Intent intent = new Intent(this, RecordActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+        overridePendingTransition(R.anim.anim_left_right_1, R.anim.anim_left_right_2);
         Log.d(TAG, "ChangeVoiceActivity: To RecordActivity");
         finish();
     }
