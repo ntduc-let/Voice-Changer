@@ -32,7 +32,7 @@ public class SplashActivity extends AppCompatActivity {
         Log.d(TAG, "SplashActivity: onCreate");
         super.onCreate(savedInstanceState);
         binding = ActivitySplashBinding.inflate(getLayoutInflater());
-        recreate();
+
         setContentView(binding.getRoot());
 
         init();

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -29,10 +30,11 @@ public class StopRecordFragment extends Fragment {
     private FragmentStopRecordBinding binding;
     private Recorder recorder;
     private boolean isStop;
+    private boolean isPopBackStack;
 
     private final Handler handler = new Handler();
     private Runnable runnableAnimation;
-    private Runnable runnableTime = new Runnable() {
+    private final Runnable runnableTime = new Runnable() {
         @Override
         public void run() {
             binding.timelineTextView.setText(NumberUtils.formatAsTime(recorder.getCurrentTime()));
@@ -83,6 +85,7 @@ public class StopRecordFragment extends Fragment {
         super.onStart();
         if (isStop){
             popBackStack();
+            isPopBackStack = true;
         }
     }
 
@@ -91,6 +94,9 @@ public class StopRecordFragment extends Fragment {
         Log.d(TAG, "StopRecordFragment: onStop");
         super.onStop();
         isStop = true;
+        if (!isPopBackStack){
+            Toast.makeText(requireContext(), "Stop Recording", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

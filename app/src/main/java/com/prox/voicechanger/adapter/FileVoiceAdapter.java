@@ -27,6 +27,7 @@ import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.FileVoiceViewHolder> {
@@ -44,26 +45,36 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
     private final Runnable updateTime = new Runnable() {
         @Override
         public void run() {
-            holderSelect.binding.itemPlayMedia.txtCurrentTime2.setText(NumberUtils.formatAsTime(player.getCurrentPosition()));
-            holderSelect.binding.itemPlayMedia.seekTime.setProgress(player.getCurrentPosition());
-            handler.post(this);
+            if (player == null) {
+                Log.d(TAG, "FileVoiceAdapter: player null");
+            } else {
+                holderSelect.binding.itemPlayMedia.txtCurrentTime2.setText(NumberUtils.formatAsTime(player.getCurrentPosition()));
+                holderSelect.binding.itemPlayMedia.seekTime.setProgress(player.getCurrentPosition());
+                handler.post(this);
+            }
         }
     };
 
-    public FileVoiceAdapter(Context context, Activity activity, FileVoiceViewModel model){
+    public FileVoiceAdapter(Context context, Activity activity, FileVoiceViewModel model) {
         this.context = context;
         this.activity = activity;
         this.model = model;
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setFileVoices(List<FileVoice> fileVoices){
-        this.fileVoices = fileVoices;
-        notifyDataSetChanged();
+    public void setFileVoices(List<FileVoice> fileVoices) {
+        if (fileVoices != null) {
+            this.fileVoices = fileVoices;
+            notifyDataSetChanged();
+        }
     }
 
-    public List<FileVoice> getFileVoices(){
-        return fileVoices;
+    public List<FileVoice> getFileVoices() {
+        if (fileVoices == null) {
+            return new ArrayList<>();
+        } else {
+            return fileVoices;
+        }
     }
 
     @NonNull
@@ -78,7 +89,7 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
         FileVoice fileVoice = fileVoices.get(position);
         holder.binding.imgFile.setImageResource(fileVoice.getSrc());
         holder.binding.txtNameFile.setText(fileVoice.getName());
-        holder.binding.txtSize.setText(NumberUtils.formatAsTime(fileVoice.getDuration())+" | "+fileVoice.getSize()/1024 + "kB");
+        holder.binding.txtSize.setText(NumberUtils.formatAsTime(fileVoice.getDuration()) + " | " + fileVoice.getSize() / 1024 + "kB");
         holder.binding.txtDate.setText(NumberUtils.formatAsDate(fileVoice.getDate()));
         holder.binding.btnOption.setOnClickListener(view -> {
             release();
@@ -91,48 +102,81 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
             dialog.show();
         });
         holder.binding.btnPlayOrPause.setOnClickListener(view -> {
-            if (holderSelect == null){
+            if (holderSelect == null) {
                 holderSelect = holder;
                 player = new MediaPlayer();
                 path = fileVoice.getPath();
-                startMediaPlayer(fileVoice.getPath());
-                isPlaying = true;
-            }else if (holderSelect.equals(holder)){
-                if (player.isPlaying()){
+                if (!(new File(path).exists())) {
+                    model.delete(fileVoice);
+                } else {
+                    startMediaPlayer(fileVoice.getPath());
+                    isPlaying = true;
+                }
+            } else if (holderSelect.equals(holder)) {
+                if (player == null) {
+                    player = new MediaPlayer();
+                    path = fileVoice.getPath();
+                    if (!(new File(path).exists())) {
+                        model.delete(fileVoice);
+                    } else {
+                        startMediaPlayer(fileVoice.getPath());
+                        isPlaying = true;
+                    }
+                } else if (player.isPlaying()) {
                     pauseMediaPlayer();
                     isPlaying = false;
-                }else {
+                } else {
                     resumeMediaPlayer();
                     isPlaying = true;
                 }
-            }else {
+            } else {
                 stopMediaPlayer();
                 holderSelect = holder;
+
+                if (player == null) {
+                    player = new MediaPlayer();
+                }
                 path = fileVoice.getPath();
-                startMediaPlayer(path);
-                isPlaying = true;
+                if (!(new File(path).exists())) {
+                    model.delete(fileVoice);
+                } else {
+                    startMediaPlayer(fileVoice.getPath());
+                    isPlaying = true;
+                }
             }
         });
         holder.binding.itemPlayMedia.seekTime.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                if (b){
-                    player.seekTo(i);
-                    holder.binding.itemPlayMedia.txtCurrentTime2.setText(NumberUtils.formatAsTime(player.getCurrentPosition()));
+                if (b) {
+                    if (player != null) {
+                        player.seekTo(i);
+                        holder.binding.itemPlayMedia.txtCurrentTime2.setText(NumberUtils.formatAsTime(player.getCurrentPosition()));
+                    } else {
+                        holder.binding.itemPlayMedia.getRoot().setVisibility(View.GONE);
+                    }
                 }
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                if (player.isPlaying()){
-                    handler.removeCallbacks(updateTime);
+                if (player != null) {
+                    if (player.isPlaying()) {
+                        handler.removeCallbacks(updateTime);
+                    }
+                } else {
+                    holder.binding.itemPlayMedia.getRoot().setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                if (player.isPlaying()){
-                    handler.post(updateTime);
+                if (player != null) {
+                    if (player.isPlaying()) {
+                        handler.post(updateTime);
+                    }
+                } else {
+                    holder.binding.itemPlayMedia.getRoot().setVisibility(View.GONE);
                 }
             }
         });
@@ -140,37 +184,35 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
 
     @Override
     public int getItemCount() {
-        if (fileVoices == null){
+        if (fileVoices == null) {
             return 0;
         }
         return fileVoices.size();
     }
 
-    public void pause(){
-        if (isPlaying){
+    public void pause() {
+        if (isPlaying) {
             pauseMediaPlayer();
         }
     }
 
-    public void resume(){
-        if (path == null){
-            return;
-        }
-        if (!(new File(path).exists())){
+    public void resume() {
+        if (path == null || !(new File(path).exists())) {
             isPlaying = false;
             handler.removeCallbacks(updateTime);
-
-//            holderSelect.binding.btnPlayOrPause.setText(R.string.play);
-//            holderSelect.binding.itemPlayMedia.getRoot().setVisibility(View.GONE);
-//            holderSelect = null;
             return;
         }
-        if (isPlaying){
-            resumeMediaPlayer();
+        if (isPlaying) {
+            if (player == null) {
+                player = new MediaPlayer();
+                startMediaPlayer(path);
+            }else {
+                resumeMediaPlayer();
+            }
         }
     }
 
-    public static class FileVoiceViewHolder extends RecyclerView.ViewHolder{
+    public static class FileVoiceViewHolder extends RecyclerView.ViewHolder {
         private final ItemFileVoiceBinding binding;
 
         public FileVoiceViewHolder(@NonNull ItemFileVoiceBinding binding) {
@@ -180,8 +222,8 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
     }
 
     private void startMediaPlayer(String path) {
-        Log.d(TAG, "FileVoiceAdapter: startMediaPlayer "+path);
-        if (player == null){
+        Log.d(TAG, "FileVoiceAdapter: startMediaPlayer " + path);
+        if (player == null) {
             return;
         }
         try {
@@ -196,14 +238,14 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
                 holderSelect.binding.itemPlayMedia.getRoot().setVisibility(View.VISIBLE);
             });
         } catch (IOException e) {
-            Log.d(TAG, "FileVoiceAdapter: "+e.getMessage());
+            Log.d(TAG, "FileVoiceAdapter: " + e.getMessage());
         }
         updateTime();
     }
 
     private void pauseMediaPlayer() {
         Log.d(TAG, "FileVoiceAdapter: pauseMediaPlayer");
-        if (player == null){
+        if (player == null) {
             return;
         }
         player.pause();
@@ -214,7 +256,7 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
 
     private void resumeMediaPlayer() {
         Log.d(TAG, "FileVoiceAdapter: resumeMediaPlayer");
-        if (player == null){
+        if (player == null) {
             return;
         }
         player.start();
@@ -225,7 +267,7 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
 
     private void stopMediaPlayer() {
         Log.d(TAG, "FileVoiceAdapter: stopMediaPlayer");
-        if (player == null){
+        if (player == null) {
             return;
         }
         player.stop();
@@ -237,12 +279,12 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
 
     public void release() {
         Log.d(TAG, "FileVoiceAdapter: release");
-        if (player == null){
+        if (player == null) {
             return;
         }
-        if (player.isPlaying()){
+        if (player.isPlaying()) {
             stopMediaPlayer();
-        }else {
+        } else {
             holderSelect.binding.itemPlayMedia.getRoot().setVisibility(View.GONE);
         }
 
@@ -251,11 +293,13 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
         holderSelect = null;
     }
 
-    private void updateTime(){
+    private void updateTime() {
         Log.d(TAG, "FileVoiceAdapter: updateTime");
-        holderSelect.binding.itemPlayMedia.seekTime.setMax(player.getDuration());
-        holderSelect.binding.itemPlayMedia.txtTotalTime2.setText(NumberUtils.formatAsTime(player.getDuration()));
+        if (player != null){
+            holderSelect.binding.itemPlayMedia.seekTime.setMax(player.getDuration());
+            holderSelect.binding.itemPlayMedia.txtTotalTime2.setText(NumberUtils.formatAsTime(player.getDuration()));
 
-        handler.post(updateTime);
+            handler.post(updateTime);
+        }
     }
 }

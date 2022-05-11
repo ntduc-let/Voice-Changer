@@ -10,11 +10,14 @@ import android.util.Log;
 import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 
 import com.prox.voicechanger.R;
 import com.prox.voicechanger.databinding.DialogPlayVideoBinding;
 import com.prox.voicechanger.utils.FileUtils;
 import com.prox.voicechanger.utils.NumberUtils;
+
+import java.io.File;
 
 public class PlayVideoDialog extends CustomDialog {
     private final DialogPlayVideoBinding binding;
@@ -51,42 +54,75 @@ public class PlayVideoDialog extends CustomDialog {
             this.player.setLooping(true);
         });
 
+        binding.videoView.setOnErrorListener((mp, what, extra) -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setMessage(R.string.dialog_video_error)
+                    .setTitle(R.string.app_name);
+
+            builder.setPositiveButton(R.string.ok, (dialog, id) -> cancel());
+
+            AlertDialog dialogRequest = builder.create();
+            dialogRequest.show();
+
+            return true;
+        });
+
         binding.seekTime2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 if (b) {
-                    player.seekTo(i);
-                    binding.txtCurrentTime2.setText(NumberUtils.formatAsTime(player.getCurrentPosition()));
+                    if (player != null && (new File(path).exists())){
+                        player.seekTo(i);
+                        binding.txtCurrentTime2.setText(NumberUtils.formatAsTime(player.getCurrentPosition()));
+                    }else {
+                        cancel();
+                    }
+
                 }
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                if (player.isPlaying()) {
-                    handler.removeCallbacks(updateTime);
+                if (player != null && (new File(path).exists())){
+                    if (player.isPlaying()) {
+                        handler.removeCallbacks(updateTime);
+                    }
+                }else {
+                    cancel();
                 }
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                if (player.isPlaying()) {
-                    handler.post(updateTime);
+                if (player != null && (new File(path).exists())){
+                    if (player.isPlaying()) {
+                        handler.post(updateTime);
+                    }
+                }else {
+                    cancel();
                 }
             }
         });
 
         binding.btnPauseOrResume2.setOnClickListener(view -> {
-            if (player.isPlaying()) {
-                pauseVideo();
-            } else {
-                resumeVideo();
+            if (player != null && (new File(path).exists())){
+                if (player.isPlaying()) {
+                    pauseVideo();
+                } else {
+                    resumeVideo();
+                }
+            }else {
+                cancel();
             }
+
         });
 
         binding.btnClose2.setOnClickListener(view -> {
             stop();
-            player.stop();
-            player.release();
+            if (player != null && (new File(path).exists())){
+                player.stop();
+                player.release();
+            }
             cancel();
         });
     }

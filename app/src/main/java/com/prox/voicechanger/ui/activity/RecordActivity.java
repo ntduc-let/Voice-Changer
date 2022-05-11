@@ -122,8 +122,10 @@ public class RecordActivity extends AppCompatActivity {
                     String filePath = FileUtils.getFilePathForN(this, data.getData());
                     if (filePath.isEmpty()){
                         Log.d(TAG, "RecordActivity: filePath isEmpty");
+                        Toast.makeText(this, R.string.file_not_exist, Toast.LENGTH_SHORT).show();
                     }else if(!(new File(filePath).exists())){
                         Log.d(TAG, "RecordActivity: filePath not exists");
+                        Toast.makeText(this, R.string.file_not_exist, Toast.LENGTH_SHORT).show();
                     }else{
                         Log.d(TAG, "RecordActivity: filePath "+filePath);
 

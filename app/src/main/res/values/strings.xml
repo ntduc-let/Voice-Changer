@@ -86,4 +86,6 @@
     <string name="txt_text_to_voice">Create voice from text</string>
     <string name="enter_text_here">Enter text here</string>
     <string name="done">Done</string>
+    <string name="ok">OK</string>
+    <string name="dialog_video_error"><![CDATA[Can\'t play this video\nThe file does not exist or is corrupted]]></string>
 </resources>

@@ -34,12 +34,12 @@ import com.prox.voicechanger.utils.FileUtils;
 import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class FileVoiceActivity extends AppCompatActivity {
-    public static final String PATH_VIDEO = "PATH_VIDEO";
     private ActivityFileVoiceBinding binding;
     private FileVoiceAdapter adapter;
     private FileVoiceViewModel model;
@@ -55,7 +55,10 @@ public class FileVoiceActivity extends AppCompatActivity {
 
         model = new ViewModelProvider(this).get(FileVoiceViewModel.class);
         model.getFileVoices().observe(this, fileVoices -> {
-            if (fileVoices == null || fileVoices.size()==0){
+            if (fileVoices == null){
+                fileVoices = new ArrayList<>();
+            }
+            if (fileVoices.size()==0){
                 binding.layoutNoItem.getRoot().setVisibility(View.VISIBLE);
                 binding.btnDeleteAll.setEnabled(false);
                 binding.btnDeleteAll.setTextColor(getResources().getColor(R.color.white30));
@@ -67,9 +70,7 @@ public class FileVoiceActivity extends AppCompatActivity {
                 binding.btnDeleteAll.setBackgroundResource(R.drawable.bg_button1);
             }
             adapter.setFileVoices(fileVoices);
-            if (fileVoices != null){
-                binding.recyclerViewFileVoice.setItemViewCacheSize(fileVoices.size());
-            }
+            binding.recyclerViewFileVoice.setItemViewCacheSize(fileVoices.size());
         });
         model.isExecuteAddImage().observe(this, execute -> {
             if (execute){
@@ -79,7 +80,7 @@ public class FileVoiceActivity extends AppCompatActivity {
                         pathVideo
                 );
                 playVideoDialog.show();
-                Toast.makeText(this, "Save: "+pathVideo, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Save: "+pathVideo, Toast.LENGTH_LONG).show();
             }else {
                 Toast.makeText(this, R.string.video_creation_failed, Toast.LENGTH_SHORT).show();
             }
@@ -102,18 +103,24 @@ public class FileVoiceActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        Log.d(TAG, "FileVoiceActivity: onStart");
-        super.onStart();
-        if (adapter.getFileVoices() == null){
-            return;
-        }
+    protected void onResume() {
+        Log.d(TAG, "FileVoiceActivity: onResume");
+        super.onResume();
+
+        boolean isDeleted = false;
         for (FileVoice fileVoice : adapter.getFileVoices()){
             if (!(new File(fileVoice.getPath()).exists())){
                 model.delete(fileVoice);
+                if (!isDeleted){
+                    isDeleted = true;
+                }
             }
         }
-        adapter.resume();
+        if (isDeleted){
+            recreate();
+        }else {
+            adapter.resume();
+        }
     }
 
     @Override
@@ -161,40 +168,55 @@ public class FileVoiceActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SELECT_IMAGE) {
             if (resultCode == Activity.RESULT_OK) {
-                if (data != null) {
-                    LoadingDialog dialog = new LoadingDialog(
-                            this,
-                            DialogLoadingBinding.inflate(getLayoutInflater())
-                    );
-                    dialog.show();
-
+                if (! (new File(OptionDialog.fileVoice.getPath()).exists())){
+                    Toast.makeText(this, R.string.file_not_exist, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (data == null){
+                    Log.d(TAG, "FileVoiceActivity: data null");
+                    Toast.makeText(this, R.string.process_error, Toast.LENGTH_SHORT).show();
+                } else {
                     String pathImage = FileUtils.getFilePathForN(this, data.getData());
-                    pathVideo = FileUtils.getDCIMFolderPath(FOLDER_APP) + "/"+FileUtils.getVideoFileName();
-                    String cmdConvertImage = FFMPEGUtils.getCMDConvertImage(pathImage, FileUtils.getTempImagePath(this));
-                    FFMPEGUtils.executeFFMPEG(cmdConvertImage, new FFmpegExecuteCallback() {
-                        @Override
-                        public void onSuccess() {
-                            String cmd = FFMPEGUtils.getCMDAddImage(OptionDialog.fileVoice.getPath(), FileUtils.getTempImagePath(FileVoiceActivity.this), pathVideo);
-                            FFMPEGUtils.executeFFMPEG(cmd, new FFmpegExecuteCallback() {
-                                @Override
-                                public void onSuccess() {
-                                    dialog.cancel();
-                                    model.setExecuteAddImage(true);
-                                }
+                    if (pathImage.isEmpty()){
+                        Log.d(TAG, "FileVoiceActivity: pathImage isEmpty");
+                        Toast.makeText(this, R.string.file_not_exist, Toast.LENGTH_SHORT).show();
+                    }else if(!(new File(pathImage).exists())){
+                        Log.d(TAG, "FileVoiceActivity: pathImage not exists");
+                        Toast.makeText(this, R.string.file_not_exist, Toast.LENGTH_SHORT).show();
+                    }else{
+                        LoadingDialog dialog = new LoadingDialog(
+                                this,
+                                DialogLoadingBinding.inflate(getLayoutInflater())
+                        );
+                        dialog.show();
 
-                                @Override
-                                public void onFailed() {
-                                    dialog.cancel();
-                                    model.setExecuteAddImage(false);
-                                }
-                            });
-                        }
+                        pathVideo = FileUtils.getDCIMFolderPath(FOLDER_APP) + "/"+FileUtils.getVideoFileName();
+                        String cmdConvertImage = FFMPEGUtils.getCMDConvertImage(pathImage, FileUtils.getTempImagePath(this));
+                        FFMPEGUtils.executeFFMPEG(cmdConvertImage, new FFmpegExecuteCallback() {
+                            @Override
+                            public void onSuccess() {
+                                String cmd = FFMPEGUtils.getCMDAddImage(OptionDialog.fileVoice.getPath(), FileUtils.getTempImagePath(FileVoiceActivity.this), pathVideo);
+                                FFMPEGUtils.executeFFMPEG(cmd, new FFmpegExecuteCallback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        dialog.cancel();
+                                        model.setExecuteAddImage(true);
+                                    }
 
-                        @Override
-                        public void onFailed() {
+                                    @Override
+                                    public void onFailed() {
+                                        dialog.cancel();
+                                        model.setExecuteAddImage(false);
+                                    }
+                                });
+                            }
 
-                        }
-                    });
+                            @Override
+                            public void onFailed() {
+                                dialog.cancel();
+                            }
+                        });
+                    }
                 }
             } else if (resultCode == Activity.RESULT_CANCELED)  {
                 Toast.makeText(this, R.string.canceled, Toast.LENGTH_SHORT).show();
