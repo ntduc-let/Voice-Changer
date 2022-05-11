@@ -40,17 +40,20 @@ public class OptionDialog extends CustomDialog{
         OptionDialog.fileVoice = fileVoice;
 
         binding.btnShare.setOnClickListener(view -> {
+            Log.d(TAG, "OptionDialog: Share");
             FileUtils.shareFile(context, fileVoice.getPath());
             cancel();
         });
 
         binding.btnAddImg.setOnClickListener(view -> {
+            Log.d(TAG, "OptionDialog: Create image with sound");
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             activity.startActivityForResult(intent, SELECT_IMAGE);
             cancel();
         });
 
         binding.btnRingPhone.setOnClickListener(view -> {
+            Log.d(TAG, "OptionDialog: Set as phone ringtone");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if(Settings.System.canWrite(context)){
                     if (FileUtils.setAsRingtoneOrNotification(context, fileVoice.getPath(), RingtoneManager.TYPE_RINGTONE)){
@@ -69,6 +72,7 @@ public class OptionDialog extends CustomDialog{
         });
 
         binding.btnRingNoti.setOnClickListener(view -> {
+            Log.d(TAG, "OptionDialog: Set as notification ringtone");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if(Settings.System.canWrite(context)){
                     if(FileUtils.setAsRingtoneOrNotification(context, fileVoice.getPath(), RingtoneManager.TYPE_NOTIFICATION)){
@@ -87,6 +91,7 @@ public class OptionDialog extends CustomDialog{
         });
 
         binding.btnRename.setOnClickListener(view -> {
+            Log.d(TAG, "OptionDialog: Rename");
             RenameDialog dialog = new RenameDialog(
                     context,
                     DialogRenameBinding.inflate(activity.getLayoutInflater()),
@@ -97,6 +102,7 @@ public class OptionDialog extends CustomDialog{
         });
 
         binding.btnDeleteItem.setOnClickListener(view -> {
+            Log.d(TAG, "OptionDialog: Delete");
             FileUtils.deleteFile(context, fileVoice.getPath());
             model.delete(fileVoice);
             cancel();

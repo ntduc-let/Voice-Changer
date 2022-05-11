@@ -78,18 +78,36 @@ public class FileVoiceViewModel extends ViewModel {
     public void insert(FileVoice fileVoice){
         Log.d(TAG, "FileVoiceViewModel: insert "+fileVoice.getPath());
         repository.insert(fileVoice);
+        fileVoices.setValue(repository.getFileVoices().getValue());
+    }
+
+    public void insertBG(FileVoice fileVoice){
+        Log.d(TAG, "FileVoiceViewModel: insertBG "+fileVoice.getPath());
+        repository.insert(fileVoice);
         fileVoices.postValue(repository.getFileVoicesBG().getValue());
     }
 
     public void update(FileVoice fileVoice){
         Log.d(TAG, "FileVoiceViewModel: update "+fileVoice.getPath());
         repository.update(fileVoice);
-        fileVoices.postValue(repository.getFileVoices().getValue());
+        fileVoices.setValue(repository.getFileVoices().getValue());
+    }
+
+    public void updateBG(FileVoice fileVoice){
+        Log.d(TAG, "FileVoiceViewModel: updateBG "+fileVoice.getPath());
+        repository.update(fileVoice);
+        fileVoices.postValue(repository.getFileVoicesBG().getValue());
     }
 
     public void delete(FileVoice fileVoice){
         Log.d(TAG, "FileVoiceViewModel: delete "+fileVoice.getPath());
         repository.delete(fileVoice);
-        fileVoices.postValue(repository.getFileVoices().getValue());
+        fileVoices.setValue(repository.getFileVoices().getValue());
+    }
+
+    public void deleteBG(FileVoice fileVoice){
+        Log.d(TAG, "FileVoiceViewModel: deleteBG "+fileVoice.getPath());
+        repository.delete(fileVoice);
+        fileVoices.postValue(repository.getFileVoicesBG().getValue());
     }
 }

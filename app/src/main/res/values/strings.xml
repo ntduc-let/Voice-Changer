@@ -35,7 +35,7 @@
     <string name="btn_share">Share</string>
     <string name="btn_add_img">Create image with sound</string>
     <string name="btn_ring_phone">Set as phone ringtone</string>
-    <string name="btn_ring_noti">Set as notification rington</string>
+    <string name="btn_ring_noti">Set as notification ringtone</string>
     <string name="btn_rename">Rename</string>
     <string name="btn_delete">Delete</string>
     <string name="name_exits">Name already exists</string>

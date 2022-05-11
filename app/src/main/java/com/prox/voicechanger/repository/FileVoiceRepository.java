@@ -19,7 +19,7 @@ public class FileVoiceRepository {
 
     public MutableLiveData<List<FileVoice>> getFileVoices(){
         MutableLiveData<List<FileVoice>> data = new MutableLiveData<>();
-        data.postValue(dao.getAll());
+        data.setValue(dao.getAll());
         return data;
     }
 

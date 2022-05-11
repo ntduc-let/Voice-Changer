@@ -129,6 +129,8 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         model.isExecuteConvertRecording().observe(this, execute -> {
             if (execute){
                 selectEffect(FFMPEGUtils.getEffects().get(0));
+            }else {
+                Toast.makeText(ChangeVoiceActivity.this, R.string.process_error, Toast.LENGTH_SHORT).show();
             }
         });
         model.isExecuteSave().observe(this, execute -> {
@@ -173,7 +175,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                         fileVoice.setDuration(player.getDuration());
                         fileVoice.setSize(new File(path).length());
                         fileVoice.setDate(new Date().getTime());
-                        model.update(fileVoice);
+                        model.updateBG(fileVoice);
                     }
                     model.setExecuteSave(true);
                     dialog.cancel();
@@ -311,7 +313,8 @@ public class ChangeVoiceActivity extends AppCompatActivity {
             nameFile = intent.getStringExtra(NAME_FILE);
             selectEffect(FFMPEGUtils.getEffects().get(0));
         }
-        else if (intent.getAction().equals(SPLASH_TO_CHANGE_VOICE)||intent.getAction().equals(IMPORT_TO_CHANGE_VOICE)) {
+        else if (intent.getAction().equals(SPLASH_TO_CHANGE_VOICE)
+                ||intent.getAction().equals(IMPORT_TO_CHANGE_VOICE)) {
             String path = intent.getStringExtra(PATH_FILE);
             nameFile = FileUtils.getName(path);
 
@@ -514,7 +517,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         fileVoice.setDuration(playerEffect.getDuration());
         fileVoice.setSize(new File(path).length());
         fileVoice.setDate(new Date().getTime());
-        model.insert(fileVoice);
+        model.insertBG(fileVoice);
     }
 
     private void actionCustomEffect() {

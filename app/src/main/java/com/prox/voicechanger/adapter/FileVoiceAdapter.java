@@ -75,7 +75,6 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
     public void onBindViewHolder(@NonNull FileVoiceViewHolder holder, int position) {
         FileVoice fileVoice = fileVoices.get(position);
         holder.binding.imgFile.setImageResource(fileVoice.getSrc());
-        Log.d(TAG, fileVoice.getSrc()+"");
         holder.binding.txtNameFile.setText(fileVoice.getName());
         holder.binding.txtSize.setText(NumberUtils.formatAsTime(fileVoice.getDuration())+" | "+fileVoice.getSize()/1024 + "kB");
         holder.binding.txtDate.setText(NumberUtils.formatAsDate(fileVoice.getDate()));

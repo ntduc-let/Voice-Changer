@@ -27,9 +27,6 @@ import com.prox.voicechanger.databinding.ActivityRecordBinding;
 import com.prox.voicechanger.utils.FileUtils;
 import com.prox.voicechanger.utils.PermissionUtils;
 
-import dagger.hilt.android.AndroidEntryPoint;
-
-@AndroidEntryPoint
 public class RecordActivity extends AppCompatActivity {
     public static final String IMPORT_TO_CHANGE_VOICE = "IMPORT_TO_CHANGE_VOICE";
     private NavController navController;
