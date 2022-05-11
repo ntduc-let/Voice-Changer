@@ -2,7 +2,6 @@ package com.prox.voicechanger.ui.fragment;
 
 import static com.prox.voicechanger.VoiceChangerApp.TAG;
 
-import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,18 +14,16 @@ import android.view.animation.AnimationUtils;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.prox.voicechanger.R;
+import com.prox.voicechanger.databinding.DialogMoreOptionBinding;
 import com.prox.voicechanger.databinding.FragmentRecordBinding;
-import com.prox.voicechanger.ui.activity.FileVoiceActivity;
+import com.prox.voicechanger.ui.dialog.MoreOptionDialog;
 import com.prox.voicechanger.utils.PermissionUtils;
-import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
 
 public class RecordFragment extends Fragment {
     private FragmentRecordBinding binding;
-    private FileVoiceViewModel model;
 
     private final Handler handler = new Handler();
     private Runnable runnableAnimation;
@@ -36,8 +33,6 @@ public class RecordFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.d(TAG, "RecordFragment: onCreateView");
         binding = FragmentRecordBinding.inflate(inflater, container, false);
-
-        model = new ViewModelProvider(requireActivity()).get(FileVoiceViewModel.class);
 
         init();
 
@@ -54,11 +49,13 @@ public class RecordFragment extends Fragment {
         });
 
 
-        binding.btnFile.setOnClickListener(view -> {
-            if (PermissionUtils.checkPermission(requireContext(), requireActivity())){
-                startActivity(new Intent(requireActivity(), FileVoiceActivity.class));
-                Log.d(TAG, "RecordFragment: To FileVoiceActivity");
-            }
+        binding.btnMoreOption.setOnClickListener(view -> {
+            MoreOptionDialog dialog = new MoreOptionDialog(
+                    requireContext(),
+                    requireActivity(),
+                    DialogMoreOptionBinding.inflate(getLayoutInflater())
+            );
+            dialog.show();
         });
 
         return binding.getRoot();
@@ -70,7 +67,6 @@ public class RecordFragment extends Fragment {
         super.onDestroyView();
         handler.removeCallbacks(runnableAnimation);
         runnableAnimation = null;
-        model = null;
         binding = null;
     }
 
@@ -95,13 +91,7 @@ public class RecordFragment extends Fragment {
 
         handler.postDelayed(() -> {
             binding.btnMore.setVisibility(View.VISIBLE);
-            model.getFileVoices().observe(requireActivity(), fileVoices -> {
-                if (fileVoices == null || fileVoices.size() == 0) {
-                    binding.btnFile.setVisibility(View.INVISIBLE);
-                } else {
-                    binding.btnFile.setVisibility(View.VISIBLE);
-                }
-            });
+            binding.btnMoreOption.setVisibility(View.VISIBLE);
             binding.txtContent.setVisibility(View.VISIBLE);
             binding.txtContent2.setVisibility(View.VISIBLE);
             binding.btnRecord.setVisibility(View.VISIBLE);

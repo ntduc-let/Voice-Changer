@@ -2,6 +2,7 @@ package com.prox.voicechanger.ui.activity;
 
 import static com.prox.voicechanger.VoiceChangerApp.FOLDER_APP;
 import static com.prox.voicechanger.VoiceChangerApp.TAG;
+import static com.prox.voicechanger.ui.activity.RecordActivity.IMPORT_TO_CHANGE_VOICE;
 import static com.prox.voicechanger.ui.activity.SplashActivity.SPLASH_TO_CHANGE_VOICE;
 import static com.prox.voicechanger.ui.dialog.NameDialog.NAME_FILE;
 import static com.prox.voicechanger.ui.dialog.NameDialog.RECORD_TO_CHANGE_VOICE;
@@ -310,7 +311,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
             nameFile = intent.getStringExtra(NAME_FILE);
             selectEffect(FFMPEGUtils.getEffects().get(0));
         }
-        else if (intent.getAction().equals(SPLASH_TO_CHANGE_VOICE)) {
+        else if (intent.getAction().equals(SPLASH_TO_CHANGE_VOICE)||intent.getAction().equals(IMPORT_TO_CHANGE_VOICE)) {
             String path = intent.getStringExtra(PATH_FILE);
             nameFile = FileUtils.getName(path);
 

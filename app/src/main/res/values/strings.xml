@@ -75,9 +75,15 @@
     <string name="delay">Delay</string>
     <string name="decay">Decay</string>
     <string name="canceled">Canceled</string>
-    <string name="dialog_request_permission"><![CDATA[If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]]]></string>
+    <string name="dialog_request_permission"><![CDATA[If you reject permission, you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]]]></string>
     <string name="setting">Setting</string>
     <string name="save_success">Save successfully</string>
     <string name="save_fail">Save failure</string>
     <string name="video_creation_failed">Video creation failed</string>
+    <string name="btn_import">Import pre-recorded sound</string>
+    <string name="btn_text_to_voice">Create voice from text</string>
+    <string name="btn_recorded_file">Recorded file</string>
+    <string name="txt_text_to_voice">Create voice from text</string>
+    <string name="enter_text_here">Enter text here</string>
+    <string name="done">Done</string>
 </resources>

@@ -2,7 +2,6 @@ package com.prox.voicechanger.ui.fragment;
 
 import static com.prox.voicechanger.VoiceChangerApp.TAG;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -14,23 +13,22 @@ import android.view.animation.AnimationUtils;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.prox.voicechanger.R;
+import com.prox.voicechanger.databinding.DialogMoreOptionBinding;
 import com.prox.voicechanger.databinding.DialogNameBinding;
 import com.prox.voicechanger.databinding.FragmentStopRecordBinding;
 import com.prox.voicechanger.media.Recorder;
-import com.prox.voicechanger.ui.activity.FileVoiceActivity;
+import com.prox.voicechanger.ui.dialog.MoreOptionDialog;
 import com.prox.voicechanger.ui.dialog.NameDialog;
 import com.prox.voicechanger.utils.NumberUtils;
-import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
 
 public class StopRecordFragment extends Fragment {
     private FragmentStopRecordBinding binding;
     private Recorder recorder;
-    private FileVoiceViewModel model;
+    private boolean isStop;
 
     private final Handler handler = new Handler();
     private Runnable runnableAnimation, runnableTime;
@@ -41,34 +39,11 @@ public class StopRecordFragment extends Fragment {
         Log.d(TAG, "StopRecordFragment: onCreateView");
         binding = FragmentStopRecordBinding.inflate(inflater, container, false);
 
-        model = new ViewModelProvider(requireActivity()).get(FileVoiceViewModel.class);
-        model.getFileVoices().observe(requireActivity(), fileVoices -> {
-            if(fileVoices == null || fileVoices.size()==0){
-                binding.btnFile.setVisibility(View.INVISIBLE);
-            }else{
-                binding.btnFile.setVisibility(View.VISIBLE);
-            }
-        });
-
         init();
 
         recording();
 
-        binding.btnFile.setOnClickListener(view -> {
-            stopRecord();
-
-            startActivity(new Intent(requireActivity(), FileVoiceActivity.class));
-            Log.d(TAG, "StopRecordFragment: To FileVoiceActivity");
-            requireActivity().finish();
-        });
-
-        binding.btnBack.setOnClickListener(view -> {
-            stopRecord();
-
-            NavController navController= Navigation.findNavController(requireActivity(), R.id.nav_host_record_activity);
-            navController.popBackStack();
-            Log.d(TAG, "StopRecordFragment: To RecordFragment");
-        });
+        binding.btnBack.setOnClickListener(view -> popBackStack());
 
         binding.btnStop.setOnClickListener(view -> {
             stopRecord();
@@ -82,7 +57,32 @@ public class StopRecordFragment extends Fragment {
             Log.d(TAG, "StopRecordFragment: Show NameDialog");
         });
 
+        binding.btnMoreOption.setOnClickListener(view -> {
+            MoreOptionDialog dialog = new MoreOptionDialog(
+                    requireContext(),
+                    requireActivity(),
+                    DialogMoreOptionBinding.inflate(getLayoutInflater())
+            );
+            dialog.show();
+        });
+
         return binding.getRoot();
+    }
+
+    @Override
+    public void onStart() {
+        Log.d(TAG, "StopRecordFragment: onStart");
+        super.onStart();
+        if (isStop){
+            popBackStack();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        Log.d(TAG, "StopRecordFragment: onStop");
+        super.onStop();
+        isStop = true;
     }
 
     @Override
@@ -92,8 +92,8 @@ public class StopRecordFragment extends Fragment {
         stopRecord();
         runnableAnimation=null;
         runnableTime=null;
-        model = null;
         binding = null;
+        isStop = false;
     }
 
     private void init() {
@@ -139,5 +139,11 @@ public class StopRecordFragment extends Fragment {
         recorder.release();
 
         binding.txtMess.getRoot().setVisibility(View.INVISIBLE);
+    }
+
+    private void popBackStack() {
+        NavController navController= Navigation.findNavController(requireActivity(), R.id.nav_host_record_activity);
+        navController.popBackStack();
+        Log.d(TAG, "StopRecordFragment: To RecordFragment");
     }
 }

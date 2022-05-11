@@ -1,13 +1,17 @@
 package com.prox.voicechanger.ui.activity;
 
 import static com.prox.voicechanger.VoiceChangerApp.TAG;
+import static com.prox.voicechanger.ui.activity.ChangeVoiceActivity.PATH_FILE;
+import static com.prox.voicechanger.ui.dialog.MoreOptionDialog.SELECT_AUDIO;
 import static com.prox.voicechanger.utils.PermissionUtils.REQUEST_PERMISSION;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,12 +24,14 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.prox.voicechanger.R;
 import com.prox.voicechanger.databinding.ActivityRecordBinding;
+import com.prox.voicechanger.utils.FileUtils;
 import com.prox.voicechanger.utils.PermissionUtils;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class RecordActivity extends AppCompatActivity {
+    public static final String IMPORT_TO_CHANGE_VOICE = "IMPORT_TO_CHANGE_VOICE";
     private NavController navController;
     private AppBarConfiguration appBarConfiguration;
 
@@ -95,6 +101,21 @@ public class RecordActivity extends AppCompatActivity {
                     && read == PackageManager.PERMISSION_GRANTED){
                 navController.navigate(R.id.action_recordFragment_to_stopRecordFragment);
                 Log.d(TAG, "RecordActivity: To StopRecordFragment");
+            }
+        }else if (requestCode == SELECT_AUDIO) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (data != null) {
+                    String filePath = FileUtils.getFilePathForN(this, data.getData());
+                    Log.d(TAG, "RecordActivity: filePath "+filePath);
+
+                    Intent goToChangeVoice = new Intent(this, ChangeVoiceActivity.class);
+                    goToChangeVoice.setAction(IMPORT_TO_CHANGE_VOICE);
+                    goToChangeVoice.putExtra(PATH_FILE, filePath);
+                    startActivity(goToChangeVoice);
+                    Log.d(TAG, "RecordActivity: To ChangeVoiceActivity");
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED)  {
+                Toast.makeText(this, R.string.canceled, Toast.LENGTH_SHORT).show();
             }
         }
     }
