@@ -3,6 +3,7 @@ package com.prox.voicechanger.ui.activity;
 import static com.prox.voicechanger.VoiceChangerApp.TAG;
 import static com.prox.voicechanger.ui.activity.ChangeVoiceActivity.PATH_FILE;
 import static com.prox.voicechanger.ui.dialog.MoreOptionDialog.SELECT_AUDIO;
+import static com.prox.voicechanger.ui.dialog.TextToVoiceDialog.IMPORT_TEXT;
 import static com.prox.voicechanger.utils.PermissionUtils.REQUEST_PERMISSION;
 
 import android.Manifest;
@@ -10,6 +11,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -24,15 +27,20 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.prox.voicechanger.R;
 import com.prox.voicechanger.databinding.ActivityRecordBinding;
+import com.prox.voicechanger.ui.dialog.TextToVoiceDialog;
 import com.prox.voicechanger.utils.FileUtils;
 import com.prox.voicechanger.utils.PermissionUtils;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Locale;
 
 public class RecordActivity extends AppCompatActivity {
     public static final String IMPORT_TO_CHANGE_VOICE = "IMPORT_TO_CHANGE_VOICE";
+    public static final String IMPORT_TEXT_TO_SPEECH = "IMPORT_TEXT_TO_SPEECH";
     private NavController navController;
     private AppBarConfiguration appBarConfiguration;
+    private TextToSpeech mTts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +148,53 @@ public class RecordActivity extends AppCompatActivity {
             }
             else if (resultCode == Activity.RESULT_CANCELED)  {
                 Toast.makeText(this, R.string.canceled, Toast.LENGTH_SHORT).show();
+            }
+        }else if (requestCode == IMPORT_TEXT){
+            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+                mTts = new TextToSpeech(this, status -> {
+                    if (status == TextToSpeech.SUCCESS){
+                        mTts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+                            @Override
+                            public void onStart(String s) {
+                                Log.d(TAG, "onStart");
+                            }
+
+                            @Override
+                            public void onDone(String s) {
+                                Log.d(TAG, "onDone");
+                                Intent goToChangeVoice = new Intent(RecordActivity.this, ChangeVoiceActivity.class);
+                                goToChangeVoice.setAction(IMPORT_TEXT_TO_SPEECH);
+                                goToChangeVoice.putExtra(PATH_FILE, FileUtils.getTempTextToSpeechFilePath(RecordActivity.this));
+                                startActivity(goToChangeVoice);
+                                overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
+                                Log.d(TAG, "RecordActivity: To ChangeVoiceActivity");
+                            }
+
+                            @Override
+                            public void onError(String s) {
+                                Log.d(TAG, "onError");
+                                Toast.makeText(RecordActivity.this, R.string.process_error, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                        mTts.setLanguage(Locale.US);
+
+                        if (TextToVoiceDialog.textToSpeech.isEmpty()){
+                            Toast.makeText(this, R.string.process_error, Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        HashMap<String, String> params  = new HashMap<>();
+                        params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, TextToVoiceDialog.textToSpeech);
+
+                        Log.d(TAG, "textToSpeech: "+TextToVoiceDialog.textToSpeech);
+                        mTts.synthesizeToFile(TextToVoiceDialog.textToSpeech, params, FileUtils.getTempTextToSpeechFilePath(this));
+                    }
+                });
+            } else {
+                Intent installIntent = new Intent();
+                installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+                startActivity(installIntent);
             }
         }
     }

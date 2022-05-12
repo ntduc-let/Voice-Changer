@@ -42,6 +42,10 @@ public class FFMPEGUtils {
         return "-y -i \"" + fromPath + "\" -preset ultrafast -vf \"scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2\" \"" + toPath + "\"";
     }
 
+    public static String getCMDConvertText(String text, String toPath) {
+        return "-y -f lavfi -i flite=text='"+text+"' \""+toPath+"\" ";
+    }
+
     public static ArrayList<Effect> getEffects() {
         ArrayList<Effect> effects = new ArrayList<>();
         effects.add(new Effect(1, R.drawable.ic_original, "Original", "-c:a copy"));

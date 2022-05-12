@@ -2,6 +2,7 @@ package com.prox.voicechanger.ui.activity;
 
 import static com.prox.voicechanger.VoiceChangerApp.FOLDER_APP;
 import static com.prox.voicechanger.VoiceChangerApp.TAG;
+import static com.prox.voicechanger.ui.activity.RecordActivity.IMPORT_TEXT_TO_SPEECH;
 import static com.prox.voicechanger.ui.activity.RecordActivity.IMPORT_TO_CHANGE_VOICE;
 import static com.prox.voicechanger.ui.activity.SplashActivity.SPLASH_TO_CHANGE_VOICE;
 import static com.prox.voicechanger.ui.dialog.NameDialog.NAME_FILE;
@@ -329,7 +330,8 @@ public class ChangeVoiceActivity extends AppCompatActivity {
             }
             selectEffect(FFMPEGUtils.getEffects().get(0));
         } else if (intent.getAction().equals(SPLASH_TO_CHANGE_VOICE)
-                || intent.getAction().equals(IMPORT_TO_CHANGE_VOICE)) {
+                || intent.getAction().equals(IMPORT_TO_CHANGE_VOICE)
+                || intent.getAction().equals(IMPORT_TEXT_TO_SPEECH)) {
             String path = intent.getStringExtra(PATH_FILE);
             if (path == null) {
                 Log.d(TAG, "ChangeVoiceActivity: path null");
@@ -340,7 +342,12 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                 goToRecord();
                 return;
             }
-            nameFile = FileUtils.getName(path);
+
+            if (intent.getAction().equals(IMPORT_TEXT_TO_SPEECH)){
+                nameFile = FileUtils.getName(FileUtils.getRecordingFileName());
+            }else{
+                nameFile = FileUtils.getName(path);
+            }
 
             binding.layoutPlayer.getRoot().setVisibility(View.INVISIBLE);
 

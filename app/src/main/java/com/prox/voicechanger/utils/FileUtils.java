@@ -65,6 +65,13 @@ public class FileUtils {
         return file.getPath();
     }
 
+    public static String getTempTextToSpeechFilePath(Context context) {
+        ContextWrapper contextWrapper = new ContextWrapper(context.getApplicationContext());
+        File musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+        File file = new File(musicDirectory, "tempTextToSpeech.wav");
+        return file.getPath();
+    }
+
     public static String getTempEffectFilePath(Context context) {
         ContextWrapper contextWrapper = new ContextWrapper(context.getApplicationContext());
         File musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
