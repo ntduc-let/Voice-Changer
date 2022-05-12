@@ -7,9 +7,12 @@ import static com.prox.voicechanger.ui.activity.RecordActivity.IMPORT_TO_CHANGE_
 import static com.prox.voicechanger.ui.activity.SplashActivity.SPLASH_TO_CHANGE_VOICE;
 import static com.prox.voicechanger.ui.dialog.NameDialog.NAME_FILE;
 import static com.prox.voicechanger.ui.dialog.NameDialog.RECORD_TO_CHANGE_VOICE;
+import static com.prox.voicechanger.utils.PermissionUtils.REQUEST_PERMISSION;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,7 +23,9 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.flexbox.FlexWrap;
@@ -39,6 +44,7 @@ import com.prox.voicechanger.ui.dialog.LoadingDialog;
 import com.prox.voicechanger.utils.FFMPEGUtils;
 import com.prox.voicechanger.utils.FileUtils;
 import com.prox.voicechanger.utils.NumberUtils;
+import com.prox.voicechanger.utils.PermissionUtils;
 import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
 
 import java.io.File;
@@ -315,6 +321,12 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         binding.layoutEffect.recyclerViewEffects.setAdapter(effectAdapter);
         effectAdapter.setEffects(FFMPEGUtils.getEffects());
 
+        if (PermissionUtils.checkPermission(this, this)){
+            actionIntent();
+        }
+    }
+
+    private void actionIntent() {
         Intent intent = getIntent();
         if (intent == null) {
             Log.d(TAG, "ChangeVoiceActivity: start intent null");
@@ -371,6 +383,38 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                     model.setExecuteConvertRecording(false);
                 }
             });
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_PERMISSION) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                actionIntent();
+            } else {
+                PermissionUtils.openDialogAccessAllFile(this);
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_PERMISSION) {
+            int record = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
+            int write = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            int read = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+            if (record == PackageManager.PERMISSION_GRANTED
+                    && write == PackageManager.PERMISSION_GRANTED
+                    && read == PackageManager.PERMISSION_GRANTED) {
+                actionIntent();
+            } else {
+                PermissionUtils.openDialogAccessAllFile(this);
+            }
         }
     }
 

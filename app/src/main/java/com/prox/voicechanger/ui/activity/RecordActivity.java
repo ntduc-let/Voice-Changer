@@ -57,6 +57,9 @@ public class RecordActivity extends AppCompatActivity {
         Log.d(TAG, "RecordActivity: onDestroy");
         appBarConfiguration = null;
         navController = null;
+        if (mTts != null){
+            mTts.shutdown();
+        }
         super.onDestroy();
     }
 
@@ -83,6 +86,8 @@ public class RecordActivity extends AppCompatActivity {
         }
 
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
+
+        PermissionUtils.checkPermission(this, this);
     }
 
     @Override
@@ -93,12 +98,12 @@ public class RecordActivity extends AppCompatActivity {
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED
                     && grantResults[1] == PackageManager.PERMISSION_GRANTED
                     && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
-                if (navController == null){
-                    Log.d(TAG, "RecordActivity: navController null");
-                }else {
-                    navController.navigate(R.id.action_recordFragment_to_stopRecordFragment);
-                    Log.d(TAG, "RecordActivity: To StopRecordFragment");
-                }
+//                if (navController == null){
+//                    Log.d(TAG, "RecordActivity: navController null");
+//                }else {
+//                    navController.navigate(R.id.action_recordFragment_to_stopRecordFragment);
+//                    Log.d(TAG, "RecordActivity: To StopRecordFragment");
+//                }
             } else {
                 PermissionUtils.openDialogAccessAllFile(this);
             }
@@ -115,12 +120,14 @@ public class RecordActivity extends AppCompatActivity {
             if (record == PackageManager.PERMISSION_GRANTED
                     && write == PackageManager.PERMISSION_GRANTED
                     && read == PackageManager.PERMISSION_GRANTED){
-                if (navController == null){
-                    Log.d(TAG, "RecordActivity: navController null");
-                }else {
-                    navController.navigate(R.id.action_recordFragment_to_stopRecordFragment);
-                    Log.d(TAG, "RecordActivity: To StopRecordFragment");
-                }
+//                if (navController == null){
+//                    Log.d(TAG, "RecordActivity: navController null");
+//                }else {
+//                    navController.navigate(R.id.action_recordFragment_to_stopRecordFragment);
+//                    Log.d(TAG, "RecordActivity: To StopRecordFragment");
+//                }
+            }else {
+                PermissionUtils.openDialogAccessAllFile(this);
             }
         }else if (requestCode == SELECT_AUDIO) {
             if (resultCode == Activity.RESULT_OK) {
