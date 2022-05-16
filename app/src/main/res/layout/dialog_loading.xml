@@ -6,10 +6,9 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_dialog">
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progress_processing"
-        style="?android:attr/progressBarStyle"
-        android:max="100"
+        android:indeterminate="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
