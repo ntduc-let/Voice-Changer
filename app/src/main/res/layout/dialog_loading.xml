@@ -8,7 +8,8 @@
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progress_processing"
-        android:indeterminate="true"
+        style="@style/Widget.App.CircularProgressIndicator"
+        android:max="100"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"

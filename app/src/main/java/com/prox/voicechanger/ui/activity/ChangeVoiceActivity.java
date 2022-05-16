@@ -154,6 +154,8 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                 Toast.makeText(this, R.string.save_fail, Toast.LENGTH_SHORT).show();
             }
         });
+        model.getLoading().observe(this, loading ->
+                binding.layoutLoading.progressProcessing.setProgress(Math.round(loading)));
 
         init();
 
@@ -547,11 +549,13 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                 if (!isPlaying) {
                     pausePlayer();
                 }
+
+                model.setLoading(0f);
             }
 
             @Override
             public void onProgress(float v) {
-
+                model.setLoading(v);
             }
         });
     }

@@ -27,6 +27,7 @@ public class FileVoiceViewModel extends ViewModel {
     private final MutableLiveData<Boolean> isExecuteConvertRecording = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isExecuteSave = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isExecuteAddImage = new MutableLiveData<>();
+    private final MutableLiveData<Float> loading = new MutableLiveData<>();
 
     @Inject
     public FileVoiceViewModel(@NonNull FileVoiceRepository repository) {
@@ -73,6 +74,14 @@ public class FileVoiceViewModel extends ViewModel {
 
     public LiveData<Boolean> isExecuteAddImage() {
         return isExecuteAddImage;
+    }
+
+    public void setLoading(Float f){
+        loading.postValue(f);
+    }
+
+    public LiveData<Float> getLoading() {
+        return loading;
     }
 
     public void insert(FileVoice fileVoice){
