@@ -21,7 +21,7 @@ import com.prox.voicechanger.R;
 import com.prox.voicechanger.adapter.FileVoiceAdapter;
 import com.prox.voicechanger.databinding.ActivityFileVoiceBinding;
 import com.prox.voicechanger.databinding.DialogDeleteAllBinding;
-import com.prox.voicechanger.databinding.DialogLoadingBinding;
+import com.prox.voicechanger.databinding.DialogLoading2Binding;
 import com.prox.voicechanger.databinding.DialogPlayVideoBinding;
 import com.prox.voicechanger.interfaces.FFmpegExecuteCallback;
 import com.prox.voicechanger.model.FileVoice;
@@ -187,7 +187,7 @@ public class FileVoiceActivity extends AppCompatActivity {
                     }else{
                         LoadingDialog dialog = new LoadingDialog(
                                 this,
-                                DialogLoadingBinding.inflate(getLayoutInflater())
+                                DialogLoading2Binding.inflate(getLayoutInflater())
                         );
                         dialog.show();
 
