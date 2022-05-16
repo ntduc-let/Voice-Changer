@@ -1,7 +1,10 @@
 package com.prox.voicechanger.ui.fragment;
 
 import static com.prox.voicechanger.VoiceChangerApp.TAG;
+import static com.prox.voicechanger.ui.activity.ChangeVoiceActivity.PATH_FILE;
+import static com.prox.voicechanger.ui.dialog.NameDialog.RECORD_TO_CHANGE_VOICE;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -18,11 +21,11 @@ import androidx.navigation.Navigation;
 
 import com.prox.voicechanger.R;
 import com.prox.voicechanger.databinding.DialogMoreOptionBinding;
-import com.prox.voicechanger.databinding.DialogNameBinding;
 import com.prox.voicechanger.databinding.FragmentStopRecordBinding;
 import com.prox.voicechanger.media.Recorder;
+import com.prox.voicechanger.ui.activity.ChangeVoiceActivity;
 import com.prox.voicechanger.ui.dialog.MoreOptionDialog;
-import com.prox.voicechanger.ui.dialog.NameDialog;
+import com.prox.voicechanger.utils.FileUtils;
 import com.prox.voicechanger.utils.NumberUtils;
 
 public class StopRecordFragment extends Fragment {
@@ -56,13 +59,11 @@ public class StopRecordFragment extends Fragment {
         binding.btnStop.setOnClickListener(view -> {
             stopRecord();
 
-            NameDialog dialog = new NameDialog(
-                    requireContext(),
-                    requireActivity(),
-                    DialogNameBinding.inflate(getLayoutInflater())
-            );
-            dialog.show();
-            Log.d(TAG, "StopRecordFragment: Show NameDialog");
+            Intent intent = new Intent(requireActivity(), ChangeVoiceActivity.class);
+            intent.setAction(RECORD_TO_CHANGE_VOICE);
+            intent.putExtra(PATH_FILE, FileUtils.getTempRecordingFilePath(requireContext()));
+            startActivity(intent);
+            requireActivity().overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
         });
 
         binding.btnMoreOption.setOnClickListener(view -> {

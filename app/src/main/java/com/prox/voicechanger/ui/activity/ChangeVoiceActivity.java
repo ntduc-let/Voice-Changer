@@ -1,11 +1,7 @@
 package com.prox.voicechanger.ui.activity;
 
-import static com.prox.voicechanger.VoiceChangerApp.FOLDER_APP;
 import static com.prox.voicechanger.VoiceChangerApp.TAG;
 import static com.prox.voicechanger.ui.activity.RecordActivity.IMPORT_TEXT_TO_SPEECH;
-import static com.prox.voicechanger.ui.activity.RecordActivity.IMPORT_TO_CHANGE_VOICE;
-import static com.prox.voicechanger.ui.activity.SplashActivity.SPLASH_TO_CHANGE_VOICE;
-import static com.prox.voicechanger.ui.dialog.NameDialog.NAME_FILE;
 import static com.prox.voicechanger.ui.dialog.NameDialog.RECORD_TO_CHANGE_VOICE;
 import static com.prox.voicechanger.utils.PermissionUtils.REQUEST_PERMISSION;
 
@@ -13,7 +9,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -35,12 +30,11 @@ import com.google.android.material.slider.Slider;
 import com.prox.voicechanger.R;
 import com.prox.voicechanger.adapter.EffectAdapter;
 import com.prox.voicechanger.databinding.ActivityChangeVoiceBinding;
-import com.prox.voicechanger.databinding.DialogLoadingBinding;
+import com.prox.voicechanger.databinding.DialogNameBinding;
 import com.prox.voicechanger.interfaces.FFmpegExecuteCallback;
 import com.prox.voicechanger.media.Player;
 import com.prox.voicechanger.model.Effect;
-import com.prox.voicechanger.model.FileVoice;
-import com.prox.voicechanger.ui.dialog.LoadingDialog;
+import com.prox.voicechanger.ui.dialog.NameDialog;
 import com.prox.voicechanger.utils.FFMPEGUtils;
 import com.prox.voicechanger.utils.FileUtils;
 import com.prox.voicechanger.utils.NumberUtils;
@@ -48,8 +42,6 @@ import com.prox.voicechanger.utils.PermissionUtils;
 import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Date;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import space.siy.waveformview.WaveFormData;
@@ -138,7 +130,8 @@ public class ChangeVoiceActivity extends AppCompatActivity {
             if (execute) {
                 selectEffect(FFMPEGUtils.getEffects().get(0));
             } else {
-                Toast.makeText(ChangeVoiceActivity.this, R.string.process_error, Toast.LENGTH_SHORT).show();
+                binding.layoutLoading.txtProcessing.setText(R.string.process_error);
+                binding.layoutLoading.txtProcessing.setTextColor(getResources().getColor(R.color.red));
             }
         });
         model.isExecuteSave().observe(this, execute -> {
@@ -163,47 +156,21 @@ public class ChangeVoiceActivity extends AppCompatActivity {
 
         binding.btnSave2.setOnClickListener(view -> {
             pausePlayer();
-            LoadingDialog dialog = new LoadingDialog(
-                    this,
-                    DialogLoadingBinding.inflate(getLayoutInflater())
-            );
-            dialog.show();
 
             String name = binding.layoutPlayer.txtName2.getText().toString();
-            String path = FileUtils.getDownloadFolderPath(FOLDER_APP) + "/" + name + ".mp3";
-            String cmd;
-            if (!binding.layoutEffect.btnEffect.isEnabled()) {
-                cmd = FFMPEGUtils.getCMDConvertRecording(FileUtils.getTempEffectFilePath(this), path);
-            } else {
-                cmd = FFMPEGUtils.getCMDConvertRecording(FileUtils.getTempCustomFilePath(this), path);
-            }
+            boolean isCustom = binding.layoutEffect.btnEffect.isEnabled();
 
-            FFMPEGUtils.executeFFMPEG(cmd, new FFmpegExecuteCallback() {
-                @Override
-                public void onSuccess() {
-                    FileVoice fileVoice = model.check(path);
-                    if (fileVoice == null) {
-                        insertEffectToDB(path);
-                    } else {
-                        if (player == null) {
-                            fileVoice.setDuration(0);
-                        } else {
-                            fileVoice.setDuration(player.getDuration());
-                        }
-                        fileVoice.setSize(new File(path).length());
-                        fileVoice.setDate(new Date().getTime());
-                        model.updateBG(fileVoice);
-                    }
-                    model.setExecuteSave(true);
-                    dialog.cancel();
-                }
-
-                @Override
-                public void onFailed() {
-                    model.setExecuteSave(false);
-                    dialog.cancel();
-                }
-            });
+            NameDialog dialog = new NameDialog(
+                    this,
+                    this,
+                    DialogNameBinding.inflate(getLayoutInflater()),
+                    model,
+                    name,
+                    isCustom,
+                    effectSelected
+            );
+            dialog.show();
+            Log.d(TAG, "ChangeVoiceActivity: Show NameDialog");
         });
 
         binding.layoutPlayer.visualizer.setCallback(new WaveFormView.Callback() {
@@ -336,16 +303,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         } else if (intent.getAction() == null) {
             Log.d(TAG, "ChangeVoiceActivity: start action null");
             goToRecord();
-        } else if (intent.getAction().equals(RECORD_TO_CHANGE_VOICE)) {
-            nameFile = intent.getStringExtra(NAME_FILE);
-            if (nameFile == null) {
-                Log.d(TAG, "ChangeVoiceActivity: name null");
-                nameFile = FileUtils.getRecordingFileName();
-            }
-            selectEffect(FFMPEGUtils.getEffects().get(0));
-        } else if (intent.getAction().equals(SPLASH_TO_CHANGE_VOICE)
-                || intent.getAction().equals(IMPORT_TO_CHANGE_VOICE)
-                || intent.getAction().equals(IMPORT_TEXT_TO_SPEECH)) {
+        } else {
             String path = intent.getStringExtra(PATH_FILE);
             if (path == null) {
                 Log.d(TAG, "ChangeVoiceActivity: path null");
@@ -357,7 +315,8 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                 return;
             }
 
-            if (intent.getAction().equals(IMPORT_TEXT_TO_SPEECH)){
+            if (intent.getAction().equals(RECORD_TO_CHANGE_VOICE)
+                || intent.getAction().equals(IMPORT_TEXT_TO_SPEECH)){
                 nameFile = FileUtils.getName(FileUtils.getRecordingFileName());
             }else{
                 nameFile = FileUtils.getName(path);
@@ -594,30 +553,6 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         } else {
             binding.layoutPlayer.txtTotalTime.setText(NumberUtils.formatAsTime(player.getDuration()));
             handler.post(updateTime);
-        }
-    }
-
-    private void insertEffectToDB(String path) {
-        FileVoice fileVoice = new FileVoice();
-        if (effectSelected == null) {
-            Log.d(TAG, "ChangeVoiceActivity: effectSelected null");
-        } else {
-            fileVoice.setSrc(effectSelected.getSrc());
-            fileVoice.setName(FileUtils.getName(path));
-            fileVoice.setPath(path);
-
-            MediaPlayer playerEffect = new MediaPlayer();
-            try {
-                playerEffect.setDataSource(path);
-                playerEffect.prepare();
-            } catch (IOException e) {
-                Log.d(TAG, "insertEffectToDB: " + e.getMessage());
-                return;
-            }
-            fileVoice.setDuration(playerEffect.getDuration());
-            fileVoice.setSize(new File(path).length());
-            fileVoice.setDate(new Date().getTime());
-            model.insertBG(fileVoice);
         }
     }
 

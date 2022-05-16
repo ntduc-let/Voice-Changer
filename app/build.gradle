@@ -33,7 +33,6 @@ android {
     buildFeatures {
         viewBinding true
     }
-    namespace 'com.prox.voicechanger'
 }
 
 dependencies {

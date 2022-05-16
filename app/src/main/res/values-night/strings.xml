@@ -88,4 +88,5 @@
     <string name="ok">OK</string>
     <string name="dialog_video_error"><![CDATA[Can\'t play this video\nThe file does not exist or is corrupted]]></string>
     <string name="text_empty">Text cannot be empty</string>
+    <string name="enter_file_name_here">Enter file name here</string>
 </resources>

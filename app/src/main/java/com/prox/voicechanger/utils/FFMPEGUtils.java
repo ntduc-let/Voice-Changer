@@ -43,7 +43,7 @@ public class FFMPEGUtils {
     }
 
     public static String getCMDConvertText(String text, String toPath) {
-        return "-y -f lavfi -i flite=text='"+text+"' \""+toPath+"\" ";
+        return "-y -i flite=text='"+text+"' \""+toPath+"\" ";
     }
 
     public static ArrayList<Effect> getEffects() {
