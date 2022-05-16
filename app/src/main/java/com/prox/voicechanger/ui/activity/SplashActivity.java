@@ -82,7 +82,7 @@ public class SplashActivity extends AppCompatActivity {
                 Log.d(TAG, "SplashActivity: data null");
                 goToRecord();
             }
-            String filePath = FileUtils.getFilePathForN(this, data);
+            String filePath = FileUtils.getRealPath(this, data);
             if (filePath.isEmpty()){
                 Log.d(TAG, "SplashActivity: filePath isEmpty");
                 goToRecord();
