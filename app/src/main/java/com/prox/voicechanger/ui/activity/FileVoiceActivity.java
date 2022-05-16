@@ -177,7 +177,7 @@ public class FileVoiceActivity extends AppCompatActivity {
                     Log.d(TAG, "FileVoiceActivity: data null");
                     Toast.makeText(this, R.string.process_error, Toast.LENGTH_SHORT).show();
                 } else {
-                    String pathImage = FileUtils.getFilePathForN(this, data.getData());
+                    String pathImage = FileUtils.getRealPath(this, data.getData());
                     if (pathImage.isEmpty()){
                         Log.d(TAG, "FileVoiceActivity: pathImage isEmpty");
                         Toast.makeText(this, R.string.file_not_exist, Toast.LENGTH_SHORT).show();

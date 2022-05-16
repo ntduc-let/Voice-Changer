@@ -1,7 +1,6 @@
 package com.prox.voicechanger.ui.activity;
 
 import static com.prox.voicechanger.VoiceChangerApp.TAG;
-import static com.prox.voicechanger.ui.activity.ChangeVoiceActivity.PATH_FILE;
 import static com.prox.voicechanger.ui.dialog.MoreOptionDialog.SELECT_AUDIO;
 import static com.prox.voicechanger.ui.dialog.TextToVoiceDialog.IMPORT_TEXT;
 import static com.prox.voicechanger.utils.PermissionUtils.REQUEST_PERMISSION;
@@ -134,7 +133,7 @@ public class RecordActivity extends AppCompatActivity {
                 if (data == null){
                     Log.d(TAG, "RecordActivity: data null");
                 }else {
-                    String filePath = FileUtils.getFilePathForN(this, data.getData());
+                    String filePath = FileUtils.getRealPath(this, data.getData());
                     if (filePath.isEmpty()){
                         Log.d(TAG, "RecordActivity: filePath isEmpty");
                         Toast.makeText(this, R.string.file_not_exist, Toast.LENGTH_SHORT).show();
@@ -146,7 +145,7 @@ public class RecordActivity extends AppCompatActivity {
 
                         Intent goToChangeVoice = new Intent(this, ChangeVoiceActivity.class);
                         goToChangeVoice.setAction(IMPORT_TO_CHANGE_VOICE);
-                        goToChangeVoice.putExtra(PATH_FILE, filePath);
+                        goToChangeVoice.putExtra(ChangeVoiceActivity.PATH_FILE, filePath);
                         startActivity(goToChangeVoice);
                         overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
                         Log.d(TAG, "RecordActivity: To ChangeVoiceActivity");
@@ -171,7 +170,7 @@ public class RecordActivity extends AppCompatActivity {
                                 Log.d(TAG, "onDone");
                                 Intent goToChangeVoice = new Intent(RecordActivity.this, ChangeVoiceActivity.class);
                                 goToChangeVoice.setAction(IMPORT_TEXT_TO_SPEECH);
-                                goToChangeVoice.putExtra(PATH_FILE, FileUtils.getTempTextToSpeechFilePath(RecordActivity.this));
+                                goToChangeVoice.putExtra(ChangeVoiceActivity.PATH_FILE, FileUtils.getTempTextToSpeechFilePath(RecordActivity.this));
                                 startActivity(goToChangeVoice);
                                 overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
                                 Log.d(TAG, "RecordActivity: To ChangeVoiceActivity");
