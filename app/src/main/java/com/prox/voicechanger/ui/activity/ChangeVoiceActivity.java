@@ -316,7 +316,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
 
         FlexboxLayoutManager flexboxLayoutManager = new FlexboxLayoutManager(this);
         flexboxLayoutManager.setFlexWrap(FlexWrap.WRAP);
-        flexboxLayoutManager.setJustifyContent(JustifyContent.FLEX_START);
+        flexboxLayoutManager.setJustifyContent(JustifyContent.SPACE_AROUND);
         binding.layoutEffect.recyclerViewEffects.setLayoutManager(flexboxLayoutManager);
         binding.layoutEffect.recyclerViewEffects.setAdapter(effectAdapter);
         effectAdapter.setEffects(FFMPEGUtils.getEffects());
