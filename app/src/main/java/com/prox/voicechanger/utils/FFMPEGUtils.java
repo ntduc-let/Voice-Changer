@@ -6,10 +6,17 @@ import android.util.Log;
 
 import com.arthenica.ffmpegkit.FFmpegKit;
 import com.arthenica.ffmpegkit.ReturnCode;
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.Directory;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.Tag;
 import com.prox.voicechanger.R;
 import com.prox.voicechanger.interfaces.FFmpegExecuteCallback;
 import com.prox.voicechanger.model.Effect;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class FFMPEGUtils {
@@ -39,11 +46,28 @@ public class FFMPEGUtils {
     }
 
     public static String getCMDConvertImage(String fromPath, String toPath) {
+        if (FileUtils.getType(fromPath).equals("jpg")){
+            try {
+                Metadata metadata = ImageMetadataReader.readMetadata(new File(fromPath));
+                for (Directory directory : metadata.getDirectories()) {
+                    for (Tag tag : directory.getTags()) {
+                        if (tag.toString().contains("Orientation")){
+                            if (tag.toString().contains("normal")){
+                                return "-y -i \"" + fromPath + "\" -preset ultrafast -vf \"scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2\" \"" + toPath + "\"";
+                            }else if (tag.toString().contains("90")){
+                                return "-y -i \"" + fromPath + "\" -preset ultrafast -vf \"transpose=clock,scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2\" \"" + toPath + "\"";
+                            }else if (tag.toString().contains("180")){
+                                return "-y -i \"" + fromPath + "\" -preset ultrafast -vf \"transpose=clock,transpose=clock,scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2\" \"" + toPath + "\"";
+                            }
+                        }
+                    }
+                }
+            } catch (ImageProcessingException | IOException e) {
+                Log.d(TAG, "FFMPEGUtils getCMDConvertImage "+e.getMessage());
+            }
+            return "-y -i \"" + fromPath + "\" -preset ultrafast -vf \"scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2\" \"" + toPath + "\"";
+        }
         return "-y -i \"" + fromPath + "\" -preset ultrafast -vf \"scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2\" \"" + toPath + "\"";
-    }
-
-    public static String getCMDConvertText(String text, String toPath) {
-        return "-y -i flite=text='"+text+"' \""+toPath+"\" ";
     }
 
     public static ArrayList<Effect> getEffects() {

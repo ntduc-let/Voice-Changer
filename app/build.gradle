@@ -59,4 +59,6 @@ dependencies {
 
     implementation 'space.siy:waveformview:1.0.0'
     implementation 'com.aventrix.jnanoid:jnanoid:2.0.0'
+
+    implementation 'com.drewnoakes:metadata-extractor:2.18.0'
 }
