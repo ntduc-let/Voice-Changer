@@ -77,12 +77,13 @@ public class FFMPEGUtils {
         effects.add(new Effect(3, R.drawable.ic_robot, "Robot", "-af afftfilt=\"real='hypot(re,im)*sin(0)':imag='hypot(re,im)*cos(0)':win_size=512:overlap=0.75\""));
         effects.add(new Effect(4, R.drawable.ic_radio, "Radio", "-af atempo=1"));
         effects.add(new Effect(5, R.drawable.ic_backward, "Backward", "-af areverse"));
-        effects.add(new Effect(6, R.drawable.ic_cave, "Cave", "-af aecho=0.8:0.9:1000:0.3"));
-        effects.add(new Effect(7, R.drawable.ic_whisper, "Whisper", "-af afftfilt=\"real='hypot(re,im)*cos((random(0)*2-1)*2*3.14)':imag='hypot(re,im)*sin((random(1)*2-1)*2*3.14)':win_size=128:overlap=0.8\""));
-        effects.add(new Effect(8, R.drawable.ic_chipmunk, "Chipmunk", "-af asetrate=2*22100"));
-        effects.add(new Effect(9, R.drawable.ic_hexafluoride, "Hexafluoride", "-af asetrate=16000/1.3,atempo=1.3"));
-        effects.add(new Effect(10, R.drawable.ic_slowmotion, "Slow Motion", "-af asetrate=16000/2"));
-        effects.add(new Effect(11, R.drawable.ic_loudspeaker, "Loudspeaker", "-af stereotools=mlev=64"));
+        effects.add(new Effect(6, R.drawable.ic_cave, "Indoor", "-af \"aecho=0.8:0.9:40|50|70:0.4|0.3|0.2\""));
+        effects.add(new Effect(7, R.drawable.ic_cave, "Cave", "-af \"aecho=0.8:0.9:500|1000:0.2|0.1\""));
+        effects.add(new Effect(8, R.drawable.ic_whisper, "Whisper", "-af afftfilt=\"real='hypot(re,im)*cos((random(0)*2-1)*2*3.14)':imag='hypot(re,im)*sin((random(1)*2-1)*2*3.14)':win_size=128:overlap=0.8\""));
+        effects.add(new Effect(9, R.drawable.ic_chipmunk, "Chipmunk", "-af asetrate=2*22100"));
+        effects.add(new Effect(10, R.drawable.ic_hexafluoride, "hexafluoride", "-af asetrate=16000/1.3,atempo=1.3"));
+        effects.add(new Effect(11, R.drawable.ic_slowmotion, "Slow Motion", "-af asetrate=16000/2"));
+        effects.add(new Effect(12, R.drawable.ic_loudspeaker, "Loudspeaker", "-af stereotools=mlev=64"));
 
         return effects;
     }
