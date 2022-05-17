@@ -80,7 +80,7 @@ public class FFMPEGUtils {
         effects.add(new Effect(6, R.drawable.ic_cave, "Cave", "-af aecho=0.8:0.9:1000:0.3"));
         effects.add(new Effect(7, R.drawable.ic_whisper, "Whisper", "-af afftfilt=\"real='hypot(re,im)*cos((random(0)*2-1)*2*3.14)':imag='hypot(re,im)*sin((random(1)*2-1)*2*3.14)':win_size=128:overlap=0.8\""));
         effects.add(new Effect(8, R.drawable.ic_chipmunk, "Chipmunk", "-af asetrate=2*22100"));
-        effects.add(new Effect(9, R.drawable.ic_hexafluoride, "Hexafluoride", "-af asetrate=16000*10/11,atempo=11/10"));
+        effects.add(new Effect(9, R.drawable.ic_hexafluoride, "Hexafluoride", "-af asetrate=16000/1.3,atempo=1.3"));
         effects.add(new Effect(10, R.drawable.ic_slowmotion, "Slow Motion", "-af asetrate=16000/2"));
         effects.add(new Effect(11, R.drawable.ic_loudspeaker, "Loudspeaker", "-af stereotools=mlev=64"));
 
