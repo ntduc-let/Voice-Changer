@@ -26,6 +26,8 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.prox.voicechanger.R;
 import com.prox.voicechanger.databinding.ActivityRecordBinding;
+import com.prox.voicechanger.databinding.DialogLoading2Binding;
+import com.prox.voicechanger.ui.dialog.LoadingDialog;
 import com.prox.voicechanger.ui.dialog.TextToVoiceDialog;
 import com.prox.voicechanger.utils.FileUtils;
 import com.prox.voicechanger.utils.PermissionUtils;
@@ -157,6 +159,12 @@ public class RecordActivity extends AppCompatActivity {
             }
         }else if (requestCode == IMPORT_TEXT){
             if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+                LoadingDialog dialog = new LoadingDialog(
+                        this,
+                        DialogLoading2Binding.inflate(getLayoutInflater())
+                );
+                dialog.show();
+
                 mTts = new TextToSpeech(this, status -> {
                     if (status == TextToSpeech.SUCCESS){
                         mTts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
@@ -173,12 +181,14 @@ public class RecordActivity extends AppCompatActivity {
                                 goToChangeVoice.putExtra(ChangeVoiceActivity.PATH_FILE, FileUtils.getTempTextToSpeechFilePath(RecordActivity.this));
                                 startActivity(goToChangeVoice);
                                 overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
+                                dialog.cancel();
                                 Log.d(TAG, "RecordActivity: To ChangeVoiceActivity");
                             }
 
                             @Override
                             public void onError(String s) {
                                 Log.d(TAG, "onError");
+                                dialog.cancel();
                                 Toast.makeText(RecordActivity.this, R.string.process_error, Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -201,6 +211,7 @@ public class RecordActivity extends AppCompatActivity {
                 Intent installIntent = new Intent();
                 installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
                 startActivity(installIntent);
+                overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
             }
         }
     }
