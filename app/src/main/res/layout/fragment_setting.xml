@@ -44,7 +44,7 @@
             app:layout_constraintTop_toBottomOf="@+id/btn_close" />
 
         <Button
-            android:id="@+id/btn_facebook"
+            android:id="@+id/btn_share_app"
             style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -53,39 +53,17 @@
             android:layout_marginEnd="16dp"
             android:padding="8dp"
             android:gravity="start|center"
-            android:text="@string/btn_facebook"
+            android:text="@string/share_with_friend"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="18sp"
-            app:icon="@drawable/ic_facebook"
+            app:icon="@drawable/ic_share2"
             app:iconPadding="16dp"
             app:iconTint="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btn_rate" />
-
-        <Button
-            android:id="@+id/btn_contact"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:padding="8dp"
-            android:gravity="start|center"
-            android:text="@string/btn_contact"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            app:icon="@drawable/ic_user"
-            app:iconPadding="16dp"
-            app:iconTint="@color/white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_facebook" />
 
         <Button
             android:id="@+id/btn_policy"
@@ -107,29 +85,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_contact" />
-
-        <Button
-            android:id="@+id/btn_terms"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:padding="8dp"
-            android:gravity="start|center"
-            android:text="@string/btn_terms"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            app:icon="@drawable/ic_terms"
-            app:iconPadding="16dp"
-            app:iconTint="@color/white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_policy" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_share_app" />
 
         <include
             android:id="@+id/layout_premium"
@@ -143,7 +99,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_terms"/>
+            app:layout_constraintTop_toBottomOf="@id/btn_policy"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

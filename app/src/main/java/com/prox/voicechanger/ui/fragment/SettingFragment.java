@@ -24,11 +24,7 @@ import com.prox.voicechanger.ui.dialog.RateDialog;
 import com.prox.voicechanger.utils.ColorUtils;
 
 public class SettingFragment extends Fragment {
-    private static final String ID_FACEBOOK = "fb://page/105955561135473";
-    private static final String URI_FACEBOOK = "https://www.facebook.com/Proxglobalstudio";
-    private static final String EMAIL_FEEDBACK = "elaineeyui@gmail.com";
     private static final String URI_POLICY = "https://hellowordapp.github.io/policy/privacy.html";
-    private static final String URI_TERMS = "https://hellowordapp.github.io/policy/privacy.html";
 
     private FragmentSettingBinding binding;
 
@@ -54,40 +50,18 @@ public class SettingFragment extends Fragment {
             Log.d(TAG, "SettingFragment: Show RateDialog");
         });
 
-        binding.btnFacebook.setOnClickListener(view -> {
-            try {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(ID_FACEBOOK)));
-            } catch (Exception e) {
-                Log.d(TAG, "SettingFragment: Application not installed");
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(URI_FACEBOOK)));
-            }
-            requireActivity().overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
-            Log.d(TAG, "SettingFragment: To "+URI_FACEBOOK);
-        });
-
-        binding.btnContact.setOnClickListener(view -> {
-            Intent selectorIntent = new Intent(Intent.ACTION_SENDTO);
-            selectorIntent.setData(Uri.parse("mailto:"));
-
-            final Intent emailIntent = new Intent(Intent.ACTION_SEND);
-            emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{EMAIL_FEEDBACK});
-            emailIntent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.app_name));
-            emailIntent.setSelector(selectorIntent);
-
-            startActivity(Intent.createChooser(emailIntent, getResources().getString(R.string.notification_send_mail)));
-            Log.d(TAG, "SettingFragment: To Mail");
+        binding.btnShareApp.setOnClickListener(view -> {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.app_name));
+            intent.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id="+requireActivity().getApplicationContext().getPackageName());
+            startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_to)));
         });
 
         binding.btnPolicy.setOnClickListener(view -> {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(URI_POLICY)));
             requireActivity().overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
             Log.d(TAG, "SettingFragment: To "+URI_POLICY);
-        });
-
-        binding.btnTerms.setOnClickListener(view -> {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(URI_TERMS)));
-            requireActivity().overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
-            Log.d(TAG, "SettingFragment: To "+URI_TERMS);
         });
 
         return binding.getRoot();
