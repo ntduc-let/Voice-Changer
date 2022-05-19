@@ -117,13 +117,24 @@ public class PlayVideoDialog extends CustomDialog {
 
         });
 
-        binding.btnClose2.setOnClickListener(view -> {
+        binding.btnBackVideo.setOnClickListener(view -> {
             stop();
             if (player != null && (new File(path).exists())){
                 player.stop();
                 player.release();
             }
             cancel();
+        });
+
+        binding.btnShareVideo.setOnClickListener(view -> {
+            if (player != null && (new File(path).exists())){
+                if (player.isPlaying()) {
+                    pauseVideo();
+                }
+                FileUtils.shareFile(context, path);
+            }else {
+                cancel();
+            }
         });
     }
 
