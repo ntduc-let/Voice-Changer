@@ -21,8 +21,11 @@ public interface FileVoiceDAO {
     @Delete
     void delete(FileVoice fileVoice);
 
-    @Query("SELECT * FROM filevoice")
-    List<FileVoice> getAll();
+    @Query("SELECT * FROM filevoice WHERE path LIKE '%mp3'")
+    List<FileVoice> getAllVoice();
+
+    @Query("SELECT * FROM filevoice WHERE path LIKE '%mp4'")
+    List<FileVoice> getAllVideo();
 
     @Query("SELECT * FROM filevoice WHERE path= :path")
     FileVoice check(String path);

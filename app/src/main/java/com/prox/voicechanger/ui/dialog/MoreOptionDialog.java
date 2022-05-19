@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import com.prox.voicechanger.R;
 import com.prox.voicechanger.databinding.DialogMoreOptionBinding;
 import com.prox.voicechanger.databinding.DialogTextToVoiceBinding;
+import com.prox.voicechanger.ui.activity.FileVideoActivity;
 import com.prox.voicechanger.ui.activity.FileVoiceActivity;
 
 public class MoreOptionDialog extends Dialog {
@@ -63,6 +64,14 @@ public class MoreOptionDialog extends Dialog {
             Log.d(TAG, "MoreOptionDialog: Recorded file");
             activity.startActivity(new Intent(activity, FileVoiceActivity.class));
             Log.d(TAG, "MoreOptionDialog: To FileVoiceActivity");
+            activity.overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
+            cancel();
+        });
+
+        binding.btnVideo.setOnClickListener(view -> {
+            Log.d(TAG, "MoreOptionDialog: Recorded file");
+            activity.startActivity(new Intent(activity, FileVideoActivity.class));
+            Log.d(TAG, "MoreOptionDialog: To FileVideoActivity");
             activity.overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
             cancel();
         });

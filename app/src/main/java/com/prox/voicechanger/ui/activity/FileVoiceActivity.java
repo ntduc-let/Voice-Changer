@@ -6,6 +6,7 @@ import static com.prox.voicechanger.ui.dialog.OptionDialog.SELECT_IMAGE;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -34,7 +35,9 @@ import com.prox.voicechanger.utils.FileUtils;
 import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -44,6 +47,7 @@ public class FileVoiceActivity extends AppCompatActivity {
     private FileVoiceAdapter adapter;
     private FileVoiceViewModel model;
     private String pathVideo;
+    private String pathImage;
     private PlayVideoDialog playVideoDialog;
 
     @Override
@@ -55,15 +59,15 @@ public class FileVoiceActivity extends AppCompatActivity {
 
         model = new ViewModelProvider(this).get(FileVoiceViewModel.class);
         model.getFileVoices().observe(this, fileVoices -> {
-            if (fileVoices == null){
+            if (fileVoices == null) {
                 fileVoices = new ArrayList<>();
             }
-            if (fileVoices.size()==0){
+            if (fileVoices.size() == 0) {
                 binding.layoutNoItem.getRoot().setVisibility(View.VISIBLE);
                 binding.btnDeleteAll.setEnabled(false);
                 binding.btnDeleteAll.setTextColor(getResources().getColor(R.color.white30));
                 binding.btnDeleteAll.setBackgroundResource(R.drawable.bg_button6);
-            }else{
+            } else {
                 binding.layoutNoItem.getRoot().setVisibility(View.GONE);
                 binding.btnDeleteAll.setEnabled(true);
                 binding.btnDeleteAll.setTextColor(getResources().getColor(R.color.white));
@@ -73,15 +77,17 @@ public class FileVoiceActivity extends AppCompatActivity {
             binding.recyclerViewFileVoice.setItemViewCacheSize(fileVoices.size());
         });
         model.isExecuteAddImage().observe(this, execute -> {
-            if (execute){
+            if (execute) {
+                insertEffectToDB();
+
                 playVideoDialog = new PlayVideoDialog(
                         FileVoiceActivity.this,
                         DialogPlayVideoBinding.inflate(getLayoutInflater()),
                         pathVideo
                 );
                 playVideoDialog.show();
-                Toast.makeText(this, "Save: "+pathVideo, Toast.LENGTH_LONG).show();
-            }else {
+                Toast.makeText(this, "Save: " + pathVideo, Toast.LENGTH_LONG).show();
+            } else {
                 Toast.makeText(this, R.string.video_creation_failed, Toast.LENGTH_SHORT).show();
             }
         });
@@ -108,17 +114,17 @@ public class FileVoiceActivity extends AppCompatActivity {
         super.onResume();
 
         boolean isDeleted = false;
-        for (FileVoice fileVoice : adapter.getFileVoices()){
-            if (!(new File(fileVoice.getPath()).exists())){
+        for (FileVoice fileVoice : adapter.getFileVoices()) {
+            if (!(new File(fileVoice.getPath()).exists())) {
                 model.delete(fileVoice);
-                if (!isDeleted){
+                if (!isDeleted) {
                     isDeleted = true;
                 }
             }
         }
-        if (isDeleted){
+        if (isDeleted) {
             recreate();
-        }else {
+        } else {
             adapter.resume();
         }
     }
@@ -128,7 +134,7 @@ public class FileVoiceActivity extends AppCompatActivity {
         Log.d(TAG, "FileVoiceActivity: onStop");
         super.onStop();
         adapter.pause();
-        if (playVideoDialog!=null){
+        if (playVideoDialog != null) {
             playVideoDialog.stop();
         }
     }
@@ -151,9 +157,9 @@ public class FileVoiceActivity extends AppCompatActivity {
         finish();
     }
 
-    private void init(){
+    private void init() {
         Log.d(TAG, "FileVoiceActivity: init");
-        adapter = new FileVoiceAdapter( this, this, model);
+        adapter = new FileVoiceAdapter(this, this, model);
         binding.recyclerViewFileVoice.setAdapter(adapter);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -169,29 +175,29 @@ public class FileVoiceActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SELECT_IMAGE) {
             if (resultCode == Activity.RESULT_OK) {
-                if (! (new File(OptionDialog.fileVoice.getPath()).exists())){
+                if (!(new File(OptionDialog.fileVoice.getPath()).exists())) {
                     Toast.makeText(this, R.string.file_not_exist, Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (data == null){
+                if (data == null) {
                     Log.d(TAG, "FileVoiceActivity: data null");
                     Toast.makeText(this, R.string.process_error, Toast.LENGTH_SHORT).show();
                 } else {
-                    String pathImage = FileUtils.getRealPath(this, data.getData());
-                    if (pathImage.isEmpty()){
+                    pathImage = FileUtils.getRealPath(this, data.getData());
+                    if (pathImage.isEmpty()) {
                         Log.d(TAG, "FileVoiceActivity: pathImage isEmpty");
                         Toast.makeText(this, R.string.file_not_exist, Toast.LENGTH_SHORT).show();
-                    }else if(!(new File(pathImage).exists())){
+                    } else if (!(new File(pathImage).exists())) {
                         Log.d(TAG, "FileVoiceActivity: pathImage not exists");
                         Toast.makeText(this, R.string.file_not_exist, Toast.LENGTH_SHORT).show();
-                    }else{
+                    } else {
                         LoadingDialog dialog = new LoadingDialog(
                                 this,
                                 DialogLoading2Binding.inflate(getLayoutInflater())
                         );
                         dialog.show();
 
-                        pathVideo = FileUtils.getDCIMFolderPath(FOLDER_APP) + "/"+FileUtils.getVideoFileName();
+                        pathVideo = FileUtils.getDCIMFolderPath(FOLDER_APP) + "/" + FileUtils.getVideoFileName();
                         String cmdConvertImage = FFMPEGUtils.getCMDConvertImage(pathImage, FileUtils.getTempImagePath(this));
                         FFMPEGUtils.executeFFMPEG(cmdConvertImage, new FFmpegExecuteCallback() {
                             @Override
@@ -219,7 +225,7 @@ public class FileVoiceActivity extends AppCompatActivity {
                         });
                     }
                 }
-            } else if (resultCode == Activity.RESULT_CANCELED)  {
+            } else if (resultCode == Activity.RESULT_CANCELED) {
                 Toast.makeText(this, R.string.canceled, Toast.LENGTH_SHORT).show();
             }
         }
@@ -231,5 +237,25 @@ public class FileVoiceActivity extends AppCompatActivity {
         adapter.release();
         finish();
         overridePendingTransition(R.anim.anim_left_right_1, R.anim.anim_left_right_2);
+    }
+
+    private void insertEffectToDB() {
+        FileVoice fileVideo = new FileVoice();
+        fileVideo.setImageVideo(pathImage);
+        fileVideo.setName(FileUtils.getName(pathVideo));
+        fileVideo.setPath(pathVideo);
+
+        MediaPlayer playerVideo = new MediaPlayer();
+        try {
+            playerVideo.setDataSource(pathVideo);
+            playerVideo.prepare();
+        } catch (IOException e) {
+            Log.d(TAG, "insertEffectToDB: " + e.getMessage());
+            return;
+        }
+        fileVideo.setDuration(playerVideo.getDuration());
+        fileVideo.setSize(new File(pathVideo).length());
+        fileVideo.setDate(new Date().getTime());
+        model.insert(fileVideo);
     }
 }

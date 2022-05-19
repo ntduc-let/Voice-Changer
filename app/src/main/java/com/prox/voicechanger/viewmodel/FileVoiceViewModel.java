@@ -23,6 +23,7 @@ public class FileVoiceViewModel extends ViewModel {
     private final FileVoiceRepository repository;
 
     private final MutableLiveData<List<FileVoice>> fileVoices;
+    private final MutableLiveData<List<FileVoice>> fileVideos;
     private final MutableLiveData<String> pathPlayer = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isExecuteConvertRecording = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isExecuteSave = new MutableLiveData<>();
@@ -34,10 +35,15 @@ public class FileVoiceViewModel extends ViewModel {
         this.repository = repository;
 
         fileVoices = repository.getFileVoices();
+        fileVideos = repository.getFileVideos();
     }
 
     public LiveData<List<FileVoice>> getFileVoices() {
         return fileVoices;
+    }
+
+    public LiveData<List<FileVoice>> getFileVideos() {
+        return fileVideos;
     }
 
     public FileVoice check(String path){
@@ -88,35 +94,41 @@ public class FileVoiceViewModel extends ViewModel {
         Log.d(TAG, "FileVoiceViewModel: insert "+fileVoice.getPath());
         repository.insert(fileVoice);
         fileVoices.setValue(repository.getFileVoices().getValue());
+        fileVideos.setValue(repository.getFileVideos().getValue());
     }
 
     public void insertBG(FileVoice fileVoice){
         Log.d(TAG, "FileVoiceViewModel: insertBG "+fileVoice.getPath());
         repository.insert(fileVoice);
         fileVoices.postValue(repository.getFileVoicesBG().getValue());
+        fileVideos.postValue(repository.getFileVideosBG().getValue());
     }
 
     public void update(FileVoice fileVoice){
         Log.d(TAG, "FileVoiceViewModel: update "+fileVoice.getPath());
         repository.update(fileVoice);
         fileVoices.setValue(repository.getFileVoices().getValue());
+        fileVideos.setValue(repository.getFileVideos().getValue());
     }
 
     public void updateBG(FileVoice fileVoice){
         Log.d(TAG, "FileVoiceViewModel: updateBG "+fileVoice.getPath());
         repository.update(fileVoice);
         fileVoices.postValue(repository.getFileVoicesBG().getValue());
+        fileVideos.postValue(repository.getFileVideosBG().getValue());
     }
 
     public void delete(FileVoice fileVoice){
         Log.d(TAG, "FileVoiceViewModel: delete "+fileVoice.getPath());
         repository.delete(fileVoice);
         fileVoices.setValue(repository.getFileVoices().getValue());
+        fileVideos.setValue(repository.getFileVideos().getValue());
     }
 
     public void deleteBG(FileVoice fileVoice){
         Log.d(TAG, "FileVoiceViewModel: deleteBG "+fileVoice.getPath());
         repository.delete(fileVoice);
         fileVoices.postValue(repository.getFileVoicesBG().getValue());
+        fileVideos.postValue(repository.getFileVideosBG().getValue());
     }
 }

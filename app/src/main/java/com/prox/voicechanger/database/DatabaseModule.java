@@ -24,6 +24,7 @@ public class DatabaseModule {
                 FileVoiceDatabase.class,
                 FileVoiceDatabase.DATABASE_NAME)
                 .allowMainThreadQueries()
+                .addMigrations(FileVoiceDatabase.migration_1_to_2)
                 .build();
     }
 

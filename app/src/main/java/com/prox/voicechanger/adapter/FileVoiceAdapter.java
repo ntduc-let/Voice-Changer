@@ -65,8 +65,10 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
     public void setFileVoices(List<FileVoice> fileVoices) {
         if (fileVoices != null) {
             this.fileVoices = fileVoices;
-            notifyDataSetChanged();
+        }else {
+            this.fileVoices = new ArrayList<>();
         }
+        notifyDataSetChanged();
     }
 
     public List<FileVoice> getFileVoices() {
@@ -89,7 +91,7 @@ public class FileVoiceAdapter extends RecyclerView.Adapter<FileVoiceAdapter.File
         FileVoice fileVoice = fileVoices.get(position);
         holder.binding.imgFile.setImageResource(fileVoice.getSrc());
         holder.binding.txtNameFile.setText(fileVoice.getName());
-        holder.binding.txtSize.setText(NumberUtils.formatAsTime(fileVoice.getDuration()) + " | " + fileVoice.getSize() / 1024 + "kB");
+        holder.binding.txtSize.setText(NumberUtils.formatAsTime(fileVoice.getDuration()) + " | " + NumberUtils.formatAsSize(fileVoice.getSize()));
         holder.binding.txtDate.setText(NumberUtils.formatAsDate(fileVoice.getDate()));
         holder.binding.btnOption.setOnClickListener(view -> {
             release();

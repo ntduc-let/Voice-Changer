@@ -13,6 +13,7 @@ public class FileVoice {
     private long duration;
     private long size;
     private long date;
+    private String imageVideo;
 
     public FileVoice() {
     }
@@ -71,5 +72,13 @@ public class FileVoice {
 
     public void setDate(long date) {
         this.date = date;
+    }
+
+    public String getImageVideo() {
+        return imageVideo;
+    }
+
+    public void setImageVideo(String imageVideo) {
+        this.imageVideo = imageVideo;
     }
 }

@@ -19,4 +19,8 @@ public class NumberUtils {
     public static String formatAsDate(long date){
         return new SimpleDateFormat("HH:mm | dd.MM.yy").format(date);
     }
+
+    public static String formatAsSize(long size){
+        return (size/1024) + "kB";
+    }
 }

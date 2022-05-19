@@ -19,13 +19,25 @@ public class FileVoiceRepository {
 
     public MutableLiveData<List<FileVoice>> getFileVoices(){
         MutableLiveData<List<FileVoice>> data = new MutableLiveData<>();
-        data.setValue(dao.getAll());
+        data.setValue(dao.getAllVoice());
         return data;
     }
 
     public MutableLiveData<List<FileVoice>> getFileVoicesBG(){
         MutableLiveData<List<FileVoice>> data = new MutableLiveData<>();
-        data.postValue(dao.getAll());
+        data.postValue(dao.getAllVoice());
+        return data;
+    }
+
+    public MutableLiveData<List<FileVoice>> getFileVideos(){
+        MutableLiveData<List<FileVoice>> data = new MutableLiveData<>();
+        data.setValue(dao.getAllVideo());
+        return data;
+    }
+
+    public MutableLiveData<List<FileVoice>> getFileVideosBG(){
+        MutableLiveData<List<FileVoice>> data = new MutableLiveData<>();
+        data.postValue(dao.getAllVideo());
         return data;
     }
 
