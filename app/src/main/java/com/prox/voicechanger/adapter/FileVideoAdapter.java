@@ -3,7 +3,6 @@ package com.prox.voicechanger.adapter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -19,7 +18,6 @@ import com.prox.voicechanger.ui.dialog.PlayVideoDialog;
 import com.prox.voicechanger.utils.NumberUtils;
 import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,9 +61,8 @@ public class FileVideoAdapter extends RecyclerView.Adapter<FileVideoAdapter.File
     @Override
     public void onBindViewHolder(@NonNull FileVideoViewHolder holder, int position) {
         FileVoice fileVideo = fileVideos.get(position);
-        if (new File(fileVideo.getImageVideo()).exists()){
-            holder.binding.imgFile.setImageBitmap(BitmapFactory.decodeFile(fileVideo.getImageVideo()));
-        }
+//        holder.binding.imgFile.setImageBitmap(BitmapFactory.decodeFile(fileVideo.getImageVideo()));
+        holder.binding.imgFile.setImageBitmap(fileVideo.getBitmap());
         holder.binding.txtNameFile.setText(fileVideo.getName());
         holder.binding.txtSize.setText(NumberUtils.formatAsTime(fileVideo.getDuration()) + " | " + NumberUtils.formatAsSize(fileVideo.getSize()));
         holder.binding.txtDate.setText(NumberUtils.formatAsDate(fileVideo.getDate()));
