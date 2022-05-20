@@ -17,8 +17,10 @@ import com.prox.voicechanger.VoiceChangerApp;
 import com.prox.voicechanger.adapter.FileVideoAdapter;
 import com.prox.voicechanger.databinding.ActivityFileVideoBinding;
 import com.prox.voicechanger.databinding.DialogDeleteAllBinding;
+import com.prox.voicechanger.databinding.DialogRateBinding;
 import com.prox.voicechanger.model.FileVoice;
 import com.prox.voicechanger.ui.dialog.DeleteAllDialog;
+import com.prox.voicechanger.ui.dialog.RateDialog;
 import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
 import com.proxglobal.proxads.adsv2.callback.AdsCallback;
 
@@ -122,7 +124,15 @@ public class FileVideoActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Log.d(TAG, "FileVideoActivity: onBackPressed");
-        finish();
-        overridePendingTransition(R.anim.anim_left_right_1, R.anim.anim_left_right_2);
+        if (RateDialog.isRated(this)){
+            finish();
+            overridePendingTransition(R.anim.anim_left_right_1, R.anim.anim_left_right_2);
+        }else {
+            RateDialog dialog = new RateDialog(this, DialogRateBinding.inflate(getLayoutInflater()), () -> {
+                finish();
+                overridePendingTransition(R.anim.anim_left_right_1, R.anim.anim_left_right_2);
+            });
+            dialog.show();
+        }
     }
 }

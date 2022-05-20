@@ -12,6 +12,7 @@ import com.prox.voicechanger.databinding.DialogOptionVideoBinding;
 import com.prox.voicechanger.databinding.DialogRenameBinding;
 import com.prox.voicechanger.model.FileVoice;
 import com.prox.voicechanger.utils.FileUtils;
+import com.prox.voicechanger.utils.FirebaseUtils;
 import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
 
 public class OptionVideoDialog extends CustomDialog{
@@ -27,6 +28,7 @@ public class OptionVideoDialog extends CustomDialog{
         setCancelable(true);
 
         binding.btnShare.setOnClickListener(view -> {
+            FirebaseUtils.sendEvent(context, "Layout_List_File_Save", "Click More Share");
             Log.d(TAG, "OptionVideoDialog: Share");
             FileUtils.shareFile(context, fileVoice.getPath());
             cancel();

@@ -39,6 +39,7 @@ import com.prox.voicechanger.model.Effect;
 import com.prox.voicechanger.ui.dialog.NameDialog;
 import com.prox.voicechanger.utils.FFMPEGUtils;
 import com.prox.voicechanger.utils.FileUtils;
+import com.prox.voicechanger.utils.FirebaseUtils;
 import com.prox.voicechanger.utils.NetworkUtils;
 import com.prox.voicechanger.utils.NumberUtils;
 import com.prox.voicechanger.utils.PermissionUtils;
@@ -176,6 +177,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         binding.btnBack2.setOnClickListener(view -> onBackPressed());
 
         binding.btnSave2.setOnClickListener(view -> {
+            FirebaseUtils.sendEvent(this, "Layout_Effect", "Click Save");
             pausePlayer();
 
             String name = binding.layoutPlayer.txtName2.getText().toString();
@@ -218,6 +220,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         });
 
         binding.layoutEffect.btnEffect.setOnClickListener(view -> {
+            FirebaseUtils.sendEvent(this, "Layout_Effect", "Click Effect");
             initClickBtnEffect();
             if (!binding.layoutEffect.layoutCustom.btnResetBasic.isEnabled()
                     && !binding.layoutEffect.layoutCustom.btnResetEqualizer.isEnabled()
@@ -230,6 +233,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         });
 
         binding.layoutEffect.btnCustom.setOnClickListener(view -> {
+            FirebaseUtils.sendEvent(this, "Layout_Effect", "Click Custom");
             initClickBtnCustom();
         });
 
@@ -610,6 +614,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
     private void actionCustomBasic() {
         binding.layoutEffect.layoutCustom.switchBasic.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b) {
+                FirebaseUtils.sendEvent(this, "Layout_Effect", "Click Custom Basic");
                 binding.layoutEffect.layoutCustom.switchBasic.setTrackResource(R.drawable.ic_track_enable);
                 binding.layoutEffect.layoutCustom.layoutBasic.getRoot().setVisibility(View.VISIBLE);
                 binding.layoutEffect.layoutCustom.btnResetBasic.setVisibility(View.VISIBLE);
@@ -644,6 +649,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
     private void actionCustomEqualizer() {
         binding.layoutEffect.layoutCustom.switchEqualizer.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b) {
+                FirebaseUtils.sendEvent(this, "Layout_Effect", "Click Custom Equalizer");
                 binding.layoutEffect.layoutCustom.switchEqualizer.setTrackResource(R.drawable.ic_track_enable);
                 binding.layoutEffect.layoutCustom.layoutEqualizer.getRoot().setVisibility(View.VISIBLE);
                 binding.layoutEffect.layoutCustom.btnResetEqualizer.setVisibility(View.VISIBLE);
@@ -678,6 +684,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
     private void actionCustomReverb() {
         binding.layoutEffect.layoutCustom.switchReverb.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b) {
+                FirebaseUtils.sendEvent(this, "Layout_Effect", "Click Custom Reverb");
                 binding.layoutEffect.layoutCustom.switchReverb.setTrackResource(R.drawable.ic_track_enable);
                 binding.layoutEffect.layoutCustom.layoutReverb.getRoot().setVisibility(View.VISIBLE);
                 binding.layoutEffect.layoutCustom.btnResetReverb.setVisibility(View.VISIBLE);

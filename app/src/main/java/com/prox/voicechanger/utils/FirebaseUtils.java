@@ -27,4 +27,10 @@ public class FirebaseUtils {
         bundle.putString("star", rate + " star");
         FirebaseAnalytics.getInstance(context).logEvent("prox_rating_layout", bundle);
     }
+
+    public static void sendEvent(Context context, String nameEvent, String typeEvent){
+        Bundle bundle = new Bundle();
+        bundle.putString("event_type", typeEvent);
+        FirebaseAnalytics.getInstance(context).logEvent(nameEvent, bundle);
+    }
 }

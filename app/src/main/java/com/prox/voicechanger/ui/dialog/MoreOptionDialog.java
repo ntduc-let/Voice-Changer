@@ -21,6 +21,7 @@ import com.prox.voicechanger.databinding.DialogMoreOptionBinding;
 import com.prox.voicechanger.databinding.DialogTextToVoiceBinding;
 import com.prox.voicechanger.ui.activity.FileVideoActivity;
 import com.prox.voicechanger.ui.activity.FileVoiceActivity;
+import com.prox.voicechanger.utils.FirebaseUtils;
 
 public class MoreOptionDialog extends Dialog {
     public static final int SELECT_AUDIO = 30;
@@ -42,6 +43,7 @@ public class MoreOptionDialog extends Dialog {
         setCancelable(true);
 
         binding.btnImport.setOnClickListener(view -> {
+            FirebaseUtils.sendEvent(context, "Layout_Home_More", "Click Import pre-recorded sound");
             Log.d(TAG, "MoreOptionDialog: Import pre-recorded sound");
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
             activity.startActivityForResult(intent, SELECT_AUDIO);
@@ -50,6 +52,7 @@ public class MoreOptionDialog extends Dialog {
         });
 
         binding.btnTextToVoice.setOnClickListener(view -> {
+            FirebaseUtils.sendEvent(context, "Layout_Home_More", "Click Create voice from text");
             Log.d(TAG, "MoreOptionDialog: Create voice from text");
             TextToVoiceDialog dialog = new TextToVoiceDialog(
                     context,
@@ -61,6 +64,7 @@ public class MoreOptionDialog extends Dialog {
         });
 
         binding.btnFile.setOnClickListener(view -> {
+            FirebaseUtils.sendEvent(context, "Layout_Home_More", "Click Recorded file");
             Log.d(TAG, "MoreOptionDialog: Recorded file");
             activity.startActivity(new Intent(activity, FileVoiceActivity.class));
             Log.d(TAG, "MoreOptionDialog: To FileVoiceActivity");
@@ -69,7 +73,8 @@ public class MoreOptionDialog extends Dialog {
         });
 
         binding.btnVideo.setOnClickListener(view -> {
-            Log.d(TAG, "MoreOptionDialog: Recorded file");
+            FirebaseUtils.sendEvent(context, "Layout_Home_More", "Click Video file");
+            Log.d(TAG, "MoreOptionDialog: Video file");
             activity.startActivity(new Intent(activity, FileVideoActivity.class));
             Log.d(TAG, "MoreOptionDialog: To FileVideoActivity");
             activity.overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);

@@ -22,6 +22,7 @@ import com.prox.voicechanger.VoiceChangerApp;
 import com.prox.voicechanger.databinding.DialogMoreOptionBinding;
 import com.prox.voicechanger.databinding.FragmentRecordBinding;
 import com.prox.voicechanger.ui.dialog.MoreOptionDialog;
+import com.prox.voicechanger.utils.FirebaseUtils;
 import com.prox.voicechanger.utils.PermissionUtils;
 import com.proxglobal.proxads.adsv2.callback.AdsCallback;
 
@@ -40,6 +41,7 @@ public class RecordFragment extends Fragment {
         init();
 
         binding.btnRecord.setOnClickListener(view -> {
+            FirebaseUtils.sendEvent(requireContext(), "Layout_Home", "Click recoding");
             if (PermissionUtils.checkPermission(requireContext(), requireActivity())) {
                 VoiceChangerApp.instance.showInterstitial(requireActivity(), "interstitial_home", new AdsCallback() {
                     @Override
