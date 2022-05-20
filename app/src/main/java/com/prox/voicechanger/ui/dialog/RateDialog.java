@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import com.prox.voicechanger.R;
 import com.prox.voicechanger.databinding.DialogRateBinding;
 import com.prox.voicechanger.interfaces.RateListener;
+import com.prox.voicechanger.utils.FirebaseUtils;
 
 public class RateDialog extends CustomDialog{
 
@@ -78,6 +79,8 @@ public class RateDialog extends CustomDialog{
             binding.btnRate4.setImageResource(R.drawable.ic_star_rate);
             binding.btnRate5.setImageResource(R.drawable.ic_star_not_rate);
             binding.txtRate.setText(R.string.txt_rate_done);
+            starRate = 4;
+            FirebaseUtils.sendEventChangeRate(context, starRate);
             sp.edit().putBoolean("isRated", true).apply();
             try {
                 context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + context.getPackageName())));
@@ -96,6 +99,8 @@ public class RateDialog extends CustomDialog{
             binding.btnRate4.setImageResource(R.drawable.ic_star_rate);
             binding.btnRate5.setImageResource(R.drawable.ic_star_rate);
             binding.txtRate.setText(R.string.txt_rate_done);
+            starRate = 5;
+            FirebaseUtils.sendEventChangeRate(context, starRate);
             sp.edit().putBoolean("isRated", true).apply();
             try {
                 context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + context.getPackageName())));
@@ -108,11 +113,13 @@ public class RateDialog extends CustomDialog{
         });
 
         binding.btnLater.setOnClickListener(view -> {
+            FirebaseUtils.sendEventLaterRate(context);
             rateListener.rate();
             cancel();
         });
 
         binding.btnSubmit.setOnClickListener(view -> {
+            FirebaseUtils.sendEventSubmitRate(context, binding.edtComment.getText().toString().trim(), starRate);
             sp.edit().putBoolean("isRated", true).apply();
             Toast.makeText(context, R.string.thank_rate, Toast.LENGTH_SHORT).show();
             rateListener.rate();
