@@ -70,6 +70,7 @@ public class PermissionUtils {
 
         builder.setPositiveButton(R.string.setting, (dialog, id) -> requestAccessAllFile(activity));
         builder.setNegativeButton(R.string.cancel, (dialog, id) -> activity.finish());
+        builder.setCancelable(false);
 
         AlertDialog dialogRequest = builder.create();
         dialogRequest.show();

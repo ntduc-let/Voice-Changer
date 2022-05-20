@@ -8,8 +8,10 @@ import static com.prox.voicechanger.utils.PermissionUtils.REQUEST_PERMISSION;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
@@ -29,7 +31,9 @@ import com.prox.voicechanger.R;
 import com.prox.voicechanger.VoiceChangerApp;
 import com.prox.voicechanger.databinding.ActivityRecordBinding;
 import com.prox.voicechanger.databinding.DialogLoading2Binding;
+import com.prox.voicechanger.databinding.DialogRateBinding;
 import com.prox.voicechanger.ui.dialog.LoadingDialog;
+import com.prox.voicechanger.ui.dialog.RateDialog;
 import com.prox.voicechanger.ui.dialog.TextToVoiceDialog;
 import com.prox.voicechanger.utils.FileUtils;
 import com.prox.voicechanger.utils.PermissionUtils;
@@ -90,6 +94,13 @@ public class RecordActivity extends AppCompatActivity {
         });
 
         init();
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        int open_app = preferences.getInt("open_app", 1);
+        if (open_app >= 2){
+            RateDialog dialog = new RateDialog(this, DialogRateBinding.inflate(getLayoutInflater()), () -> {});
+            dialog.show();
+        }
     }
 
     @Override

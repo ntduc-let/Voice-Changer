@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -43,11 +44,16 @@ public class SettingFragment extends Fragment {
         });
 
         binding.btnRate.setOnClickListener(view -> {
-            RateDialog dialog = new RateDialog(
-                    requireContext(),
-                    DialogRateBinding.inflate(requireActivity().getLayoutInflater()));
-            dialog.show();
-            Log.d(TAG, "SettingFragment: Show RateDialog");
+            if (RateDialog.isRated(requireContext())){
+                Toast.makeText(requireContext(), R.string.rated, Toast.LENGTH_SHORT).show();
+            }else {
+                RateDialog dialog = new RateDialog(
+                        requireContext(),
+                        DialogRateBinding.inflate(requireActivity().getLayoutInflater()),
+                        () -> {});
+                dialog.show();
+                Log.d(TAG, "SettingFragment: Show RateDialog");
+            }
         });
 
         binding.btnShareApp.setOnClickListener(view -> {

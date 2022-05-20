@@ -5,10 +5,12 @@ import static com.prox.voicechanger.ui.activity.ChangeVoiceActivity.PATH_FILE;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -39,6 +41,11 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         init();
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        int open_app = preferences.getInt("open_app", 0);
+        preferences.edit().putInt("open_app", open_app + 1).apply();
+        Log.d(TAG, "Open app: "+open_app);
     }
 
     @Override

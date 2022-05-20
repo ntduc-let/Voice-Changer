@@ -96,4 +96,6 @@
     <string name="rating_comment_hint">Please write your comment here …</string>
     <string name="maybe_later">Maybe Later</string>
     <string name="submit">Submit</string>
+    <string name="thank_rate">Thank for rating</string>
+    <string name="rated">You have already rated it</string>
 </resources>

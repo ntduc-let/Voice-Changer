@@ -67,12 +67,14 @@ public class RecordFragment extends Fragment {
         });
 
         binding.btnMoreOption.setOnClickListener(view -> {
-            MoreOptionDialog dialog = new MoreOptionDialog(
-                    requireContext(),
-                    requireActivity(),
-                    DialogMoreOptionBinding.inflate(getLayoutInflater())
-            );
-            dialog.show();
+            if (PermissionUtils.checkPermission(requireContext(), requireActivity())) {
+                MoreOptionDialog dialog = new MoreOptionDialog(
+                        requireContext(),
+                        requireActivity(),
+                        DialogMoreOptionBinding.inflate(getLayoutInflater())
+                );
+                dialog.show();
+            }
         });
 
         return binding.getRoot();
