@@ -92,4 +92,7 @@
     <string name="share_with_friend">Share with Friend</string>
     <string name="share_to">Share to...</string>
     <string name="btn_video_file">Video file</string>
+    <string name="rating_comment_hint">Please write your comment here …</string>
+    <string name="maybe_later">Maybe Later</string>
+    <string name="submit">Submit</string>
 </resources>

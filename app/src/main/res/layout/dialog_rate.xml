@@ -80,21 +80,63 @@
         app:layout_constraintTop_toBottomOf="@+id/txt_rate"
         app:srcCompat="@drawable/ic_star_not_rate" />
 
+    <EditText
+        android:id="@+id/edt_comment"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bg_rating_edit"
+        android:ems="10"
+        android:gravity="top|start"
+        android:hint="@string/rating_comment_hint"
+        android:inputType="textPersonName"
+        android:padding="8dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white30"
+        android:textSize="12sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_rate3"
+        app:layout_constraintBottom_toTopOf="@id/btn_later"/>
+
     <Button
-        android:id="@+id/btn_rate_now"
+        android:id="@+id/btn_later"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="32dp"
-        android:background="@drawable/bg_button_enable"
-        android:text="Comming soon"
+        android:background="@drawable/bg_button_disable"
+        android:text="@string/maybe_later"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="18sp"
         app:backgroundTint="@null"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edt_comment"
+        app:layout_constraintBottom_toTopOf="@id/btn_submit"/>
+
+    <Button
+        android:id="@+id/btn_submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/bg_button_enable"
+        android:text="@string/submit"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:backgroundTint="@null"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_rate3" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_later"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
