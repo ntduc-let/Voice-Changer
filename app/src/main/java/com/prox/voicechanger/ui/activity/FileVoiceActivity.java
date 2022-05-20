@@ -6,7 +6,6 @@ import static com.prox.voicechanger.ui.dialog.OptionDialog.SELECT_IMAGE;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
@@ -242,7 +241,7 @@ public class FileVoiceActivity extends AppCompatActivity {
 
     private void insertEffectToDB() {
         FileVoice fileVideo = new FileVoice();
-        fileVideo.setBitmap(BitmapFactory.decodeFile(FileUtils.getTempImagePath(this)));
+        fileVideo.setSrc(OptionDialog.fileVoice.getSrc());
         fileVideo.setName(FileUtils.getName(pathVideo));
         fileVideo.setPath(pathVideo);
 

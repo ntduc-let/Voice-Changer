@@ -61,8 +61,7 @@ public class FileVideoAdapter extends RecyclerView.Adapter<FileVideoAdapter.File
     @Override
     public void onBindViewHolder(@NonNull FileVideoViewHolder holder, int position) {
         FileVoice fileVideo = fileVideos.get(position);
-//        holder.binding.imgFile.setImageBitmap(BitmapFactory.decodeFile(fileVideo.getImageVideo()));
-        holder.binding.imgFile.setImageBitmap(fileVideo.getBitmap());
+        holder.binding.imgFile.setImageResource(fileVideo.getSrc());
         holder.binding.txtNameFile.setText(fileVideo.getName());
         holder.binding.txtSize.setText(NumberUtils.formatAsTime(fileVideo.getDuration()) + " | " + NumberUtils.formatAsSize(fileVideo.getSize()));
         holder.binding.txtDate.setText(NumberUtils.formatAsDate(fileVideo.getDate()));

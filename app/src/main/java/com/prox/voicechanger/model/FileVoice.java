@@ -1,7 +1,5 @@
 package com.prox.voicechanger.model;
 
-import android.graphics.Bitmap;
-
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -15,7 +13,6 @@ public class FileVoice {
     private long duration;
     private long size;
     private long date;
-    private Bitmap bitmap;
 
     public FileVoice() {
     }
@@ -76,11 +73,4 @@ public class FileVoice {
         this.date = date;
     }
 
-    public Bitmap getBitmap() {
-        return bitmap;
-    }
-
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
-    }
 }
