@@ -16,11 +16,14 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import com.prox.voicechanger.BuildConfig;
 import com.prox.voicechanger.R;
+import com.prox.voicechanger.VoiceChangerApp;
 import com.prox.voicechanger.databinding.DialogMoreOptionBinding;
 import com.prox.voicechanger.databinding.FragmentRecordBinding;
 import com.prox.voicechanger.ui.dialog.MoreOptionDialog;
 import com.prox.voicechanger.utils.PermissionUtils;
+import com.proxglobal.proxads.adsv2.callback.AdsCallback;
 
 public class RecordFragment extends Fragment {
     private FragmentRecordBinding binding;
@@ -38,8 +41,23 @@ public class RecordFragment extends Fragment {
 
         binding.btnRecord.setOnClickListener(view -> {
             if (PermissionUtils.checkPermission(requireContext(), requireActivity())) {
-                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_recordFragment_to_stopRecordFragment);
-                Log.d(TAG, "RecordFragment: To StopRecordFragment");
+                VoiceChangerApp.instance.showInterstitial(requireActivity(), "interstitial_home", new AdsCallback() {
+                    @Override
+                    public void onClosed() {
+                        super.onClosed();
+                        Log.d(TAG, "RecordFragment Ads onClosed");
+                        Navigation.findNavController(binding.getRoot()).navigate(R.id.action_recordFragment_to_stopRecordFragment);
+                        Log.d(TAG, "RecordFragment: To StopRecordFragment");
+                    }
+
+                    @Override
+                    public void onError() {
+                        super.onError();
+                        Log.d(TAG, "RecordFragment Ads onError");
+                        Navigation.findNavController(binding.getRoot()).navigate(R.id.action_recordFragment_to_stopRecordFragment);
+                        Log.d(TAG, "RecordFragment: To StopRecordFragment");
+                    }
+                });
             }
         });
 
@@ -106,5 +124,19 @@ public class RecordFragment extends Fragment {
             };
             handler.post(runnableAnimation);
         }, 1500);
+
+        VoiceChangerApp.instance.showMediumNative(requireActivity(), BuildConfig.native_home, binding.adContainer, new AdsCallback() {
+            @Override
+            public void onClosed() {
+                super.onClosed();
+                Log.d(TAG, "RecordFragment: Ads onClosed");
+            }
+
+            @Override
+            public void onError() {
+                super.onError();
+                Log.d(TAG, "RecordFragment: Ads onError");
+            }
+        });
     }
 }

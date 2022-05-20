@@ -11,13 +11,16 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.prox.voicechanger.BuildConfig;
 import com.prox.voicechanger.R;
+import com.prox.voicechanger.VoiceChangerApp;
 import com.prox.voicechanger.adapter.FileVideoAdapter;
 import com.prox.voicechanger.databinding.ActivityFileVideoBinding;
 import com.prox.voicechanger.databinding.DialogDeleteAllBinding;
 import com.prox.voicechanger.model.FileVoice;
 import com.prox.voicechanger.ui.dialog.DeleteAllDialog;
 import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
+import com.proxglobal.proxads.adsv2.callback.AdsCallback;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -100,6 +103,20 @@ public class FileVideoActivity extends AppCompatActivity {
         DividerItemDecoration dividerHorizontal = new DividerItemDecoration
                 (this, DividerItemDecoration.VERTICAL);
         binding.recyclerViewFileVideo.addItemDecoration(dividerHorizontal);
+
+        VoiceChangerApp.instance.showMediumNative(this, BuildConfig.native_file, binding.adContainer, new AdsCallback() {
+            @Override
+            public void onClosed() {
+                super.onClosed();
+                Log.d(TAG, "FileVideoActivity: Ads onClosed");
+            }
+
+            @Override
+            public void onError() {
+                super.onError();
+                Log.d(TAG, "FileVideoActivity: Ads onError");
+            }
+        });
     }
 
     @Override

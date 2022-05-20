@@ -5,7 +5,6 @@ import static com.prox.voicechanger.VoiceChangerApp.TAG;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.View;
@@ -18,7 +17,6 @@ import com.prox.voicechanger.databinding.DialogNameBinding;
 import com.prox.voicechanger.interfaces.FFmpegExecuteCallback;
 import com.prox.voicechanger.model.Effect;
 import com.prox.voicechanger.model.FileVoice;
-import com.prox.voicechanger.ui.activity.FileVoiceActivity;
 import com.prox.voicechanger.utils.FFMPEGUtils;
 import com.prox.voicechanger.utils.FileUtils;
 import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
@@ -80,17 +78,14 @@ public class NameDialog extends CustomDialog {
                 @Override
                 public void onSuccess() {
                     insertEffectToDB(model, effectSelected, path);
-                    activity.startActivity(new Intent(activity, FileVoiceActivity.class));
-                    activity.overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
-                    Log.d(TAG, "NameDialog: To FileVoiceActivity");
+                    model.setExecuteSave(true);
                     cancel();
                 }
 
                 @Override
                 public void onFailed() {
-                    binding.txtNoti.setText(R.string.create_error);
-                    binding.txtNoti.setTextColor(context.getResources().getColor(R.color.red));
-                    binding.btnCancel.setEnabled(true);
+                    model.setExecuteSave(false);
+                    cancel();
                 }
             });
         });

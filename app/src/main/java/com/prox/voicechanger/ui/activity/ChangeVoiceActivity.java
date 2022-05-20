@@ -27,7 +27,9 @@ import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
 import com.google.android.material.slider.Slider;
+import com.prox.voicechanger.BuildConfig;
 import com.prox.voicechanger.R;
+import com.prox.voicechanger.VoiceChangerApp;
 import com.prox.voicechanger.adapter.EffectAdapter;
 import com.prox.voicechanger.databinding.ActivityChangeVoiceBinding;
 import com.prox.voicechanger.databinding.DialogNameBinding;
@@ -37,9 +39,12 @@ import com.prox.voicechanger.model.Effect;
 import com.prox.voicechanger.ui.dialog.NameDialog;
 import com.prox.voicechanger.utils.FFMPEGUtils;
 import com.prox.voicechanger.utils.FileUtils;
+import com.prox.voicechanger.utils.NetworkUtils;
 import com.prox.voicechanger.utils.NumberUtils;
 import com.prox.voicechanger.utils.PermissionUtils;
 import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
+import com.proxglobal.proxads.adsv2.callback.AdsCallback;
+import com.proxglobal.purchase.ProxPurchase;
 
 import java.io.File;
 
@@ -134,19 +139,35 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                 binding.layoutLoading.txtProcessing.setTextColor(getResources().getColor(R.color.red));
             }
         });
-        model.isExecuteSave().observe(this, execute -> {
-            if (execute) {
-                startActivity(new Intent(ChangeVoiceActivity.this, FileVoiceActivity.class));
-                overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
-                Toast.makeText(this, R.string.save_success, Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "ChangeVoiceActivity: To FileVoiceActivity");
-            } else {
+        model.isExecuteSave().observe(this, execute -> VoiceChangerApp.instance.showInterstitial(this, "interstitial_save", new AdsCallback() {
+            @Override
+            public void onClosed() {
+                super.onClosed();
+                Log.d(TAG, "ChangeVoiceActivity Ads onClosed");
                 startActivity(new Intent(ChangeVoiceActivity.this, FileVoiceActivity.class));
                 overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
                 Log.d(TAG, "ChangeVoiceActivity: To FileVoiceActivity");
-                Toast.makeText(this, R.string.save_fail, Toast.LENGTH_SHORT).show();
+                if (execute){
+                    Toast.makeText(ChangeVoiceActivity.this, R.string.save_success, Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(ChangeVoiceActivity.this, R.string.save_fail, Toast.LENGTH_SHORT).show();
+                }
             }
-        });
+
+            @Override
+            public void onError() {
+                super.onError();
+                Log.d(TAG, "ChangeVoiceActivity Ads onError");
+                startActivity(new Intent(ChangeVoiceActivity.this, FileVoiceActivity.class));
+                overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
+                Log.d(TAG, "ChangeVoiceActivity: To FileVoiceActivity");
+                if (execute){
+                    Toast.makeText(ChangeVoiceActivity.this, R.string.save_success, Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(ChangeVoiceActivity.this, R.string.save_fail, Toast.LENGTH_SHORT).show();
+                }
+            }
+        }));
         model.getLoading().observe(this, loading ->
                 binding.layoutLoading.progressProcessing.setProgress(Math.round(loading)));
 
@@ -290,9 +311,33 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         binding.layoutEffect.recyclerViewEffects.setAdapter(effectAdapter);
         effectAdapter.setEffects(FFMPEGUtils.getEffects());
 
-        if (PermissionUtils.checkPermission(this, this)){
+        if (PermissionUtils.checkPermission(this, this)) {
             actionIntent();
         }
+
+        if (ProxPurchase.getInstance().checkPurchased()
+                || !NetworkUtils.isNetworkAvailable(this)) {
+            binding.bannerContainer.setVisibility(View.GONE);
+        }
+
+        VoiceChangerApp.instance.showBanner(
+                this,
+                binding.bannerContainer,
+                BuildConfig.banner,
+                new AdsCallback() {
+                    @Override
+                    public void onClosed() {
+                        super.onClosed();
+                        Log.d(TAG, "ChangeVoiceActivity Ads onClosed");
+                    }
+
+                    @Override
+                    public void onError() {
+                        super.onError();
+                        Log.d(TAG, "ChangeVoiceActivity Ads onError");
+                    }
+                }
+        );
     }
 
     private void actionIntent() {
@@ -316,9 +361,9 @@ public class ChangeVoiceActivity extends AppCompatActivity {
             }
 
             if (intent.getAction().equals(RECORD_TO_CHANGE_VOICE)
-                || intent.getAction().equals(IMPORT_TEXT_TO_SPEECH)){
+                    || intent.getAction().equals(IMPORT_TEXT_TO_SPEECH)) {
                 nameFile = FileUtils.getName(FileUtils.getRecordingFileName());
-            }else{
+            } else {
                 nameFile = FileUtils.getName(path);
             }
 

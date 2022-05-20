@@ -15,9 +15,12 @@ import android.view.animation.AnimationUtils;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.prox.voicechanger.BuildConfig;
 import com.prox.voicechanger.R;
+import com.prox.voicechanger.VoiceChangerApp;
 import com.prox.voicechanger.databinding.ActivitySplashBinding;
 import com.prox.voicechanger.utils.FileUtils;
+import com.proxglobal.proxads.adsv2.callback.AdsCallback;
 
 import java.io.File;
 
@@ -61,7 +64,24 @@ public class SplashActivity extends AppCompatActivity {
         AnimationDrawable rocketAnimation = (AnimationDrawable) binding.aniRecord.icAniRecord7.getBackground();
         rocketAnimation.start();
 
-        new Handler().postDelayed(this::goToMain, 4500);
+        VoiceChangerApp.instance.initInterstitial(this, BuildConfig.interstitial_home, null, "interstitial_home");
+        VoiceChangerApp.instance.initInterstitial(this, BuildConfig.interstitial_save, null, "interstitial_save");
+        VoiceChangerApp.instance.initInterstitial(this, BuildConfig.interstitial_text, null, "interstitial_text");
+
+
+        new Handler().postDelayed(() -> VoiceChangerApp.instance.showSplash(this, new AdsCallback() {
+            @Override
+            public void onClosed() {
+                Log.d(TAG, "SplashActivity Ads onClosed");
+                goToMain();
+            }
+
+            @Override
+            public void onError() {
+                Log.d(TAG, "SplashActivity Ads onError");
+                goToMain();
+            }
+        }, BuildConfig.interstitial_splash, null, 12000), 4500);
     }
 
     private void goToMain() {

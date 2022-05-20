@@ -20,9 +20,26 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField "String", "interstitial_splash", "\"ca-app-pub-3940256099942544/1033173712\""
+            buildConfigField "String", "native_home", "\"ca-app-pub-3940256099942544/2247696110\""
+            buildConfigField "String", "interstitial_home", "\"ca-app-pub-3940256099942544/1033173712\""
+            buildConfigField "String", "banner", "\"ca-app-pub-3940256099942544/6300978111\""
+            buildConfigField "String", "native_file", "\"ca-app-pub-3940256099942544/2247696110\""
+            buildConfigField "String", "interstitial_save", "\"ca-app-pub-3940256099942544/1033173712\""
+            buildConfigField "String", "interstitial_text", "\"ca-app-pub-3940256099942544/1033173712\""
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            buildConfigField "String", "interstitial_splash", "\"ca-app-pub-3940256099942544/1033173712\""
+            buildConfigField "String", "native_home", "\"ca-app-pub-3940256099942544/2247696110\""
+            buildConfigField "String", "interstitial_home", "\"ca-app-pub-3940256099942544/1033173712\""
+            buildConfigField "String", "banner", "\"ca-app-pub-3940256099942544/6300978111\""
+            buildConfigField "String", "native_file", "\"ca-app-pub-3940256099942544/2247696110\""
+            buildConfigField "String", "interstitial_save", "\"ca-app-pub-3940256099942544/1033173712\""
+            buildConfigField "String", "interstitial_text", "\"ca-app-pub-3940256099942544/1033173712\""
         }
     }
     compileOptions {
@@ -61,4 +78,9 @@ dependencies {
     implementation 'com.aventrix.jnanoid:jnanoid:2.0.0'
 
     implementation 'com.drewnoakes:metadata-extractor:2.18.0'
+
+    implementation 'com.github.hellowordapp:prox-utils:1.1.6'
+    implementation('com.android.billingclient:billing-ktx:5.0.0')
+    implementation 'com.kaopiz:kprogresshud:1.2.0'
+    implementation 'com.adcolony:sdk:4.7.1'
 }

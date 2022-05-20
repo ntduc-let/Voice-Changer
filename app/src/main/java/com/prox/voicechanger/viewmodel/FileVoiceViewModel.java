@@ -26,6 +26,7 @@ public class FileVoiceViewModel extends ViewModel {
     private final MutableLiveData<List<FileVoice>> fileVideos;
     private final MutableLiveData<String> pathPlayer = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isExecuteConvertRecording = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isExecuteText = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isExecuteSave = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isExecuteAddImage = new MutableLiveData<>();
     private final MutableLiveData<Float> loading = new MutableLiveData<>();
@@ -64,6 +65,14 @@ public class FileVoiceViewModel extends ViewModel {
 
     public LiveData<Boolean> isExecuteConvertRecording() {
         return isExecuteConvertRecording;
+    }
+
+    public void setExecuteText(Boolean b){
+        isExecuteText.postValue(b);
+    }
+
+    public LiveData<Boolean> isExecuteText() {
+        return isExecuteText;
     }
 
     public void setExecuteSave(Boolean b){
