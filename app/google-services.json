@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1095618693597",
+    "project_id": "voice-changer-prox-ducnt",
+    "storage_bucket": "voice-changer-prox-ducnt.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1095618693597:android:94916f2ed62eaec77f0e34",
+        "android_client_info": {
+          "package_name": "com.prox.voicechanger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1095618693597-g7k6nqsm2urhed09itf5jphggs36o46i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAY2j-it_lrcxUih_3d2msf4SEn5YKuRPc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1095618693597-g7k6nqsm2urhed09itf5jphggs36o46i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
