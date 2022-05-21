@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
@@ -57,6 +58,10 @@ public class SplashActivity extends AppCompatActivity {
 
     private void init(){
         Log.d(TAG, "SplashActivity: init");
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        getWindow().setStatusBarColor(this.getResources().getColor(R.color.background_app));
+
         Animation rotate1Animation = AnimationUtils.loadAnimation(this, R.anim.anim_rotate1);
         Animation rotate2Animation = AnimationUtils.loadAnimation(this, R.anim.anim_rotate2);
         Animation rotate3Animation = AnimationUtils.loadAnimation(this, R.anim.anim_rotate3);

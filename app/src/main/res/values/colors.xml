@@ -12,4 +12,5 @@
     <color name="startColor">#4B5DFC</color>
     <color name="endColor">#F7277E</color>
     <color name="red">#D50000</color>
+    <color name="background_app">#0D0B29</color>
 </resources>

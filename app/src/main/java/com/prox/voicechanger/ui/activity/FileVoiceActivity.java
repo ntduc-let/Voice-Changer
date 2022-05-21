@@ -10,6 +10,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -164,6 +165,10 @@ public class FileVoiceActivity extends AppCompatActivity {
 
     private void init() {
         Log.d(TAG, "FileVoiceActivity: init");
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        getWindow().setStatusBarColor(this.getResources().getColor(R.color.background_app));
+
         adapter = new FileVoiceAdapter(this, this, model);
         binding.recyclerViewFileVoice.setAdapter(adapter);
 

@@ -15,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -126,6 +127,10 @@ public class RecordActivity extends AppCompatActivity {
 
     private void init() {
         Log.d(TAG, "RecordActivity: init");
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        getWindow().setStatusBarColor(this.getResources().getColor(R.color.background_app));
+
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_record_activity);
         if (navHostFragment != null) {

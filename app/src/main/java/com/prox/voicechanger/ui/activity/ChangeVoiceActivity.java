@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -298,6 +299,9 @@ public class ChangeVoiceActivity extends AppCompatActivity {
 
     private void init() {
         Log.d(TAG, "ChangeVoiceActivity: init");
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        getWindow().setStatusBarColor(this.getResources().getColor(R.color.background_app));
 
         player = new Player();
         isPlaying = true;
