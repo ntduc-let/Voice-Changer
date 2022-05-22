@@ -58,6 +58,8 @@ public class FFMPEGUtils {
                                 return "-y -i \"" + fromPath + "\" -preset ultrafast -vf \"transpose=clock,scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2\" \"" + toPath + "\"";
                             }else if (tag.toString().contains("180")){
                                 return "-y -i \"" + fromPath + "\" -preset ultrafast -vf \"transpose=clock,transpose=clock,scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2\" \"" + toPath + "\"";
+                            }else if (tag.toString().contains("270")){
+                                return "-y -i \"" + fromPath + "\" -preset ultrafast -vf \"transpose=clock,transpose=clock,transpose=clock,scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2\" \"" + toPath + "\"";
                             }
                         }
                     }

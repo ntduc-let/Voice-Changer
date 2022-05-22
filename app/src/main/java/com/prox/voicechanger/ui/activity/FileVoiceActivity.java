@@ -75,7 +75,7 @@ public class FileVoiceActivity extends AppCompatActivity {
             playerVideo.setDataSource(pathVideo);
             playerVideo.prepare();
         } catch (IOException e) {
-            Log.d(TAG, "insertEffectToDB: " + e.getMessage());
+            Log.d(TAG, "insertVideoToDB: " + e.getMessage());
             return;
         }
         fileVideo.setDuration(playerVideo.getDuration());
@@ -300,28 +300,5 @@ public class FileVoiceActivity extends AppCompatActivity {
             dialog.show();
         }
 
-    }
-
-    private void insertEffectToDB() {
-        FileVoice fileVideo = new FileVoice();
-        fileVideo.setSrc(OptionDialog.fileVoice.getSrc());
-        fileVideo.setName(FileUtils.getName(pathVideo));
-        fileVideo.setPath(pathVideo);
-
-        Bitmap bitmap = BitmapFactory.decodeFile(FileUtils.getTempImagePath(this));
-        fileVideo.setImage(ConvertersUtils.fromBitmap(bitmap));
-
-        MediaPlayer playerVideo = new MediaPlayer();
-        try {
-            playerVideo.setDataSource(pathVideo);
-            playerVideo.prepare();
-        } catch (IOException e) {
-            Log.d(TAG, "insertEffectToDB: " + e.getMessage());
-            return;
-        }
-        fileVideo.setDuration(playerVideo.getDuration());
-        fileVideo.setSize(new File(pathVideo).length());
-        fileVideo.setDate(new Date().getTime());
-        model.insert(fileVideo);
     }
 }
