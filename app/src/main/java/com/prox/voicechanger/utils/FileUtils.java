@@ -245,15 +245,33 @@ public class FileUtils {
     }
 
     public static String getRoot(String path){
-        return path.substring(0, path.lastIndexOf("/") + 1);
+        String root;
+        try {
+            root = path.substring(0, path.lastIndexOf("/") + 1);
+        }catch (Exception e){
+            return "";
+        }
+        return root;
     }
 
     public static String getName(String path){
-        return path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
+        String name;
+        try {
+            name = path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
+        }catch (Exception e){
+            return "";
+        }
+        return name;
     }
 
     public static String getType(String path){
-        return path.substring(path.lastIndexOf('.')+1);
+        String type;
+        try {
+            type = path.substring(path.lastIndexOf('.')+1);
+        }catch (Exception e){
+            return "";
+        }
+        return type;
     }
 
     @SuppressLint("IntentReset")

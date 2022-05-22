@@ -28,6 +28,7 @@ public class FileVoiceViewModel extends ViewModel {
     private final MutableLiveData<Boolean> isExecuteConvertRecording = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isExecuteText = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isExecuteSave = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isExecuteCustom = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isExecuteAddImage = new MutableLiveData<>();
     private final MutableLiveData<Float> loading = new MutableLiveData<>();
 
@@ -81,6 +82,14 @@ public class FileVoiceViewModel extends ViewModel {
 
     public LiveData<Boolean> isExecuteSave() {
         return isExecuteSave;
+    }
+
+    public void setExecuteCustom(Boolean b){
+        isExecuteCustom.postValue(b);
+    }
+
+    public LiveData<Boolean> isExecuteCustom() {
+        return isExecuteCustom;
     }
 
     public void setExecuteAddImage(Boolean b){

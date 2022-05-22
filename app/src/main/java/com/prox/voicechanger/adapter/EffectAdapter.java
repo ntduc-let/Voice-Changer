@@ -1,16 +1,19 @@
 package com.prox.voicechanger.adapter;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
+import com.prox.voicechanger.R;
 import com.prox.voicechanger.databinding.ItemEffectBinding;
 import com.prox.voicechanger.interfaces.EffectListener;
 import com.prox.voicechanger.model.Effect;
@@ -21,8 +24,11 @@ public class EffectAdapter extends RecyclerView.Adapter<EffectAdapter.EffectView
     private ArrayList<Effect> effects;
     private ImageView imgSelect;
     private final EffectListener effectListener;
+    private final Context context;
+    public static boolean isExecuting;
 
-    public EffectAdapter(EffectListener effectListener){
+    public EffectAdapter(Context context, EffectListener effectListener){
+        this.context = context;
         this.effectListener = effectListener;
     }
 
@@ -53,6 +59,11 @@ public class EffectAdapter extends RecyclerView.Adapter<EffectAdapter.EffectView
         }
 
         button.setOnClickListener(view -> {
+            if (isExecuting){
+                Toast.makeText(context, R.string.processing_in_progress, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            isExecuting = true;
             imgSelect.setVisibility(View.GONE);
             holder.binding.imgSelect.setVisibility(View.VISIBLE);
             imgSelect = holder.binding.imgSelect;

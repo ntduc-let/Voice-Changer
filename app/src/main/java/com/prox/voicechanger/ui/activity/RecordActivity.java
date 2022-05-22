@@ -95,13 +95,6 @@ public class RecordActivity extends AppCompatActivity {
         });
 
         init();
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        int open_app = preferences.getInt("open_app", 1);
-        if (open_app >= 2){
-            RateDialog dialog = new RateDialog(this, DialogRateBinding.inflate(getLayoutInflater()), () -> {});
-            dialog.show();
-        }
     }
 
     @Override
@@ -144,6 +137,13 @@ public class RecordActivity extends AppCompatActivity {
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
 
         PermissionUtils.checkPermission(this, this);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        int open_app = preferences.getInt("open_app", 1);
+        if (open_app >= 2){
+            RateDialog dialog = new RateDialog(this, DialogRateBinding.inflate(getLayoutInflater()), () -> {});
+            dialog.show();
+        }
     }
 
     @Override
