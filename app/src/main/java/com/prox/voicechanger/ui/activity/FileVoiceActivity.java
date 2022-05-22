@@ -6,8 +6,11 @@ import static com.prox.voicechanger.ui.dialog.OptionDialog.SELECT_IMAGE;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -35,6 +38,7 @@ import com.prox.voicechanger.ui.dialog.LoadingDialog;
 import com.prox.voicechanger.ui.dialog.OptionDialog;
 import com.prox.voicechanger.ui.dialog.PlayVideoDialog;
 import com.prox.voicechanger.ui.dialog.RateDialog;
+import com.prox.voicechanger.utils.ConvertersUtils;
 import com.prox.voicechanger.utils.FFMPEGUtils;
 import com.prox.voicechanger.utils.FileUtils;
 import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
@@ -55,8 +59,30 @@ public class FileVoiceActivity extends AppCompatActivity {
     private FileVoiceAdapter adapter;
     private FileVoiceViewModel model;
     private String pathVideo;
-    private String pathImage;
     private PlayVideoDialog playVideoDialog;
+
+    private final Runnable insertVideoToDB = () -> {
+        FileVoice fileVideo = new FileVoice();
+        fileVideo.setSrc(OptionDialog.fileVoice.getSrc());
+        fileVideo.setName(FileUtils.getName(pathVideo));
+        fileVideo.setPath(pathVideo);
+
+        Bitmap bitmap = BitmapFactory.decodeFile(FileUtils.getTempImagePath(this));
+        fileVideo.setImage(ConvertersUtils.fromBitmap(bitmap));
+
+        MediaPlayer playerVideo = new MediaPlayer();
+        try {
+            playerVideo.setDataSource(pathVideo);
+            playerVideo.prepare();
+        } catch (IOException e) {
+            Log.d(TAG, "insertEffectToDB: " + e.getMessage());
+            return;
+        }
+        fileVideo.setDuration(playerVideo.getDuration());
+        fileVideo.setSize(new File(pathVideo).length());
+        fileVideo.setDate(new Date().getTime());
+        model.insertVideoBG(fileVideo);
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +112,7 @@ public class FileVoiceActivity extends AppCompatActivity {
         });
         model.isExecuteAddImage().observe(this, execute -> {
             if (execute) {
-                insertEffectToDB();
+                new Handler().post(insertVideoToDB);
 
                 playVideoDialog = new PlayVideoDialog(
                         FileVoiceActivity.this,
@@ -210,7 +236,7 @@ public class FileVoiceActivity extends AppCompatActivity {
                     Log.d(TAG, "FileVoiceActivity: data null");
                     Toast.makeText(this, R.string.process_error, Toast.LENGTH_SHORT).show();
                 } else {
-                    pathImage = FileUtils.getRealPath(this, data.getData());
+                    String pathImage = FileUtils.getRealPath(this, data.getData());
                     if (pathImage.isEmpty()) {
                         Log.d(TAG, "FileVoiceActivity: pathImage isEmpty");
                         Toast.makeText(this, R.string.file_not_exist, Toast.LENGTH_SHORT).show();
@@ -281,6 +307,9 @@ public class FileVoiceActivity extends AppCompatActivity {
         fileVideo.setSrc(OptionDialog.fileVoice.getSrc());
         fileVideo.setName(FileUtils.getName(pathVideo));
         fileVideo.setPath(pathVideo);
+
+        Bitmap bitmap = BitmapFactory.decodeFile(FileUtils.getTempImagePath(this));
+        fileVideo.setImage(ConvertersUtils.fromBitmap(bitmap));
 
         MediaPlayer playerVideo = new MediaPlayer();
         try {

@@ -23,6 +23,7 @@
             android:layout_height="60dp"
             android:scaleType="centerInside"
             android:layout_gravity="center"
+            android:background="@drawable/bg_item_video"
             app:srcCompat="@drawable/ic_original" />
 
         <ImageView

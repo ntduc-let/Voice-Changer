@@ -23,6 +23,7 @@ public class DatabaseModule {
         return Room.databaseBuilder(context,
                 FileVoiceDatabase.class,
                 FileVoiceDatabase.DATABASE_NAME)
+                .addMigrations(FileVoiceDatabase.migration_1_to_2)
                 .allowMainThreadQueries()
                 .build();
     }

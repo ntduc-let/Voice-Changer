@@ -122,6 +122,12 @@ public class FileVoiceViewModel extends ViewModel {
         fileVideos.postValue(repository.getFileVideosBG().getValue());
     }
 
+    public void insertVideoBG(FileVoice fileVoice){
+        Log.d(TAG, "FileVoiceViewModel: insertVideoBG "+fileVoice.getPath());
+        repository.insert(fileVoice);
+        fileVideos.postValue(repository.getFileVideosBG().getValue());
+    }
+
     public void update(FileVoice fileVoice){
         Log.d(TAG, "FileVoiceViewModel: update "+fileVoice.getPath());
         repository.update(fileVoice);

@@ -1,5 +1,6 @@
 package com.prox.voicechanger.model;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -13,6 +14,8 @@ public class FileVoice {
     private long duration;
     private long size;
     private long date;
+    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
+    private byte[] image;
 
     public FileVoice() {
     }
@@ -73,4 +76,11 @@ public class FileVoice {
         this.date = date;
     }
 
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
 }
