@@ -597,7 +597,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
             @Override
             public void onProgress(float v) {
                 if (model != null){
-                    model.setLoading(v);
+                    model.setLoading(v*10);
                 }
             }
         });
