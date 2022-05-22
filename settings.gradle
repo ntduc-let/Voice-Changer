@@ -18,3 +18,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Voice Changer"
 include ':app'
+include ':proxads'
