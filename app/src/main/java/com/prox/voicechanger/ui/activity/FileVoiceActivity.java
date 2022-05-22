@@ -49,6 +49,8 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class FileVoiceActivity extends AppCompatActivity {
+    public static final String FILE_TO_RECORD = "FILE_TO_RECORD";
+
     private ActivityFileVoiceBinding binding;
     private FileVoiceAdapter adapter;
     private FileVoiceViewModel model;
@@ -157,6 +159,7 @@ public class FileVoiceActivity extends AppCompatActivity {
 
     private void goToRecord() {
         Intent intent = new Intent(this, RecordActivity.class);
+        intent.setAction(FILE_TO_RECORD);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         overridePendingTransition(R.anim.anim_left_right_1, R.anim.anim_left_right_2);

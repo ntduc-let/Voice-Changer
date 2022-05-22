@@ -30,6 +30,7 @@ import java.io.File;
 @SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
     public static final String SPLASH_TO_CHANGE_VOICE = "SPLASH_TO_CHANGE_VOICE";
+    public static final String SPLASH_TO_RECORD = "SPLASH_TO_RECORD";
 
     private ActivitySplashBinding binding;
 
@@ -136,6 +137,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void goToRecord(){
         Intent goToRecord = new Intent(SplashActivity.this, RecordActivity.class);
+        goToRecord.setAction(SPLASH_TO_RECORD);
         startActivity(goToRecord);
         Log.d(TAG, "SplashActivity: To RecordActivity");
         finish();

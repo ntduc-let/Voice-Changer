@@ -57,6 +57,7 @@ import space.siy.waveformview.WaveFormView;
 @AndroidEntryPoint
 public class ChangeVoiceActivity extends AppCompatActivity {
     public static final String PATH_FILE = "PATH_FILE";
+    public static final String CHANGE_TO_RECORD = "CHANGE_TO_RECORD";
 
     private ActivityChangeVoiceBinding binding;
     private Player player;
@@ -302,12 +303,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
             }
         }
 
-        Intent intent = new Intent(this, RecordActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        overridePendingTransition(R.anim.anim_left_right_1, R.anim.anim_left_right_2);
-        Log.d(TAG, "ChangeVoiceActivity: To RecordActivity");
-        finish();
+        goToRecord();
     }
 
     private void init() {
@@ -851,6 +847,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
     private void goToRecord() {
         Intent goToRecord = new Intent(this, RecordActivity.class);
         goToRecord.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        goToRecord.setAction(CHANGE_TO_RECORD);
         startActivity(goToRecord);
         Log.d(TAG, "ChangeVoiceActivity: To RecordActivity");
         finish();

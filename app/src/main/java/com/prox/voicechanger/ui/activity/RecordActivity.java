@@ -1,6 +1,7 @@
 package com.prox.voicechanger.ui.activity;
 
 import static com.prox.voicechanger.VoiceChangerApp.TAG;
+import static com.prox.voicechanger.ui.activity.SplashActivity.SPLASH_TO_RECORD;
 import static com.prox.voicechanger.ui.dialog.MoreOptionDialog.SELECT_AUDIO;
 import static com.prox.voicechanger.ui.dialog.TextToVoiceDialog.IMPORT_TEXT;
 import static com.prox.voicechanger.utils.PermissionUtils.REQUEST_PERMISSION;
@@ -138,11 +139,18 @@ public class RecordActivity extends AppCompatActivity {
 
         PermissionUtils.checkPermission(this, this);
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        int open_app = preferences.getInt("open_app", 1);
-        if (open_app >= 2){
-            RateDialog dialog = new RateDialog(this, DialogRateBinding.inflate(getLayoutInflater()), () -> {});
-            dialog.show();
+        Intent intent = getIntent();
+        if (intent == null){
+            Log.d(TAG, "RecordActivity: Intent null");
+        }else if (intent.getAction() == null){
+            Log.d(TAG, "RecordActivity: Action null");
+        }else if (intent.getAction().equals(SPLASH_TO_RECORD)){
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            int open_app = preferences.getInt("open_app", 1);
+            if (open_app >= 2){
+                RateDialog dialog = new RateDialog(this, DialogRateBinding.inflate(getLayoutInflater()), () -> {});
+                dialog.show();
+            }
         }
     }
 
