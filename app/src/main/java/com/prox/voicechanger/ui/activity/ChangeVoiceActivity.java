@@ -144,7 +144,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                 EffectAdapter.isExecuting = false;
             }
         });
-        model.isExecuteSave().observe(this, execute -> VoiceChangerApp.instance.showInterstitial(this, "interstitial_save", new AdsCallback() {
+        model.isExecuteSave().observe(this, execute -> VoiceChangerApp.instance.showInterstitial(this, "interstitial", new AdsCallback() {
             @Override
             public void onClosed() {
                 super.onClosed();

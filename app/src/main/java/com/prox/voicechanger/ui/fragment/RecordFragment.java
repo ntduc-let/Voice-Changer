@@ -43,7 +43,7 @@ public class RecordFragment extends Fragment {
         binding.btnRecord.setOnClickListener(view -> {
             FirebaseUtils.sendEvent(requireContext(), "Layout_Home", "Click recoding");
             if (PermissionUtils.checkPermission(requireContext(), requireActivity())) {
-                VoiceChangerApp.instance.showInterstitial(requireActivity(), "interstitial_home", new AdsCallback() {
+                VoiceChangerApp.instance.showInterstitial(requireActivity(), "interstitial", new AdsCallback() {
                     @Override
                     public void onClosed() {
                         super.onClosed();

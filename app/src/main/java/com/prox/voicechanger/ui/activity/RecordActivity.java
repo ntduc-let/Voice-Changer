@@ -67,7 +67,7 @@ public class RecordActivity extends AppCompatActivity {
         model = new ViewModelProvider(this).get(FileVoiceViewModel.class);
         model.isExecuteText().observe(this, isExecute -> {
             if (isExecute){
-                VoiceChangerApp.instance.showInterstitial(RecordActivity.this, "interstitial_text", new AdsCallback() {
+                VoiceChangerApp.instance.showInterstitial(RecordActivity.this, "interstitial", new AdsCallback() {
                     @Override
                     public void onClosed() {
                         super.onClosed();
@@ -220,7 +220,7 @@ public class RecordActivity extends AppCompatActivity {
                 Toast.makeText(this, R.string.canceled, Toast.LENGTH_SHORT).show();
             }
         } else if (requestCode == IMPORT_TEXT) {
-            VoiceChangerApp.instance.showInterstitial(RecordActivity.this, "interstitial_text", new AdsCallback() {
+            VoiceChangerApp.instance.showInterstitial(RecordActivity.this, "interstitial", new AdsCallback() {
                 @Override
                 public void onClosed() {
                     super.onClosed();

@@ -77,9 +77,7 @@ public class SplashActivity extends AppCompatActivity {
         AnimationDrawable rocketAnimation = (AnimationDrawable) binding.aniRecord.icAniRecord7.getBackground();
         rocketAnimation.start();
 
-        VoiceChangerApp.instance.initInterstitial(this, BuildConfig.interstitial_home, null, "interstitial_home");
-        VoiceChangerApp.instance.initInterstitial(this, BuildConfig.interstitial_save, null, "interstitial_save");
-        VoiceChangerApp.instance.initInterstitial(this, BuildConfig.interstitial_text, null, "interstitial_text");
+        VoiceChangerApp.instance.initInterstitial(this, BuildConfig.interstitial, null, "interstitial");
 
 
         new Handler().postDelayed(() -> VoiceChangerApp.instance.showSplash(this, new AdsCallback() {
