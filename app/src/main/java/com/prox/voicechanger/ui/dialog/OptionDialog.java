@@ -19,7 +19,6 @@ import com.prox.voicechanger.databinding.DialogOptionBinding;
 import com.prox.voicechanger.databinding.DialogRenameBinding;
 import com.prox.voicechanger.model.FileVoice;
 import com.prox.voicechanger.utils.FileUtils;
-import com.prox.voicechanger.utils.FirebaseUtils;
 import com.prox.voicechanger.utils.PermissionUtils;
 import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
 
@@ -41,14 +40,12 @@ public class OptionDialog extends CustomDialog{
         OptionDialog.fileVoice = fileVoice;
 
         binding.btnShare.setOnClickListener(view -> {
-            FirebaseUtils.sendEvent(context, "Layout_List_File_Save", "Click More Share");
             Log.d(TAG, "OptionDialog: Share");
             FileUtils.shareFile(context, fileVoice.getPath());
             cancel();
         });
 
         binding.btnAddImg.setOnClickListener(view -> {
-            FirebaseUtils.sendEvent(context, "Layout_List_File_Save", "Click More Create image with sound");
             Log.d(TAG, "OptionDialog: Create image with sound");
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             activity.startActivityForResult(intent, SELECT_IMAGE);
@@ -56,7 +53,6 @@ public class OptionDialog extends CustomDialog{
         });
 
         binding.btnRingPhone.setOnClickListener(view -> {
-            FirebaseUtils.sendEvent(context, "Layout_List_File_Save", "Click More Set as phone ringtone");
             Log.d(TAG, "OptionDialog: Set as phone ringtone");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if(Settings.System.canWrite(context)){
@@ -76,7 +72,6 @@ public class OptionDialog extends CustomDialog{
         });
 
         binding.btnRingNoti.setOnClickListener(view -> {
-            FirebaseUtils.sendEvent(context, "Layout_List_File_Save", "Click More Set as notification ringtone");
             Log.d(TAG, "OptionDialog: Set as notification ringtone");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if(Settings.System.canWrite(context)){

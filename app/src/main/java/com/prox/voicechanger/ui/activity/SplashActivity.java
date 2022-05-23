@@ -5,12 +5,10 @@ import static com.prox.voicechanger.ui.activity.ChangeVoiceActivity.PATH_FILE;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -18,12 +16,9 @@ import android.view.animation.AnimationUtils;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.prox.voicechanger.BuildConfig;
 import com.prox.voicechanger.R;
-import com.prox.voicechanger.VoiceChangerApp;
 import com.prox.voicechanger.databinding.ActivitySplashBinding;
 import com.prox.voicechanger.utils.FileUtils;
-import com.proxglobal.proxads.adsv2.callback.AdsCallback;
 
 import java.io.File;
 
@@ -43,11 +38,6 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         init();
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        int open_app = preferences.getInt("open_app", 0);
-        preferences.edit().putInt("open_app", open_app + 1).apply();
-        Log.d(TAG, "Open app: "+open_app);
     }
 
     @Override
@@ -77,22 +67,8 @@ public class SplashActivity extends AppCompatActivity {
         AnimationDrawable rocketAnimation = (AnimationDrawable) binding.aniRecord.icAniRecord7.getBackground();
         rocketAnimation.start();
 
-        VoiceChangerApp.instance.initInterstitial(this, BuildConfig.interstitial, null, "interstitial");
 
-
-        new Handler().postDelayed(() -> VoiceChangerApp.instance.showSplash(this, new AdsCallback() {
-            @Override
-            public void onClosed() {
-                Log.d(TAG, "SplashActivity Ads onClosed");
-                goToMain();
-            }
-
-            @Override
-            public void onError() {
-                Log.d(TAG, "SplashActivity Ads onError");
-                goToMain();
-            }
-        }, BuildConfig.interstitial_splash, null, 12000), 4500);
+        new Handler().postDelayed(this::goToMain, 4500);
     }
 
     private void goToMain() {

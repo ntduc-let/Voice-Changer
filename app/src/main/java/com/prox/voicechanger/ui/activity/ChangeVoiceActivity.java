@@ -28,9 +28,7 @@ import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
 import com.google.android.material.slider.Slider;
-import com.prox.voicechanger.BuildConfig;
 import com.prox.voicechanger.R;
-import com.prox.voicechanger.VoiceChangerApp;
 import com.prox.voicechanger.adapter.EffectAdapter;
 import com.prox.voicechanger.databinding.ActivityChangeVoiceBinding;
 import com.prox.voicechanger.databinding.DialogNameBinding;
@@ -40,13 +38,9 @@ import com.prox.voicechanger.model.Effect;
 import com.prox.voicechanger.ui.dialog.NameDialog;
 import com.prox.voicechanger.utils.FFMPEGUtils;
 import com.prox.voicechanger.utils.FileUtils;
-import com.prox.voicechanger.utils.FirebaseUtils;
-import com.prox.voicechanger.utils.NetworkUtils;
 import com.prox.voicechanger.utils.NumberUtils;
 import com.prox.voicechanger.utils.PermissionUtils;
 import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
-import com.proxglobal.proxads.adsv2.callback.AdsCallback;
-import com.proxglobal.purchase.ProxPurchase;
 
 import java.io.File;
 
@@ -144,35 +138,16 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                 EffectAdapter.isExecuting = false;
             }
         });
-        model.isExecuteSave().observe(this, execute -> VoiceChangerApp.instance.showInterstitial(this, "interstitial", new AdsCallback() {
-            @Override
-            public void onClosed() {
-                super.onClosed();
-                Log.d(TAG, "ChangeVoiceActivity Ads onClosed");
-                startActivity(new Intent(ChangeVoiceActivity.this, FileVoiceActivity.class));
-                overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
-                Log.d(TAG, "ChangeVoiceActivity: To FileVoiceActivity");
-                if (execute){
-                    Toast.makeText(ChangeVoiceActivity.this, R.string.save_success, Toast.LENGTH_SHORT).show();
-                }else {
-                    Toast.makeText(ChangeVoiceActivity.this, R.string.save_fail, Toast.LENGTH_SHORT).show();
-                }
+        model.isExecuteSave().observe(this, execute -> {
+            startActivity(new Intent(ChangeVoiceActivity.this, FileVoiceActivity.class));
+            overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
+            Log.d(TAG, "ChangeVoiceActivity: To FileVoiceActivity");
+            if (execute){
+                Toast.makeText(ChangeVoiceActivity.this, R.string.save_success, Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(ChangeVoiceActivity.this, R.string.save_fail, Toast.LENGTH_SHORT).show();
             }
-
-            @Override
-            public void onError() {
-                super.onError();
-                Log.d(TAG, "ChangeVoiceActivity Ads onError");
-                startActivity(new Intent(ChangeVoiceActivity.this, FileVoiceActivity.class));
-                overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
-                Log.d(TAG, "ChangeVoiceActivity: To FileVoiceActivity");
-                if (execute){
-                    Toast.makeText(ChangeVoiceActivity.this, R.string.save_success, Toast.LENGTH_SHORT).show();
-                }else {
-                    Toast.makeText(ChangeVoiceActivity.this, R.string.save_fail, Toast.LENGTH_SHORT).show();
-                }
-            }
-        }));
+        });
         model.getLoading().observe(this, loading ->
                 binding.layoutLoading.progressProcessing.setProgress(Math.round(loading)));
         model.isExecuteCustom().observe(this, execute -> {
@@ -187,7 +162,6 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         binding.btnBack2.setOnClickListener(view -> onBackPressed());
 
         binding.btnSave2.setOnClickListener(view -> {
-            FirebaseUtils.sendEvent(this, "Layout_Effect", "Click Save");
             pausePlayer();
 
             String name = binding.layoutPlayer.txtName2.getText().toString();
@@ -230,7 +204,6 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         });
 
         binding.layoutEffect.btnEffect.setOnClickListener(view -> {
-            FirebaseUtils.sendEvent(this, "Layout_Effect", "Click Effect");
             if (!binding.layoutEffect.layoutCustom.btnResetBasic.isEnabled()
                     && !binding.layoutEffect.layoutCustom.btnResetEqualizer.isEnabled()
                     && !binding.layoutEffect.layoutCustom.btnResetReverb.isEnabled()) {
@@ -248,7 +221,6 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         });
 
         binding.layoutEffect.btnCustom.setOnClickListener(view -> {
-            FirebaseUtils.sendEvent(this, "Layout_Effect", "Click Custom");
             initClickBtnCustom();
         });
 
@@ -331,30 +303,6 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         if (PermissionUtils.checkPermission(this, this)) {
             actionIntent();
         }
-
-        if (ProxPurchase.getInstance().checkPurchased()
-                || !NetworkUtils.isNetworkAvailable(this)) {
-            binding.bannerContainer.setVisibility(View.GONE);
-        }
-
-        VoiceChangerApp.instance.showBanner(
-                this,
-                binding.bannerContainer,
-                BuildConfig.banner,
-                new AdsCallback() {
-                    @Override
-                    public void onClosed() {
-                        super.onClosed();
-                        Log.d(TAG, "ChangeVoiceActivity Ads onClosed");
-                    }
-
-                    @Override
-                    public void onError() {
-                        super.onError();
-                        Log.d(TAG, "ChangeVoiceActivity Ads onError");
-                    }
-                }
-        );
     }
 
     private void actionIntent() {
@@ -645,7 +593,6 @@ public class ChangeVoiceActivity extends AppCompatActivity {
     private void actionCustomBasic() {
         binding.layoutEffect.layoutCustom.switchBasic.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b) {
-                FirebaseUtils.sendEvent(this, "Layout_Effect", "Click Custom Basic");
                 binding.layoutEffect.layoutCustom.switchBasic.setTrackResource(R.drawable.ic_track_enable);
                 binding.layoutEffect.layoutCustom.layoutBasic.getRoot().setVisibility(View.VISIBLE);
                 binding.layoutEffect.layoutCustom.btnResetBasic.setVisibility(View.VISIBLE);
@@ -684,7 +631,6 @@ public class ChangeVoiceActivity extends AppCompatActivity {
     private void actionCustomEqualizer() {
         binding.layoutEffect.layoutCustom.switchEqualizer.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b) {
-                FirebaseUtils.sendEvent(this, "Layout_Effect", "Click Custom Equalizer");
                 binding.layoutEffect.layoutCustom.switchEqualizer.setTrackResource(R.drawable.ic_track_enable);
                 binding.layoutEffect.layoutCustom.layoutEqualizer.getRoot().setVisibility(View.VISIBLE);
                 binding.layoutEffect.layoutCustom.btnResetEqualizer.setVisibility(View.VISIBLE);
@@ -723,7 +669,6 @@ public class ChangeVoiceActivity extends AppCompatActivity {
     private void actionCustomReverb() {
         binding.layoutEffect.layoutCustom.switchReverb.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b) {
-                FirebaseUtils.sendEvent(this, "Layout_Effect", "Click Custom Reverb");
                 binding.layoutEffect.layoutCustom.switchReverb.setTrackResource(R.drawable.ic_track_enable);
                 binding.layoutEffect.layoutCustom.layoutReverb.getRoot().setVisibility(View.VISIBLE);
                 binding.layoutEffect.layoutCustom.btnResetReverb.setVisibility(View.VISIBLE);

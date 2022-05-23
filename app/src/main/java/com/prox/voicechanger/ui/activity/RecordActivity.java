@@ -1,7 +1,6 @@
 package com.prox.voicechanger.ui.activity;
 
 import static com.prox.voicechanger.VoiceChangerApp.TAG;
-import static com.prox.voicechanger.ui.activity.SplashActivity.SPLASH_TO_RECORD;
 import static com.prox.voicechanger.ui.dialog.MoreOptionDialog.SELECT_AUDIO;
 import static com.prox.voicechanger.ui.dialog.TextToVoiceDialog.IMPORT_TEXT;
 import static com.prox.voicechanger.utils.PermissionUtils.REQUEST_PERMISSION;
@@ -9,10 +8,8 @@ import static com.prox.voicechanger.utils.PermissionUtils.REQUEST_PERMISSION;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
@@ -30,17 +27,13 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.prox.voicechanger.R;
-import com.prox.voicechanger.VoiceChangerApp;
 import com.prox.voicechanger.databinding.ActivityRecordBinding;
 import com.prox.voicechanger.databinding.DialogLoading2Binding;
-import com.prox.voicechanger.databinding.DialogRateBinding;
 import com.prox.voicechanger.ui.dialog.LoadingDialog;
-import com.prox.voicechanger.ui.dialog.RateDialog;
 import com.prox.voicechanger.ui.dialog.TextToVoiceDialog;
 import com.prox.voicechanger.utils.FileUtils;
 import com.prox.voicechanger.utils.PermissionUtils;
 import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
-import com.proxglobal.proxads.adsv2.callback.AdsCallback;
 
 import java.io.File;
 import java.util.HashMap;
@@ -67,29 +60,12 @@ public class RecordActivity extends AppCompatActivity {
         model = new ViewModelProvider(this).get(FileVoiceViewModel.class);
         model.isExecuteText().observe(this, isExecute -> {
             if (isExecute){
-                VoiceChangerApp.instance.showInterstitial(RecordActivity.this, "interstitial", new AdsCallback() {
-                    @Override
-                    public void onClosed() {
-                        super.onClosed();
-                        Intent goToChangeVoice = new Intent(RecordActivity.this, ChangeVoiceActivity.class);
-                        goToChangeVoice.setAction(IMPORT_TEXT_TO_SPEECH);
-                        goToChangeVoice.putExtra(ChangeVoiceActivity.PATH_FILE, FileUtils.getTempTextToSpeechFilePath(RecordActivity.this));
-                        startActivity(goToChangeVoice);
-                        overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
-                        Log.d(TAG, "RecordActivity: To ChangeVoiceActivity");
-                    }
-
-                    @Override
-                    public void onError() {
-                        super.onError();
-                        Intent goToChangeVoice = new Intent(RecordActivity.this, ChangeVoiceActivity.class);
-                        goToChangeVoice.setAction(IMPORT_TEXT_TO_SPEECH);
-                        goToChangeVoice.putExtra(ChangeVoiceActivity.PATH_FILE, FileUtils.getTempTextToSpeechFilePath(RecordActivity.this));
-                        startActivity(goToChangeVoice);
-                        overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
-                        Log.d(TAG, "RecordActivity: To ChangeVoiceActivity");
-                    }
-                });
+                Intent goToChangeVoice = new Intent(RecordActivity.this, ChangeVoiceActivity.class);
+                goToChangeVoice.setAction(IMPORT_TEXT_TO_SPEECH);
+                goToChangeVoice.putExtra(ChangeVoiceActivity.PATH_FILE, FileUtils.getTempTextToSpeechFilePath(RecordActivity.this));
+                startActivity(goToChangeVoice);
+                overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
+                Log.d(TAG, "RecordActivity: To ChangeVoiceActivity");
             }else {
                 Toast.makeText(RecordActivity.this, R.string.process_error, Toast.LENGTH_SHORT).show();
             }
@@ -138,20 +114,6 @@ public class RecordActivity extends AppCompatActivity {
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
 
         PermissionUtils.checkPermission(this, this);
-
-        Intent intent = getIntent();
-        if (intent == null){
-            Log.d(TAG, "RecordActivity: Intent null");
-        }else if (intent.getAction() == null){
-            Log.d(TAG, "RecordActivity: Action null");
-        }else if (intent.getAction().equals(SPLASH_TO_RECORD)){
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-            int open_app = preferences.getInt("open_app", 1);
-            if (open_app >= 2){
-                RateDialog dialog = new RateDialog(this, DialogRateBinding.inflate(getLayoutInflater()), () -> {});
-                dialog.show();
-            }
-        }
     }
 
     @Override
@@ -220,19 +182,6 @@ public class RecordActivity extends AppCompatActivity {
                 Toast.makeText(this, R.string.canceled, Toast.LENGTH_SHORT).show();
             }
         } else if (requestCode == IMPORT_TEXT) {
-            VoiceChangerApp.instance.showInterstitial(RecordActivity.this, "interstitial", new AdsCallback() {
-                @Override
-                public void onClosed() {
-                    super.onClosed();
-
-                }
-
-                @Override
-                public void onError() {
-                    super.onError();
-
-                }
-            });
             if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
                 LoadingDialog dialog = new LoadingDialog(
                         this,

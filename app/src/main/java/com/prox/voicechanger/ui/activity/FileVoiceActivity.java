@@ -22,27 +22,22 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.prox.voicechanger.BuildConfig;
 import com.prox.voicechanger.R;
-import com.prox.voicechanger.VoiceChangerApp;
 import com.prox.voicechanger.adapter.FileVoiceAdapter;
 import com.prox.voicechanger.databinding.ActivityFileVoiceBinding;
 import com.prox.voicechanger.databinding.DialogDeleteAllBinding;
 import com.prox.voicechanger.databinding.DialogLoading2Binding;
 import com.prox.voicechanger.databinding.DialogPlayVideoBinding;
-import com.prox.voicechanger.databinding.DialogRateBinding;
 import com.prox.voicechanger.interfaces.FFmpegExecuteCallback;
 import com.prox.voicechanger.model.FileVoice;
 import com.prox.voicechanger.ui.dialog.DeleteAllDialog;
 import com.prox.voicechanger.ui.dialog.LoadingDialog;
 import com.prox.voicechanger.ui.dialog.OptionDialog;
 import com.prox.voicechanger.ui.dialog.PlayVideoDialog;
-import com.prox.voicechanger.ui.dialog.RateDialog;
 import com.prox.voicechanger.utils.ConvertersUtils;
 import com.prox.voicechanger.utils.FFMPEGUtils;
 import com.prox.voicechanger.utils.FileUtils;
 import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
-import com.proxglobal.proxads.adsv2.callback.AdsCallback;
 
 import java.io.File;
 import java.io.IOException;
@@ -207,20 +202,6 @@ public class FileVoiceActivity extends AppCompatActivity {
         DividerItemDecoration dividerHorizontal = new DividerItemDecoration
                 (this, DividerItemDecoration.VERTICAL);
         binding.recyclerViewFileVoice.addItemDecoration(dividerHorizontal);
-
-        VoiceChangerApp.instance.showMediumNative(this, BuildConfig.native_file, binding.adContainer, new AdsCallback() {
-            @Override
-            public void onClosed() {
-                super.onClosed();
-                Log.d(TAG, "FileVoiceActivity: Ads onClosed");
-            }
-
-            @Override
-            public void onError() {
-                super.onError();
-                Log.d(TAG, "FileVoiceActivity: Ads onError");
-            }
-        });
     }
 
     @Override
@@ -287,18 +268,8 @@ public class FileVoiceActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Log.d(TAG, "FileVoiceActivity: onBackPressed");
-        if (RateDialog.isRated(this)){
-            adapter.release();
-            finish();
-            overridePendingTransition(R.anim.anim_left_right_1, R.anim.anim_left_right_2);
-        }else {
-            RateDialog dialog = new RateDialog(this, DialogRateBinding.inflate(getLayoutInflater()), () -> {
-                adapter.release();
-                finish();
-                overridePendingTransition(R.anim.anim_left_right_1, R.anim.anim_left_right_2);
-            });
-            dialog.show();
-        }
-
+        adapter.release();
+        finish();
+        overridePendingTransition(R.anim.anim_left_right_1, R.anim.anim_left_right_2);
     }
 }
