@@ -27,6 +27,8 @@ public class GoogleNativeAds extends NativeAds<NativeAdView> {
     public GoogleNativeAds(Activity activity, FrameLayout container, String adId, int layoutAdId) {
         super(activity, container, adId);
         this.layoutAdId = layoutAdId;
+
+        enableShimmer(R.layout.shimmer_native_medium);
     }
 
     @Override
