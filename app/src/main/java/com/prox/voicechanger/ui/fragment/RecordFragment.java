@@ -148,6 +148,9 @@ public class RecordFragment extends Fragment {
         if (ProxPurchase.getInstance().checkPurchased()
                 || !NetworkUtils.isNetworkAvailable(requireContext())) {
             binding.adContainer.setVisibility(View.GONE);
+        }else {
+            ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) binding.btnRecord.getLayoutParams();
+            marginParams.setMargins(0, 0, 0, 0);
         }
     }
 }

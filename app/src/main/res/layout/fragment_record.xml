@@ -24,7 +24,7 @@
         android:id="@+id/txt_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:text="@string/record"
         android:textAlignment="center"
         android:textColor="@color/white"
@@ -34,7 +34,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_more"
+        app:layout_constraintTop_toBottomOf="@+id/btn_more_option"
         app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
@@ -67,7 +67,7 @@
         layout="@layout/txt_mess"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="4dp"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/btn_record"
         app:layout_constraintEnd_toEndOf="parent"
