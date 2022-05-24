@@ -23,8 +23,10 @@ import com.prox.voicechanger.databinding.DialogMoreOptionBinding;
 import com.prox.voicechanger.databinding.FragmentRecordBinding;
 import com.prox.voicechanger.ui.dialog.MoreOptionDialog;
 import com.prox.voicechanger.utils.FirebaseUtils;
+import com.prox.voicechanger.utils.NetworkUtils;
 import com.prox.voicechanger.utils.PermissionUtils;
 import com.proxglobal.proxads.adsv2.callback.AdsCallback;
+import com.proxglobal.purchase.ProxPurchase;
 
 public class RecordFragment extends Fragment {
     private FragmentRecordBinding binding;
@@ -142,5 +144,10 @@ public class RecordFragment extends Fragment {
                 Log.d(TAG, "RecordFragment: Ads onError");
             }
         });
+
+        if (ProxPurchase.getInstance().checkPurchased()
+                || !NetworkUtils.isNetworkAvailable(requireContext())) {
+            binding.adContainer.setVisibility(View.GONE);
+        }
     }
 }

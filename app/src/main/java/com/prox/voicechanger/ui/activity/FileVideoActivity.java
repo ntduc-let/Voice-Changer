@@ -22,8 +22,10 @@ import com.prox.voicechanger.databinding.DialogRateBinding;
 import com.prox.voicechanger.model.FileVoice;
 import com.prox.voicechanger.ui.dialog.DeleteAllDialog;
 import com.prox.voicechanger.ui.dialog.RateDialog;
+import com.prox.voicechanger.utils.NetworkUtils;
 import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
 import com.proxglobal.proxads.adsv2.callback.AdsCallback;
+import com.proxglobal.purchase.ProxPurchase;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -124,6 +126,11 @@ public class FileVideoActivity extends AppCompatActivity {
                 Log.d(TAG, "FileVideoActivity: Ads onError");
             }
         });
+
+        if (ProxPurchase.getInstance().checkPurchased()
+                || !NetworkUtils.isNetworkAvailable(this)) {
+            binding.adContainer.setVisibility(View.GONE);
+        }
     }
 
     @Override
