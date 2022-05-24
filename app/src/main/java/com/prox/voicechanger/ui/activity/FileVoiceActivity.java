@@ -101,13 +101,11 @@ public class FileVoiceActivity extends AppCompatActivity {
             if (fileVoices.size() == 0) {
                 binding.layoutNoItem.getRoot().setVisibility(View.VISIBLE);
                 binding.btnDeleteAll.setEnabled(false);
-                binding.btnDeleteAll.setTextColor(getResources().getColor(R.color.white30));
-                binding.btnDeleteAll.setBackgroundResource(R.drawable.bg_button6);
+                binding.btnDeleteAll.setVisibility(View.INVISIBLE);
             } else {
                 binding.layoutNoItem.getRoot().setVisibility(View.GONE);
                 binding.btnDeleteAll.setEnabled(true);
-                binding.btnDeleteAll.setTextColor(getResources().getColor(R.color.white));
-                binding.btnDeleteAll.setBackgroundResource(R.drawable.bg_button1);
+                binding.btnDeleteAll.setVisibility(View.VISIBLE);
             }
             adapter.setFileVoices(fileVoices);
             binding.recyclerViewFileVoice.setItemViewCacheSize(fileVoices.size());

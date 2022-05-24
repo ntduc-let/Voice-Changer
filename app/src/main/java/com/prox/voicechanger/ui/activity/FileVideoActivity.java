@@ -52,13 +52,11 @@ public class FileVideoActivity extends AppCompatActivity {
             if (fileVideos.size()==0){
                 binding.layoutNoItem.setVisibility(View.VISIBLE);
                 binding.btnDeleteAll.setEnabled(false);
-                binding.btnDeleteAll.setTextColor(getResources().getColor(R.color.white30));
-                binding.btnDeleteAll.setBackgroundResource(R.drawable.bg_button6);
+                binding.btnDeleteAll.setVisibility(View.INVISIBLE);
             }else{
                 binding.layoutNoItem.setVisibility(View.GONE);
                 binding.btnDeleteAll.setEnabled(true);
-                binding.btnDeleteAll.setTextColor(getResources().getColor(R.color.white));
-                binding.btnDeleteAll.setBackgroundResource(R.drawable.bg_button1);
+                binding.btnDeleteAll.setVisibility(View.VISIBLE);
             }
             adapter.setFileVideos(fileVideos);
         });
