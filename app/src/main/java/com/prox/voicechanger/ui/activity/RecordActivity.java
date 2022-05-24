@@ -38,9 +38,11 @@ import com.prox.voicechanger.ui.dialog.LoadingDialog;
 import com.prox.voicechanger.ui.dialog.RateDialog;
 import com.prox.voicechanger.ui.dialog.TextToVoiceDialog;
 import com.prox.voicechanger.utils.FileUtils;
+import com.prox.voicechanger.utils.NetworkUtils;
 import com.prox.voicechanger.utils.PermissionUtils;
 import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
 import com.proxglobal.proxads.adsv2.callback.AdsCallback;
+import com.proxglobal.purchase.ProxPurchase;
 
 import java.io.File;
 import java.util.HashMap;
@@ -238,7 +240,10 @@ public class RecordActivity extends AppCompatActivity {
                         this,
                         DialogLoading2Binding.inflate(getLayoutInflater())
                 );
-                dialog.show();
+                if (ProxPurchase.getInstance().checkPurchased()
+                        || !NetworkUtils.isNetworkAvailable(this)) {
+                    dialog.show();
+                }
 
                 mTts = new TextToSpeech(this, status -> {
                     if (status == TextToSpeech.SUCCESS) {
