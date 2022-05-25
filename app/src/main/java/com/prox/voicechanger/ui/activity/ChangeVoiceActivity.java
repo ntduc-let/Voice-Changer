@@ -152,9 +152,9 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                 startActivity(new Intent(ChangeVoiceActivity.this, FileVoiceActivity.class));
                 overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
                 Log.d(TAG, "ChangeVoiceActivity: To FileVoiceActivity");
-                if (execute){
+                if (execute) {
                     Toast.makeText(ChangeVoiceActivity.this, R.string.save_success, Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     Toast.makeText(ChangeVoiceActivity.this, R.string.save_fail, Toast.LENGTH_SHORT).show();
                 }
             }
@@ -166,9 +166,9 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                 startActivity(new Intent(ChangeVoiceActivity.this, FileVoiceActivity.class));
                 overridePendingTransition(R.anim.anim_right_left_1, R.anim.anim_right_left_2);
                 Log.d(TAG, "ChangeVoiceActivity: To FileVoiceActivity");
-                if (execute){
+                if (execute) {
                     Toast.makeText(ChangeVoiceActivity.this, R.string.save_success, Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     Toast.makeText(ChangeVoiceActivity.this, R.string.save_fail, Toast.LENGTH_SHORT).show();
                 }
             }
@@ -176,9 +176,9 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         model.getLoading().observe(this, loading ->
                 binding.layoutLoading.progressProcessing.setProgress(Math.round(loading)));
         model.isExecuteCustom().observe(this, execute -> {
-            if (execute){
+            if (execute) {
                 setEnableCustom(false);
-            }else {
+            } else {
                 setEnableCustom(true);
             }
         });
@@ -191,7 +191,13 @@ public class ChangeVoiceActivity extends AppCompatActivity {
             pausePlayer();
 
             String name = binding.layoutPlayer.txtName2.getText().toString();
-            boolean isCustom = binding.layoutEffect.btnEffect.isEnabled();
+
+            boolean isCustom = false;
+            if (binding.layoutEffect.layoutCustom.btnResetBasic.isEnabled()
+                    || binding.layoutEffect.layoutCustom.btnResetEqualizer.isEnabled()
+                    || binding.layoutEffect.layoutCustom.btnResetReverb.isEnabled()) {
+                isCustom = true;
+            }
 
             NameDialog dialog = new NameDialog(
                     this,
@@ -236,7 +242,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                     && !binding.layoutEffect.layoutCustom.btnResetReverb.isEnabled()) {
 
             } else {
-                if (EffectAdapter.isExecuting){
+                if (EffectAdapter.isExecuting) {
                     Toast.makeText(this, R.string.processing_in_progress, Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -503,7 +509,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
     }
 
     private void selectCustom() {
-        if (EffectAdapter.isExecuting){
+        if (EffectAdapter.isExecuting) {
             return;
         }
         EffectAdapter.isExecuting = true;
@@ -556,11 +562,11 @@ public class ChangeVoiceActivity extends AppCompatActivity {
     }
 
     private void setNewPlayer(String path) {
-        Log.d(TAG, "setNewPlayer: "+ path);
+        Log.d(TAG, "setNewPlayer: " + path);
         new WaveFormData.Factory(path).build(new WaveFormData.Factory.Callback() {
             @Override
             public void onComplete(@NonNull WaveFormData waveFormData) {
-                if (binding != null){
+                if (binding != null) {
                     binding.layoutPlayer.visualizer.setData(waveFormData);
 
                     binding.layoutPlayer.getRoot().setVisibility(View.VISIBLE);
@@ -582,7 +588,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
                     if (!isPlaying) {
                         pausePlayer();
                     }
-                    if (model != null){
+                    if (model != null) {
                         model.setLoading(0f);
                         model.setExecuteCustom(false);
                     }
@@ -592,8 +598,8 @@ public class ChangeVoiceActivity extends AppCompatActivity {
 
             @Override
             public void onProgress(float v) {
-                if (model != null){
-                    model.setLoading(v*10);
+                if (model != null) {
+                    model.setLoading(v * 10);
                 }
             }
         });
@@ -666,7 +672,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         });
 
         binding.layoutEffect.layoutCustom.btnResetBasic.setOnClickListener(view -> {
-            if (EffectAdapter.isExecuting){
+            if (EffectAdapter.isExecuting) {
                 Toast.makeText(this, R.string.processing_in_progress, Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -705,7 +711,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         });
 
         binding.layoutEffect.layoutCustom.btnResetEqualizer.setOnClickListener(view -> {
-            if (EffectAdapter.isExecuting){
+            if (EffectAdapter.isExecuting) {
                 Toast.makeText(this, R.string.processing_in_progress, Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -744,7 +750,7 @@ public class ChangeVoiceActivity extends AppCompatActivity {
         });
 
         binding.layoutEffect.layoutCustom.btnResetReverb.setOnClickListener(view -> {
-            if (EffectAdapter.isExecuting){
+            if (EffectAdapter.isExecuting) {
                 Toast.makeText(this, R.string.processing_in_progress, Toast.LENGTH_SHORT).show();
                 return;
             }
