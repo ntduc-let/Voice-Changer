@@ -33,6 +33,35 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1095618693597:android:2f5ef4168dfddc357f0e34",
+        "android_client_info": {
+          "package_name": "com.voice.changer.recorder.editor.with.funny.voice.effects"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1095618693597-g7k6nqsm2urhed09itf5jphggs36o46i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAY2j-it_lrcxUih_3d2msf4SEn5YKuRPc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1095618693597-g7k6nqsm2urhed09itf5jphggs36o46i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"
