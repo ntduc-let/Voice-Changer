@@ -1,32 +1,26 @@
-package com.prox.voicechanger.database;
+package com.prox.voicechanger.database
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import com.prox.voicechanger.model.FileVoice;
-
-import java.util.List;
+import androidx.annotation.Nullable
+import androidx.room.*
+import com.prox.voicechanger.model.FileVoice
 
 @Dao
-public interface FileVoiceDAO {
+interface FileVoiceDAO {
     @Insert
-    void insert(FileVoice fileVoice);
+    fun insert(fileVoice: FileVoice?)
 
     @Update
-    void update(FileVoice fileVoice);
+    fun update(fileVoice: FileVoice?)
 
     @Delete
-    void delete(FileVoice fileVoice);
+    fun delete(fileVoice: FileVoice?)
 
-    @Query("SELECT * FROM filevoice WHERE path LIKE '%mp3'")
-    List<FileVoice> getAllVoice();
+    @get:Query("SELECT * FROM filevoice WHERE path LIKE '%mp3'")
+    val allVoice: List<FileVoice?>?
 
-    @Query("SELECT * FROM filevoice WHERE path LIKE '%mp4'")
-    List<FileVoice> getAllVideo();
+    @get:Query("SELECT * FROM filevoice WHERE path LIKE '%mp4'")
+    val allVideo: List<FileVoice?>?
 
     @Query("SELECT * FROM filevoice WHERE path= :path")
-    FileVoice check(String path);
+    fun check(path: String?): FileVoice?
 }

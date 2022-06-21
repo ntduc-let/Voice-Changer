@@ -1,21 +1,18 @@
-package com.prox.voicechanger.repository;
+package com.prox.voicechanger.repository
 
-import com.prox.voicechanger.database.FileVoiceDAO;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.hilt.InstallIn;
-import dagger.hilt.components.SingletonComponent;
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Inject
+import javax.inject.Singleton
+import com.prox.voicechanger.database.FileVoiceDAO
+import dagger.Module
 
 @Module
-@InstallIn(SingletonComponent.class)
-public class RepositoryModule {
-
+@InstallIn(SingletonComponent::class)
+class RepositoryModule {
     @Inject
     @Singleton
-    public FileVoiceRepository provideRepository(FileVoiceDAO dao){
-        return new FileVoiceRepository(dao);
+    fun provideRepository(dao: FileVoiceDAO): FileVoiceRepository {
+        return FileVoiceRepository(dao)
     }
 }

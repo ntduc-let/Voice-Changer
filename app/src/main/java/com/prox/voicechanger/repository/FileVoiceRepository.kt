@@ -1,59 +1,49 @@
-package com.prox.voicechanger.repository;
+package com.prox.voicechanger.repository
 
-import androidx.lifecycle.MutableLiveData;
+import javax.inject.Inject
+import com.prox.voicechanger.database.FileVoiceDAO
+import androidx.lifecycle.MutableLiveData
+import com.prox.voicechanger.model.FileVoice
 
-import com.prox.voicechanger.database.FileVoiceDAO;
-import com.prox.voicechanger.model.FileVoice;
+class FileVoiceRepository @Inject constructor(private val dao: FileVoiceDAO) {
+    val fileVoices: MutableLiveData<List<FileVoice?>?>
+        get() {
+            val data = MutableLiveData<List<FileVoice?>?>()
+            data.value = dao.allVoice
+            return data
+        }
+    val fileVoicesBG: MutableLiveData<List<FileVoice?>?>
+        get() {
+            val data = MutableLiveData<List<FileVoice?>?>()
+            data.postValue(dao.allVoice)
+            return data
+        }
+    val fileVideos: MutableLiveData<List<FileVoice?>?>
+        get() {
+            val data = MutableLiveData<List<FileVoice?>?>()
+            data.value = dao.allVideo
+            return data
+        }
+    val fileVideosBG: MutableLiveData<List<FileVoice?>?>
+        get() {
+            val data = MutableLiveData<List<FileVoice?>?>()
+            data.postValue(dao.allVideo)
+            return data
+        }
 
-import java.util.List;
-
-import javax.inject.Inject;
-
-public class FileVoiceRepository {
-    private final FileVoiceDAO dao;
-
-    @Inject
-    public FileVoiceRepository(FileVoiceDAO dao){
-        this.dao = dao;
+    fun check(path: String?): FileVoice? {
+        return dao.check(path)
     }
 
-    public MutableLiveData<List<FileVoice>> getFileVoices(){
-        MutableLiveData<List<FileVoice>> data = new MutableLiveData<>();
-        data.setValue(dao.getAllVoice());
-        return data;
+    fun insert(fileVoice: FileVoice?) {
+        dao.insert(fileVoice)
     }
 
-    public MutableLiveData<List<FileVoice>> getFileVoicesBG(){
-        MutableLiveData<List<FileVoice>> data = new MutableLiveData<>();
-        data.postValue(dao.getAllVoice());
-        return data;
+    fun update(fileVoice: FileVoice?) {
+        dao.update(fileVoice)
     }
 
-    public MutableLiveData<List<FileVoice>> getFileVideos(){
-        MutableLiveData<List<FileVoice>> data = new MutableLiveData<>();
-        data.setValue(dao.getAllVideo());
-        return data;
-    }
-
-    public MutableLiveData<List<FileVoice>> getFileVideosBG(){
-        MutableLiveData<List<FileVoice>> data = new MutableLiveData<>();
-        data.postValue(dao.getAllVideo());
-        return data;
-    }
-
-    public FileVoice check(String path){
-        return dao.check(path);
-    }
-
-    public void insert(FileVoice fileVoice){
-        dao.insert(fileVoice);
-    }
-
-    public void update(FileVoice fileVoice){
-        dao.update(fileVoice);
-    }
-
-    public void delete(FileVoice fileVoice){
-        dao.delete(fileVoice);
+    fun delete(fileVoice: FileVoice?) {
+        dao.delete(fileVoice)
     }
 }

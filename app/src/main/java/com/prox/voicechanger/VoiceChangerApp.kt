@@ -1,16 +1,12 @@
-package com.prox.voicechanger;
+package com.prox.voicechanger
 
-import android.app.Application;
-
-import dagger.hilt.android.HiltAndroidApp;
+import dagger.hilt.android.HiltAndroidApp
+import android.app.Application
 
 @HiltAndroidApp
-public class VoiceChangerApp extends Application {
-    public static final String TAG = "ntduc";
-    public static final String FOLDER_APP = "Voice Changer";
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
+class VoiceChangerApp : Application() {
+    companion object {
+        const val TAG = "ntduc"
+        const val FOLDER_APP = "Voice Changer"
     }
 }

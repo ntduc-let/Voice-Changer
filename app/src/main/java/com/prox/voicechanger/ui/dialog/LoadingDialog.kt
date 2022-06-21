@@ -1,19 +1,14 @@
-package com.prox.voicechanger.ui.dialog;
+package com.prox.voicechanger.ui.dialog
 
-import static com.prox.voicechanger.VoiceChangerApp.TAG;
+import android.content.Context
+import com.prox.voicechanger.VoiceChangerApp
+import android.util.Log
+import com.prox.voicechanger.databinding.DialogLoading2Binding
 
-import android.content.Context;
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-
-import com.prox.voicechanger.databinding.DialogLoading2Binding;
-
-public class LoadingDialog extends CustomDialog{
-
-    public LoadingDialog(@NonNull Context context, DialogLoading2Binding binding) {
-        super(context, binding.getRoot());
-        Log.d(TAG, "LoadingDialog: create");
-        setCancelable(false);
+class LoadingDialog(context: Context, binding: DialogLoading2Binding) :
+    CustomDialog(context, binding.root) {
+    init {
+        Log.d(VoiceChangerApp.TAG, "LoadingDialog: create")
+        setCancelable(false)
     }
 }

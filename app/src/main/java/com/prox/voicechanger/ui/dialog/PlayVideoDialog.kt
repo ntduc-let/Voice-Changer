@@ -1,165 +1,143 @@
-package com.prox.voicechanger.ui.dialog;
+package com.prox.voicechanger.ui.dialog
 
-import static com.prox.voicechanger.VoiceChangerApp.TAG;
+import com.prox.voicechanger.utils.FileUtils.Companion.getName
+import com.prox.voicechanger.utils.FileUtils.Companion.shareFile
+import com.prox.voicechanger.utils.NumberUtils.formatAsTime
+import android.content.Context
+import com.prox.voicechanger.VoiceChangerApp
+import android.media.MediaPlayer
+import com.prox.voicechanger.R
+import android.media.AudioManager
+import android.content.DialogInterface
+import android.os.Handler
+import android.os.Looper
+import android.widget.SeekBar.OnSeekBarChangeListener
+import android.widget.SeekBar
+import android.util.Log
+import androidx.appcompat.app.AlertDialog
+import com.prox.voicechanger.databinding.DialogPlayVideoBinding
+import java.io.File
+import java.lang.Exception
 
-import android.content.Context;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.os.Handler;
-import android.util.Log;
-import android.widget.SeekBar;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-
-import com.prox.voicechanger.R;
-import com.prox.voicechanger.databinding.DialogPlayVideoBinding;
-import com.prox.voicechanger.utils.FileUtils;
-import com.prox.voicechanger.utils.NumberUtils;
-
-import java.io.File;
-
-public class PlayVideoDialog extends CustomDialog {
-    private final DialogPlayVideoBinding binding;
-    private MediaPlayer player;
-
-    private final Handler handler = new Handler();
-    private final Runnable updateTime = new Runnable() {
-        @Override
-        public void run() {
+class PlayVideoDialog(context: Context, binding: DialogPlayVideoBinding, path: String?) :
+    CustomDialog(context, binding.root) {
+    private val binding: DialogPlayVideoBinding
+    private var player: MediaPlayer? = null
+    private val handler = Handler(Looper.getMainLooper())
+    private val updateTime: Runnable = object : Runnable {
+        override fun run() {
             try {
-                binding.txtCurrentTime2.setText(NumberUtils.formatAsTime(player.getCurrentPosition()));
-                binding.seekTime2.setProgress(player.getCurrentPosition());
-                handler.post(this);
-            } catch (Exception e) {
-                Log.d(TAG, "updateTime error " + e.getMessage());
-                handler.removeCallbacks(this);
+                binding.txtCurrentTime2.text = formatAsTime(player!!.currentPosition.toLong())
+                binding.seekTime2.progress = player!!.currentPosition
+                handler.post(this)
+            } catch (e: Exception) {
+                Log.d(VoiceChangerApp.TAG, "updateTime error " + e.message)
+                handler.removeCallbacks(this)
             }
-
         }
-    };
+    }
 
+    private fun pauseVideo() {
+        Log.d(VoiceChangerApp.TAG, "PlayVideoDialog: pauseVideo")
+        player!!.pause()
+        handler.removeCallbacks(updateTime)
+        binding.btnPauseOrResume2.setImageResource(R.drawable.ic_resume)
+    }
 
-    public PlayVideoDialog(@NonNull Context context, DialogPlayVideoBinding binding, String path) {
-        super(context, binding.getRoot());
-        Log.d(TAG, "PlayVideoDialog: create");
-        setCancelable(false);
-        this.binding = binding;
+    private fun resumeVideo() {
+        Log.d(VoiceChangerApp.TAG, "PlayVideoDialog: resumeVideo")
+        player!!.start()
+        handler.post(updateTime)
+        binding.txtTotalTime2.text = formatAsTime(player!!.duration.toLong())
+        binding.seekTime2.max = player!!.duration
+        binding.btnPauseOrResume2.setImageResource(R.drawable.ic_pause)
+    }
 
-        binding.txtNameVideo.setText(FileUtils.getName(path));
-        binding.videoView.setVideoPath(path);
-        binding.videoView.setOnPreparedListener(player -> {
-            this.player = player;
-            this.player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            this.player.setLooping(true);
-        });
+    fun stop() {
+        handler.removeCallbacks(updateTime)
+        binding.btnPauseOrResume2.setImageResource(R.drawable.ic_resume)
+    }
 
-        binding.videoView.setOnErrorListener((mp, what, extra) -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+    init {
+        Log.d(VoiceChangerApp.TAG, "PlayVideoDialog: create")
+        setCancelable(false)
+        this.binding = binding
+        binding.txtNameVideo.text = getName(path!!)
+        binding.videoView.setVideoPath(path)
+        binding.videoView.setOnPreparedListener { player: MediaPlayer? ->
+            this.player = player
+            this.player!!.setAudioStreamType(AudioManager.STREAM_MUSIC)
+            this.player!!.isLooping = true
+        }
+        binding.videoView.setOnErrorListener { _: MediaPlayer?, _: Int, _: Int ->
+            val builder = AlertDialog.Builder(context)
             builder.setMessage(R.string.dialog_video_error)
-                    .setTitle(R.string.app_name);
-
-            builder.setPositiveButton(R.string.ok, (dialog, id) -> cancel());
-
-            AlertDialog dialogRequest = builder.create();
-            dialogRequest.show();
-
-            return true;
-        });
-
-        binding.seekTime2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                .setTitle(R.string.app_name)
+            builder.setPositiveButton(R.string.ok) { _: DialogInterface?, _: Int -> cancel() }
+            val dialogRequest = builder.create()
+            dialogRequest.show()
+            true
+        }
+        binding.seekTime2.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
                 if (b) {
-                    if (player != null && (new File(path).exists())){
-                        player.seekTo(i);
-                        binding.txtCurrentTime2.setText(NumberUtils.formatAsTime(player.getCurrentPosition()));
-                    }else {
-                        cancel();
+                    if (player != null && File(path).exists()) {
+                        player!!.seekTo(i)
+                        binding.txtCurrentTime2.text = formatAsTime(player!!.currentPosition.toLong())
+                    } else {
+                        cancel()
                     }
-
                 }
             }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                if (player != null && (new File(path).exists())){
-                    if (player.isPlaying()) {
-                        handler.removeCallbacks(updateTime);
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
+                if (player != null && File(path).exists()) {
+                    if (player!!.isPlaying) {
+                        handler.removeCallbacks(updateTime)
                     }
-                }else {
-                    cancel();
-                }
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                if (player != null && (new File(path).exists())){
-                    if (player.isPlaying()) {
-                        handler.post(updateTime);
-                    }
-                }else {
-                    cancel();
-                }
-            }
-        });
-
-        binding.btnPauseOrResume2.setOnClickListener(view -> {
-            if (player != null && (new File(path).exists())){
-                if (player.isPlaying()) {
-                    pauseVideo();
                 } else {
-                    resumeVideo();
+                    cancel()
                 }
-            }else {
-                cancel();
             }
 
-        });
-
-        binding.btnBackVideo.setOnClickListener(view -> {
-            stop();
-            if (player != null && (new File(path).exists())){
-                player.stop();
-                player.release();
-            }
-            cancel();
-        });
-
-        binding.btnShareVideo.setOnClickListener(view -> {
-            if (player != null && (new File(path).exists())){
-                if (player.isPlaying()) {
-                    pauseVideo();
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                if (player != null && File(path).exists()) {
+                    if (player!!.isPlaying) {
+                        handler.post(updateTime)
+                    }
+                } else {
+                    cancel()
                 }
-                FileUtils.shareFile(context, path);
-            }else {
-                cancel();
             }
-        });
-    }
-
-    private void pauseVideo() {
-        Log.d(TAG, "PlayVideoDialog: pauseVideo");
-
-        player.pause();
-        handler.removeCallbacks(updateTime);
-
-        binding.btnPauseOrResume2.setImageResource(R.drawable.ic_resume);
-    }
-
-    private void resumeVideo() {
-        Log.d(TAG, "PlayVideoDialog: resumeVideo");
-
-        player.start();
-        handler.post(updateTime);
-
-        binding.txtTotalTime2.setText(NumberUtils.formatAsTime(player.getDuration()));
-        binding.seekTime2.setMax(player.getDuration());
-        binding.btnPauseOrResume2.setImageResource(R.drawable.ic_pause);
-    }
-
-    public void stop() {
-        handler.removeCallbacks(updateTime);
-        binding.btnPauseOrResume2.setImageResource(R.drawable.ic_resume);
+        })
+        binding.btnPauseOrResume2.setOnClickListener {
+            if (player != null && File(path).exists()) {
+                if (player!!.isPlaying) {
+                    pauseVideo()
+                } else {
+                    resumeVideo()
+                }
+            } else {
+                cancel()
+            }
+        }
+        binding.btnBackVideo.setOnClickListener {
+            stop()
+            if (player != null && File(path).exists()) {
+                player!!.stop()
+                player!!.release()
+            }
+            cancel()
+        }
+        binding.btnShareVideo.setOnClickListener {
+            if (player != null && File(path).exists()) {
+                if (player!!.isPlaying) {
+                    pauseVideo()
+                }
+                shareFile(context, path)
+            } else {
+                cancel()
+            }
+        }
     }
 }

@@ -1,119 +1,104 @@
-package com.prox.voicechanger.ui.activity;
+package com.prox.voicechanger.ui.activity
 
-import static com.prox.voicechanger.VoiceChangerApp.TAG;
-import static com.prox.voicechanger.ui.activity.ChangeVoiceActivity.PATH_FILE;
-
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.graphics.drawable.AnimationDrawable;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
-import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.prox.voicechanger.R;
-import com.prox.voicechanger.databinding.ActivitySplashBinding;
-import com.prox.voicechanger.utils.FileUtils;
-
-import java.io.File;
+import com.prox.voicechanger.utils.FileUtils.Companion.getRealPath
+import android.annotation.SuppressLint
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import com.prox.voicechanger.VoiceChangerApp
+import android.view.WindowManager
+import com.prox.voicechanger.R
+import android.graphics.drawable.AnimationDrawable
+import android.content.Intent
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import android.view.animation.AnimationUtils
+import com.prox.voicechanger.databinding.ActivitySplashBinding
+import java.io.File
 
 @SuppressLint("CustomSplashScreen")
-public class SplashActivity extends AppCompatActivity {
-    public static final String SPLASH_TO_CHANGE_VOICE = "SPLASH_TO_CHANGE_VOICE";
-    public static final String SPLASH_TO_RECORD = "SPLASH_TO_RECORD";
-
-    private ActivitySplashBinding binding;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "SplashActivity: onCreate");
-        super.onCreate(savedInstanceState);
-        binding = ActivitySplashBinding.inflate(getLayoutInflater());
-
-        setContentView(binding.getRoot());
-
-        init();
+class SplashActivity : AppCompatActivity() {
+    private var binding: ActivitySplashBinding? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d(VoiceChangerApp.TAG, "SplashActivity: onCreate")
+        super.onCreate(savedInstanceState)
+        binding = ActivitySplashBinding.inflate(layoutInflater)
+        setContentView(binding!!.root)
+        init()
     }
 
-    @Override
-    protected void onDestroy() {
-        Log.d(TAG, "SplashActivity: onDestroy");
-        binding = null;
-        super.onDestroy();
+    override fun onDestroy() {
+        Log.d(VoiceChangerApp.TAG, "SplashActivity: onDestroy")
+        binding = null
+        super.onDestroy()
     }
 
-    private void init(){
-        Log.d(TAG, "SplashActivity: init");
-
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        getWindow().setStatusBarColor(this.getResources().getColor(R.color.background_app));
-
-        Animation rotate1Animation = AnimationUtils.loadAnimation(this, R.anim.anim_rotate1);
-        Animation rotate2Animation = AnimationUtils.loadAnimation(this, R.anim.anim_rotate2);
-        Animation rotate3Animation = AnimationUtils.loadAnimation(this, R.anim.anim_rotate3);
-        Animation rotate4Animation = AnimationUtils.loadAnimation(this, R.anim.anim_rotate4);
-        binding.aniRecord.icAniRecord1.startAnimation(rotate2Animation);
-        binding.aniRecord.icAniRecord2.startAnimation(rotate4Animation);
-        binding.aniRecord.icAniRecord3.startAnimation(rotate1Animation);
-        binding.aniRecord.icAniRecord4.startAnimation(rotate2Animation);
-        binding.aniRecord.icAniRecord5.startAnimation(rotate4Animation);
-        binding.aniRecord.icAniRecord6.startAnimation(rotate3Animation);
-
-        AnimationDrawable rocketAnimation = (AnimationDrawable) binding.aniRecord.icAniRecord7.getBackground();
-        rocketAnimation.start();
-
-
-        new Handler().postDelayed(this::goToMain, 4500);
+    private fun init() {
+        Log.d(VoiceChangerApp.TAG, "SplashActivity: init")
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = this.resources.getColor(R.color.background_app)
+        val rotate1Animation = AnimationUtils.loadAnimation(this, R.anim.anim_rotate1)
+        val rotate2Animation = AnimationUtils.loadAnimation(this, R.anim.anim_rotate2)
+        val rotate3Animation = AnimationUtils.loadAnimation(this, R.anim.anim_rotate3)
+        val rotate4Animation = AnimationUtils.loadAnimation(this, R.anim.anim_rotate4)
+        binding!!.aniRecord.icAniRecord1.startAnimation(rotate2Animation)
+        binding!!.aniRecord.icAniRecord2.startAnimation(rotate4Animation)
+        binding!!.aniRecord.icAniRecord3.startAnimation(rotate1Animation)
+        binding!!.aniRecord.icAniRecord4.startAnimation(rotate2Animation)
+        binding!!.aniRecord.icAniRecord5.startAnimation(rotate4Animation)
+        binding!!.aniRecord.icAniRecord6.startAnimation(rotate3Animation)
+        val rocketAnimation = binding!!.aniRecord.icAniRecord7.background as AnimationDrawable
+        rocketAnimation.start()
+        Handler(Looper.getMainLooper()).postDelayed({ goToMain() }, 4500)
     }
 
-    private void goToMain() {
-        Intent intent = getIntent();
-        if (intent==null){
-            Log.d(TAG, "SplashActivity: Intent null");
-            goToRecord();
-        }else if (intent.getAction()==null){
-            Log.d(TAG, "SplashActivity: Action null");
-            goToRecord();
-        }else if (intent.getAction().equals(Intent.ACTION_MAIN)){
-            Log.d(TAG, "SplashActivity: Intent.ACTION_MAIN");
-            goToRecord();
-        }else if (intent.getAction().equals(Intent.ACTION_VIEW)){
-            Log.d(TAG, "SplashActivity: Intent.ACTION_VIEW");
-            Uri data = getIntent().getData();
-            if (data == null){
-                Log.d(TAG, "SplashActivity: data null");
-                goToRecord();
+    private fun goToMain() {
+        val intent = intent
+        if (intent == null) {
+            Log.d(VoiceChangerApp.TAG, "SplashActivity: Intent null")
+            goToRecord()
+        } else if (intent.action == null) {
+            Log.d(VoiceChangerApp.TAG, "SplashActivity: Action null")
+            goToRecord()
+        } else if (intent.action == Intent.ACTION_MAIN) {
+            Log.d(VoiceChangerApp.TAG, "SplashActivity: Intent.ACTION_MAIN")
+            goToRecord()
+        } else if (intent.action == Intent.ACTION_VIEW) {
+            Log.d(VoiceChangerApp.TAG, "SplashActivity: Intent.ACTION_VIEW")
+            val data = getIntent().data
+            if (data == null) {
+                Log.d(VoiceChangerApp.TAG, "SplashActivity: data null")
+                goToRecord()
             }
-            String filePath = FileUtils.getRealPath(this, data);
-            if (filePath.isEmpty()){
-                Log.d(TAG, "SplashActivity: filePath isEmpty");
-                goToRecord();
-            }else if(!(new File(filePath).exists())){
-                Log.d(TAG, "SplashActivity: filePath not exists");
-                goToRecord();
-            }else{
-                Log.d(TAG, "SplashActivity: filePath "+filePath);
-
-                Intent goToChangeVoice = new Intent(SplashActivity.this, ChangeVoiceActivity.class);
-                goToChangeVoice.setAction(SPLASH_TO_CHANGE_VOICE);
-                goToChangeVoice.putExtra(PATH_FILE, filePath);
-                startActivity(goToChangeVoice);
-                Log.d(TAG, "SplashActivity: To ChangeVoiceActivity");
-                finish();
+            val filePath = getRealPath(this, data)
+            if (filePath!!.isEmpty()) {
+                Log.d(VoiceChangerApp.TAG, "SplashActivity: filePath isEmpty")
+                goToRecord()
+            } else if (!File(filePath).exists()) {
+                Log.d(VoiceChangerApp.TAG, "SplashActivity: filePath not exists")
+                goToRecord()
+            } else {
+                Log.d(VoiceChangerApp.TAG, "SplashActivity: filePath $filePath")
+                val goToChangeVoice = Intent(this@SplashActivity, ChangeVoiceActivity::class.java)
+                goToChangeVoice.action = SPLASH_TO_CHANGE_VOICE
+                goToChangeVoice.putExtra(ChangeVoiceActivity.PATH_FILE, filePath)
+                startActivity(goToChangeVoice)
+                Log.d(VoiceChangerApp.TAG, "SplashActivity: To ChangeVoiceActivity")
+                finish()
             }
         }
     }
 
-    private void goToRecord(){
-        Intent goToRecord = new Intent(SplashActivity.this, RecordActivity.class);
-        goToRecord.setAction(SPLASH_TO_RECORD);
-        startActivity(goToRecord);
-        Log.d(TAG, "SplashActivity: To RecordActivity");
-        finish();
+    private fun goToRecord() {
+        val goToRecord = Intent(this@SplashActivity, RecordActivity::class.java)
+        goToRecord.action = SPLASH_TO_RECORD
+        startActivity(goToRecord)
+        Log.d(VoiceChangerApp.TAG, "SplashActivity: To RecordActivity")
+        finish()
+    }
+
+    companion object {
+        const val SPLASH_TO_CHANGE_VOICE = "SPLASH_TO_CHANGE_VOICE"
+        const val SPLASH_TO_RECORD = "SPLASH_TO_RECORD"
     }
 }

@@ -1,112 +1,94 @@
-package com.prox.voicechanger.media;
+package com.prox.voicechanger.media
 
-import static com.prox.voicechanger.VoiceChangerApp.TAG;
+import com.prox.voicechanger.interfaces.PlayerListener
+import android.media.MediaPlayer
+import com.prox.voicechanger.VoiceChangerApp
+import android.media.AudioManager
+import android.util.Log
+import java.io.IOException
 
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.util.Log;
+class Player : PlayerListener {
+    private var player: MediaPlayer?
+    val isPlaying: Boolean
+        get() = player!!.isPlaying
+    val currentPosition: Int
+        get() = player!!.currentPosition
+    val duration: Int
+        get() = player!!.duration
 
-import com.prox.voicechanger.interfaces.PlayerListener;
-
-import java.io.IOException;
-
-public class Player implements PlayerListener {
-    private MediaPlayer player;
-
-    public Player() {
-        player = new MediaPlayer();
+    fun seekTo(i: Long) {
+        player!!.seekTo(i.toInt())
     }
 
-    public boolean isPlaying(){
-        return player.isPlaying();
-    }
-
-    public int getCurrentPosition(){
-        return player.getCurrentPosition();
-    }
-
-    public int getDuration(){
-        return player.getDuration();
-    }
-
-    public void seekTo(long i){
-        player.seekTo((int) i);
-    }
-
-    @Override
-    public void setNewPath(String path) {
-        Log.d(TAG, "Player: setNewPath " + path);
-        if (player == null){
-            Log.d(TAG, "Player: player null");
-            return;
+    override fun setNewPath(path: String?) {
+        Log.d(VoiceChangerApp.TAG, "Player: setNewPath $path")
+        if (player == null) {
+            Log.d(VoiceChangerApp.TAG, "Player: player null")
+            return
         }
         try {
-            player.reset();
-            player.setDataSource(path);
-            player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            player.setLooping(true);
-            player.prepare();
-        } catch (IOException e) {
-            Log.d(TAG, "Player: setNewPath error " + e.getMessage());
+            player!!.reset()
+            player!!.setDataSource(path)
+            player!!.setAudioStreamType(AudioManager.STREAM_MUSIC)
+            player!!.isLooping = true
+            player!!.prepare()
+        } catch (e: IOException) {
+            Log.d(VoiceChangerApp.TAG, "Player: setNewPath error " + e.message)
         }
     }
 
-    @Override
-    public void start() {
-        if (player == null){
-            Log.d(TAG, "Player: player null");
-            return;
+    override fun start() {
+        if (player == null) {
+            Log.d(VoiceChangerApp.TAG, "Player: player null")
+            return
         }
-        player.start();
+        player!!.start()
     }
 
-    @Override
-    public void pause() {
-        if (player == null){
-            Log.d(TAG, "Player: player null");
-            return;
+    override fun pause() {
+        if (player == null) {
+            Log.d(VoiceChangerApp.TAG, "Player: player null")
+            return
         }
-
-        if (player.isPlaying()){
-            player.pause();
+        if (player!!.isPlaying) {
+            player!!.pause()
         }
     }
 
-    @Override
-    public void resume() {
-        if (player == null){
-            Log.d(TAG, "Player: player null");
-            return;
+    override fun resume() {
+        if (player == null) {
+            Log.d(VoiceChangerApp.TAG, "Player: player null")
+            return
         }
-
-        if (!player.isPlaying()){
-            player.start();
+        if (!player!!.isPlaying) {
+            player!!.start()
         }
     }
 
-    @Override
-    public void stop() {
-        if (player == null){
-            Log.d(TAG, "Player: player null");
-            return;
+    override fun stop() {
+        if (player == null) {
+            Log.d(VoiceChangerApp.TAG, "Player: player null")
+            return
         }
-
-        if (player.isPlaying()){
-            player.stop();
+        if (player!!.isPlaying) {
+            player!!.stop()
         }
     }
 
-    @Override
-    public void release() {
-        if (player == null){
-            Log.d(TAG, "Player: player null");
-            return;
+    override fun release() {
+        if (player == null) {
+            Log.d(VoiceChangerApp.TAG, "Player: player null")
+            return
         }
-        if (player.isPlaying()){
-            player.stop();
+        if (player!!.isPlaying) {
+            player!!.stop()
         }
-        player.release();
-        player = null;
-        Log.d(TAG, "Player: release");
+        player!!.release()
+        player = null
+        Log.d(VoiceChangerApp.TAG, "Player: release")
+    }
+
+    init {
+        player = MediaPlayer()
     }
 }

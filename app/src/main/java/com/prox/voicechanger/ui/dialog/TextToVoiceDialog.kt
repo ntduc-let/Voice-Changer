@@ -1,45 +1,42 @@
-package com.prox.voicechanger.ui.dialog;
+package com.prox.voicechanger.ui.dialog
 
-import static com.prox.voicechanger.VoiceChangerApp.TAG;
+import android.app.Activity
+import android.content.Context
+import com.prox.voicechanger.VoiceChangerApp
+import android.widget.Toast
+import com.prox.voicechanger.R
+import android.content.Intent
+import android.speech.tts.TextToSpeech
+import android.util.Log
+import com.prox.voicechanger.databinding.DialogTextToVoiceBinding
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.speech.tts.TextToSpeech;
-import android.util.Log;
-import android.widget.Toast;
+class TextToVoiceDialog(context: Context, activity: Activity, binding: DialogTextToVoiceBinding) :
+    CustomDialog(context, binding.root) {
+    companion object {
+        const val IMPORT_TEXT = 40
+        @JvmField
+        var textToSpeech: String? = null
+    }
 
-import androidx.annotation.NonNull;
-
-import com.prox.voicechanger.R;
-import com.prox.voicechanger.databinding.DialogTextToVoiceBinding;
-
-public class TextToVoiceDialog extends CustomDialog{
-    public static final int IMPORT_TEXT = 40;
-    public static String textToSpeech;
-
-    public TextToVoiceDialog(@NonNull Context context, Activity activity, DialogTextToVoiceBinding binding) {
-        super(context, binding.getRoot());
-        Log.d(TAG, "TextToVoiceDialog: create");
-        setCancelable(false);
-
-        binding.btnCancel.setOnClickListener(view -> {
-            Log.d(TAG, "TextToVoiceDialog: Cancel");
-            cancel();
-        });
-
-        binding.btnDone.setOnClickListener(view -> {
-            Log.d(TAG, "TextToVoiceDialog: Done");
-            String text = binding.edtTextToVoice.getText().toString().trim();
+    init {
+        Log.d(VoiceChangerApp.TAG, "TextToVoiceDialog: create")
+        setCancelable(false)
+        binding.btnCancel.setOnClickListener {
+            Log.d(VoiceChangerApp.TAG, "TextToVoiceDialog: Cancel")
+            cancel()
+        }
+        binding.btnDone.setOnClickListener {
+            Log.d(VoiceChangerApp.TAG, "TextToVoiceDialog: Done")
+            val text = binding.edtTextToVoice.text.toString().trim { it <= ' ' }
             if (text.isEmpty()) {
-                Toast.makeText(context, R.string.text_empty, Toast.LENGTH_SHORT).show();
-                return;
+                Toast.makeText(context, R.string.text_empty, Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
-            textToSpeech = text;
-            Intent checkIntent = new Intent();
-            checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-            activity.startActivityForResult(checkIntent, IMPORT_TEXT);
-            cancel();
-        });
+            textToSpeech = text
+            val checkIntent = Intent()
+            checkIntent.action = TextToSpeech.Engine.ACTION_CHECK_TTS_DATA
+            activity.startActivityForResult(checkIntent, IMPORT_TEXT)
+            cancel()
+        }
     }
 }

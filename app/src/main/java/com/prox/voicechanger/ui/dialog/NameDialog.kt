@@ -1,117 +1,106 @@
-package com.prox.voicechanger.ui.dialog;
+package com.prox.voicechanger.ui.dialog
 
-import static com.prox.voicechanger.VoiceChangerApp.FOLDER_APP;
-import static com.prox.voicechanger.VoiceChangerApp.TAG;
+import com.prox.voicechanger.utils.FileUtils.Companion.getDownloadFolderPath
+import com.prox.voicechanger.utils.FFMPEGUtils.getCMDConvertRecording
+import com.prox.voicechanger.utils.FileUtils.Companion.getTempEffectFilePath
+import com.prox.voicechanger.utils.FileUtils.Companion.getTempCustomFilePath
+import com.prox.voicechanger.utils.FFMPEGUtils.executeFFMPEG
+import com.prox.voicechanger.utils.FileUtils.Companion.getName
+import android.content.Context
+import com.prox.voicechanger.viewmodel.FileVoiceViewModel
+import com.prox.voicechanger.model.FileVoice
+import com.prox.voicechanger.VoiceChangerApp
+import android.media.MediaPlayer
+import android.widget.Toast
+import com.prox.voicechanger.R
+import com.prox.voicechanger.interfaces.FFmpegExecuteCallback
+import android.util.Log
+import android.view.View
+import com.prox.voicechanger.databinding.DialogNameBinding
+import com.prox.voicechanger.model.Effect
+import java.io.File
+import java.io.IOException
+import java.util.*
 
-import android.app.Activity;
-import android.content.Context;
-import android.media.MediaPlayer;
-import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-
-import com.prox.voicechanger.R;
-import com.prox.voicechanger.databinding.DialogNameBinding;
-import com.prox.voicechanger.interfaces.FFmpegExecuteCallback;
-import com.prox.voicechanger.model.Effect;
-import com.prox.voicechanger.model.FileVoice;
-import com.prox.voicechanger.utils.FFMPEGUtils;
-import com.prox.voicechanger.utils.FileUtils;
-import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Date;
-
-public class NameDialog extends CustomDialog {
-    public static final String RECORD_TO_CHANGE_VOICE = "RECORD_TO_CHANGE_VOICE";
-
-    public NameDialog(@NonNull Context context,
-                      Activity activity,
-                      DialogNameBinding binding,
-                      FileVoiceViewModel model,
-                      String name,
-                      boolean isCustom,
-                      Effect effectSelected) {
-        super(context, binding.getRoot());
-        Log.d(TAG, "NameDialog: create");
-        setCancelable(false);
-
-        binding.edtName.setText(name);
-
-        binding.btnCancel.setOnClickListener(view -> {
-            Log.d(TAG, "NameDialog: Cancel");
-            cancel();
-        });
-
-        binding.btnSave.setOnClickListener(view -> {
-            Log.d(TAG, "NameDialog: Save");
-
-            if (binding.edtName.getText().toString().trim().length() == 0) {
-                Toast.makeText(context, R.string.name_empty, Toast.LENGTH_SHORT).show();
-                return;
+class NameDialog(
+    context: Context,
+    binding: DialogNameBinding,
+    model: FileVoiceViewModel,
+    name: String?,
+    isCustom: Boolean,
+    effectSelected: Effect?
+) : CustomDialog(context, binding.root) {
+    private fun insertEffectToDB(model: FileVoiceViewModel, effect: Effect?, path: String) {
+        val fileVoice = FileVoice()
+        if (effect == null) {
+            Log.d(VoiceChangerApp.TAG, "ChangeVoiceActivity: effect null")
+        } else {
+            fileVoice.src = effect.src
+            fileVoice.name = getName(path)
+            fileVoice.path = path
+            val playerEffect = MediaPlayer()
+            try {
+                playerEffect.setDataSource(path)
+                playerEffect.prepare()
+            } catch (e: IOException) {
+                Log.d(VoiceChangerApp.TAG, "insertEffectToDB: " + e.message)
+                return
             }
-
-            String path = FileUtils.getDownloadFolderPath(FOLDER_APP) + "/" + binding.edtName.getText().toString().trim() + ".mp3";
-            File file = new File(path);
-            if (file.exists()) {
-                Toast.makeText(context, R.string.name_exits, Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            binding.txtNoti.setVisibility(View.VISIBLE);
-            binding.btnSave.setEnabled(false);
-            binding.btnSave.setBackgroundResource(R.drawable.bg_button_enable30);
-            binding.btnSave.setTextColor(context.getResources().getColor(R.color.white30));
-            binding.btnCancel.setEnabled(false);
-
-            String cmd;
-            if (!isCustom) {
-                cmd = FFMPEGUtils.getCMDConvertRecording(FileUtils.getTempEffectFilePath(context), path);
-            } else {
-                cmd = FFMPEGUtils.getCMDConvertRecording(FileUtils.getTempCustomFilePath(context), path);
-            }
-
-            FFMPEGUtils.executeFFMPEG(cmd, new FFmpegExecuteCallback() {
-                @Override
-                public void onSuccess() {
-                    insertEffectToDB(model, effectSelected, path);
-                    model.setExecuteSave(true);
-                    cancel();
-                }
-
-                @Override
-                public void onFailed() {
-                    model.setExecuteSave(false);
-                    cancel();
-                }
-            });
-        });
+            fileVoice.duration = playerEffect.duration.toLong()
+            fileVoice.size = File(path).length()
+            fileVoice.date = Date().time
+            model.insertBG(fileVoice)
+        }
     }
 
-    private void insertEffectToDB(FileVoiceViewModel model, Effect effect, String path) {
-        FileVoice fileVoice = new FileVoice();
-        if (effect == null) {
-            Log.d(TAG, "ChangeVoiceActivity: effect null");
-        } else {
-            fileVoice.setSrc(effect.getSrc());
-            fileVoice.setName(FileUtils.getName(path));
-            fileVoice.setPath(path);
+    companion object {
+        const val RECORD_TO_CHANGE_VOICE = "RECORD_TO_CHANGE_VOICE"
+    }
 
-            MediaPlayer playerEffect = new MediaPlayer();
-            try {
-                playerEffect.setDataSource(path);
-                playerEffect.prepare();
-            } catch (IOException e) {
-                Log.d(TAG, "insertEffectToDB: " + e.getMessage());
-                return;
+    init {
+        Log.d(VoiceChangerApp.TAG, "NameDialog: create")
+        setCancelable(false)
+        binding.edtName.setText(name)
+        binding.btnCancel.setOnClickListener {
+            Log.d(VoiceChangerApp.TAG, "NameDialog: Cancel")
+            cancel()
+        }
+        binding.btnSave.setOnClickListener {
+            Log.d(VoiceChangerApp.TAG, "NameDialog: Save")
+            if (binding.edtName.text.toString().trim { it <= ' ' }.isEmpty()) {
+                Toast.makeText(context, R.string.name_empty, Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
-            fileVoice.setDuration(playerEffect.getDuration());
-            fileVoice.setSize(new File(path).length());
-            fileVoice.setDate(new Date().getTime());
-            model.insertBG(fileVoice);
+            val path =
+                getDownloadFolderPath(VoiceChangerApp.FOLDER_APP) + "/" + binding.edtName.text.toString()
+                    .trim { it <= ' ' } + ".mp3"
+            val file = File(path)
+            if (file.exists()) {
+                Toast.makeText(context, R.string.name_exits, Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            binding.txtNoti.visibility = View.VISIBLE
+            binding.btnSave.isEnabled = false
+            binding.btnSave.setBackgroundResource(R.drawable.bg_button_enable30)
+            binding.btnSave.setTextColor(context.resources.getColor(R.color.white30))
+            binding.btnCancel.isEnabled = false
+            val cmd: String = if (!isCustom) {
+                getCMDConvertRecording(getTempEffectFilePath(context), path)
+            } else {
+                getCMDConvertRecording(getTempCustomFilePath(context), path)
+            }
+            executeFFMPEG(cmd, object : FFmpegExecuteCallback {
+                override fun onSuccess() {
+                    insertEffectToDB(model, effectSelected, path)
+                    model.setExecuteSave(true)
+                    cancel()
+                }
+
+                override fun onFailed() {
+                    model.setExecuteSave(false)
+                    cancel()
+                }
+            })
         }
     }
 }

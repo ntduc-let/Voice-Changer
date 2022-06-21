@@ -1,158 +1,141 @@
-package com.prox.voicechanger.viewmodel;
+package com.prox.voicechanger.viewmodel
 
-import static com.prox.voicechanger.VoiceChangerApp.TAG;
-
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
-
-import com.prox.voicechanger.model.FileVoice;
-import com.prox.voicechanger.repository.FileVoiceRepository;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import dagger.hilt.android.lifecycle.HiltViewModel;
+import android.util.Log
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+import com.prox.voicechanger.repository.FileVoiceRepository
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
+import com.prox.voicechanger.VoiceChangerApp
+import com.prox.voicechanger.model.FileVoice
 
 @HiltViewModel
-public class FileVoiceViewModel extends ViewModel {
-    private final FileVoiceRepository repository;
-
-    private final MutableLiveData<List<FileVoice>> fileVoices;
-    private final MutableLiveData<List<FileVoice>> fileVideos;
-    private final MutableLiveData<String> pathPlayer = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> isExecuteConvertRecording = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> isExecuteText = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> isExecuteSave = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> isExecuteCustom = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> isExecuteAddImage = new MutableLiveData<>();
-    private final MutableLiveData<Float> loading = new MutableLiveData<>();
-
-    @Inject
-    public FileVoiceViewModel(@NonNull FileVoiceRepository repository) {
-        this.repository = repository;
-
-        fileVoices = repository.getFileVoices();
-        fileVideos = repository.getFileVideos();
+class FileVoiceViewModel @Inject constructor(private val repository: FileVoiceRepository) :
+    ViewModel() {
+    private val fileVoices: MutableLiveData<List<FileVoice?>?> = repository.fileVoices
+    private val fileVideos: MutableLiveData<List<FileVoice?>?> = repository.fileVideos
+    private val pathPlayer = MutableLiveData<String>()
+    private val isExecuteConvertRecording = MutableLiveData<Boolean>()
+    private val isExecuteText = MutableLiveData<Boolean>()
+    private val isExecuteSave = MutableLiveData<Boolean>()
+    private val isExecuteCustom = MutableLiveData<Boolean>()
+    private val isExecuteAddImage = MutableLiveData<Boolean>()
+    private val loading = MutableLiveData<Float>()
+    fun getFileVoices(): MutableLiveData<List<FileVoice?>?> {
+        return fileVoices
     }
 
-    public LiveData<List<FileVoice>> getFileVoices() {
-        return fileVoices;
+    fun getFileVideos(): MutableLiveData<List<FileVoice?>?> {
+        return fileVideos
     }
 
-    public LiveData<List<FileVoice>> getFileVideos() {
-        return fileVideos;
+    fun check(path: String?): FileVoice {
+        return repository.check(path)!!
     }
 
-    public FileVoice check(String path){
-        return repository.check(path);
+    fun getPathPlayer(): LiveData<String> {
+        return pathPlayer
     }
 
-    public LiveData<String> getPathPlayer() {
-        return pathPlayer;
+    fun setPathPlayer(path: String?) {
+        pathPlayer.postValue(path)
     }
 
-    public void setPathPlayer(String path){
-        pathPlayer.postValue(path);
+    fun setExecuteConvertRecording(b: Boolean) {
+        isExecuteConvertRecording.postValue(b)
     }
 
-    public void setExecuteConvertRecording(Boolean b){
-        isExecuteConvertRecording.postValue(b);
+    fun isExecuteConvertRecording(): LiveData<Boolean> {
+        return isExecuteConvertRecording
     }
 
-    public LiveData<Boolean> isExecuteConvertRecording() {
-        return isExecuteConvertRecording;
+    fun setExecuteText(b: Boolean) {
+        isExecuteText.postValue(b)
     }
 
-    public void setExecuteText(Boolean b){
-        isExecuteText.postValue(b);
+    fun isExecuteText(): LiveData<Boolean> {
+        return isExecuteText
     }
 
-    public LiveData<Boolean> isExecuteText() {
-        return isExecuteText;
+    fun setExecuteSave(b: Boolean) {
+        isExecuteSave.postValue(b)
     }
 
-    public void setExecuteSave(Boolean b){
-        isExecuteSave.postValue(b);
+    fun isExecuteSave(): LiveData<Boolean> {
+        return isExecuteSave
     }
 
-    public LiveData<Boolean> isExecuteSave() {
-        return isExecuteSave;
+    fun setExecuteCustom(b: Boolean) {
+        isExecuteCustom.postValue(b)
     }
 
-    public void setExecuteCustom(Boolean b){
-        isExecuteCustom.postValue(b);
+    fun isExecuteCustom(): LiveData<Boolean> {
+        return isExecuteCustom
     }
 
-    public LiveData<Boolean> isExecuteCustom() {
-        return isExecuteCustom;
+    fun setExecuteAddImage(b: Boolean) {
+        isExecuteAddImage.postValue(b)
     }
 
-    public void setExecuteAddImage(Boolean b){
-        isExecuteAddImage.postValue(b);
+    fun isExecuteAddImage(): LiveData<Boolean> {
+        return isExecuteAddImage
     }
 
-    public LiveData<Boolean> isExecuteAddImage() {
-        return isExecuteAddImage;
+    fun setLoading(f: Float) {
+        loading.postValue(f)
     }
 
-    public void setLoading(Float f){
-        loading.postValue(f);
+    fun getLoading(): LiveData<Float> {
+        return loading
     }
 
-    public LiveData<Float> getLoading() {
-        return loading;
+    fun insert(fileVoice: FileVoice) {
+        Log.d(VoiceChangerApp.TAG, "FileVoiceViewModel: insert " + fileVoice.path)
+        repository.insert(fileVoice)
+        fileVoices.value = repository.fileVoices.value
+        fileVideos.value = repository.fileVideos.value
     }
 
-    public void insert(FileVoice fileVoice){
-        Log.d(TAG, "FileVoiceViewModel: insert "+fileVoice.getPath());
-        repository.insert(fileVoice);
-        fileVoices.setValue(repository.getFileVoices().getValue());
-        fileVideos.setValue(repository.getFileVideos().getValue());
+    fun insertBG(fileVoice: FileVoice) {
+        Log.d(VoiceChangerApp.TAG, "FileVoiceViewModel: insertBG " + fileVoice.path)
+        repository.insert(fileVoice)
+        fileVoices.postValue(repository.fileVoicesBG.value)
+        fileVideos.postValue(repository.fileVideosBG.value)
     }
 
-    public void insertBG(FileVoice fileVoice){
-        Log.d(TAG, "FileVoiceViewModel: insertBG "+fileVoice.getPath());
-        repository.insert(fileVoice);
-        fileVoices.postValue(repository.getFileVoicesBG().getValue());
-        fileVideos.postValue(repository.getFileVideosBG().getValue());
+    fun insertVideoBG(fileVoice: FileVoice) {
+        Log.d(VoiceChangerApp.TAG, "FileVoiceViewModel: insertVideoBG " + fileVoice.path)
+        repository.insert(fileVoice)
+        fileVideos.postValue(repository.fileVideosBG.value)
     }
 
-    public void insertVideoBG(FileVoice fileVoice){
-        Log.d(TAG, "FileVoiceViewModel: insertVideoBG "+fileVoice.getPath());
-        repository.insert(fileVoice);
-        fileVideos.postValue(repository.getFileVideosBG().getValue());
+    fun update(fileVoice: FileVoice) {
+        Log.d(VoiceChangerApp.TAG, "FileVoiceViewModel: update " + fileVoice.path)
+        repository.update(fileVoice)
+        fileVoices.value = repository.fileVoices.value
+        fileVideos.value = repository.fileVideos.value
     }
 
-    public void update(FileVoice fileVoice){
-        Log.d(TAG, "FileVoiceViewModel: update "+fileVoice.getPath());
-        repository.update(fileVoice);
-        fileVoices.setValue(repository.getFileVoices().getValue());
-        fileVideos.setValue(repository.getFileVideos().getValue());
+    fun updateBG(fileVoice: FileVoice) {
+        Log.d(VoiceChangerApp.TAG, "FileVoiceViewModel: updateBG " + fileVoice.path)
+        repository.update(fileVoice)
+        fileVoices.postValue(repository.fileVoicesBG.value)
+        fileVideos.postValue(repository.fileVideosBG.value)
     }
 
-    public void updateBG(FileVoice fileVoice){
-        Log.d(TAG, "FileVoiceViewModel: updateBG "+fileVoice.getPath());
-        repository.update(fileVoice);
-        fileVoices.postValue(repository.getFileVoicesBG().getValue());
-        fileVideos.postValue(repository.getFileVideosBG().getValue());
+    fun delete(fileVoice: FileVoice) {
+        Log.d(VoiceChangerApp.TAG, "FileVoiceViewModel: delete " + fileVoice.path)
+        repository.delete(fileVoice)
+        fileVoices.value = repository.fileVoices.value
+        fileVideos.value = repository.fileVideos.value
     }
 
-    public void delete(FileVoice fileVoice){
-        Log.d(TAG, "FileVoiceViewModel: delete "+fileVoice.getPath());
-        repository.delete(fileVoice);
-        fileVoices.setValue(repository.getFileVoices().getValue());
-        fileVideos.setValue(repository.getFileVideos().getValue());
+    fun deleteBG(fileVoice: FileVoice) {
+        Log.d(VoiceChangerApp.TAG, "FileVoiceViewModel: deleteBG " + fileVoice.path)
+        repository.delete(fileVoice)
+        fileVoices.postValue(repository.fileVoicesBG.value)
+        fileVideos.postValue(repository.fileVideosBG.value)
     }
 
-    public void deleteBG(FileVoice fileVoice){
-        Log.d(TAG, "FileVoiceViewModel: deleteBG "+fileVoice.getPath());
-        repository.delete(fileVoice);
-        fileVoices.postValue(repository.getFileVoicesBG().getValue());
-        fileVideos.postValue(repository.getFileVideosBG().getValue());
-    }
 }

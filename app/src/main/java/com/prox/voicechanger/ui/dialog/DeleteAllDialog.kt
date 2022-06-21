@@ -1,38 +1,33 @@
-package com.prox.voicechanger.ui.dialog;
+package com.prox.voicechanger.ui.dialog
 
-import static com.prox.voicechanger.VoiceChangerApp.TAG;
+import com.prox.voicechanger.utils.FileUtils.Companion.deleteFile
+import android.content.Context
+import com.prox.voicechanger.viewmodel.FileVoiceViewModel
+import com.prox.voicechanger.model.FileVoice
+import com.prox.voicechanger.VoiceChangerApp
+import android.util.Log
+import com.prox.voicechanger.databinding.DialogDeleteAllBinding
 
-import android.content.Context;
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-
-import com.prox.voicechanger.databinding.DialogDeleteAllBinding;
-import com.prox.voicechanger.model.FileVoice;
-import com.prox.voicechanger.utils.FileUtils;
-import com.prox.voicechanger.viewmodel.FileVoiceViewModel;
-
-import java.util.List;
-
-public class DeleteAllDialog extends CustomDialog{
-
-    public DeleteAllDialog(@NonNull Context context, DialogDeleteAllBinding binding, FileVoiceViewModel model, List<FileVoice> fileVoices) {
-        super(context, binding.getRoot());
-        Log.d(TAG, "DeleteAllDialog: create");
-        setCancelable(false);
-
-        binding.btnCancel.setOnClickListener(view -> {
-            Log.d(TAG, "DeleteAllDialog: Cancel");
-            cancel();
-        });
-
-        binding.btnDelete.setOnClickListener(view -> {
-            Log.d(TAG, "DeleteAllDialog: Delete");
-            for (FileVoice fileVoice : fileVoices){
-                FileUtils.deleteFile(context, fileVoice.getPath());
-                model.delete(fileVoice);
+class DeleteAllDialog(
+    context: Context,
+    binding: DialogDeleteAllBinding,
+    model: FileVoiceViewModel,
+    fileVoices: List<FileVoice?>
+) : CustomDialog(context, binding.root) {
+    init {
+        Log.d(VoiceChangerApp.TAG, "DeleteAllDialog: create")
+        setCancelable(false)
+        binding.btnCancel.setOnClickListener {
+            Log.d(VoiceChangerApp.TAG, "DeleteAllDialog: Cancel")
+            cancel()
+        }
+        binding.btnDelete.setOnClickListener {
+            Log.d(VoiceChangerApp.TAG, "DeleteAllDialog: Delete")
+            for (fileVoice in fileVoices) {
+                deleteFile(context, fileVoice!!.path)
+                model.delete(fileVoice)
             }
-            cancel();
-        });
+            cancel()
+        }
     }
 }

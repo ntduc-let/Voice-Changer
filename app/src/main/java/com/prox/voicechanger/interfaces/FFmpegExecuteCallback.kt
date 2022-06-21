@@ -1,6 +1,6 @@
-package com.prox.voicechanger.interfaces;
+package com.prox.voicechanger.interfaces
 
-public interface FFmpegExecuteCallback {
-    void onSuccess();
-    void onFailed();
+interface FFmpegExecuteCallback {
+    fun onSuccess()
+    fun onFailed()
 }

@@ -1,7 +1,7 @@
-package com.prox.voicechanger.interfaces;
+package com.prox.voicechanger.interfaces
 
-public interface RecorderListener {
-    void start();
-    void stop();
-    void release();
+interface RecorderListener {
+    fun start()
+    fun stop()
+    fun release()
 }

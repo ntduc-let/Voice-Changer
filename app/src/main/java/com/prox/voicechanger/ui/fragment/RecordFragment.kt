@@ -1,106 +1,93 @@
-package com.prox.voicechanger.ui.fragment;
+package com.prox.voicechanger.ui.fragment
 
-import static com.prox.voicechanger.VoiceChangerApp.TAG;
+import com.prox.voicechanger.utils.PermissionUtils.checkPermission
+import androidx.navigation.Navigation.findNavController
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.os.Bundle
+import com.prox.voicechanger.VoiceChangerApp
+import com.prox.voicechanger.R
+import com.prox.voicechanger.ui.dialog.MoreOptionDialog
+import android.graphics.drawable.AnimationDrawable
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import android.view.View
+import android.view.animation.AnimationUtils
+import androidx.fragment.app.Fragment
+import com.prox.voicechanger.databinding.DialogMoreOptionBinding
+import com.prox.voicechanger.databinding.FragmentRecordBinding
 
-import android.graphics.drawable.AnimationDrawable;
-import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
-
-import com.prox.voicechanger.R;
-import com.prox.voicechanger.databinding.DialogMoreOptionBinding;
-import com.prox.voicechanger.databinding.FragmentRecordBinding;
-import com.prox.voicechanger.ui.dialog.MoreOptionDialog;
-import com.prox.voicechanger.utils.PermissionUtils;
-
-public class RecordFragment extends Fragment {
-    private FragmentRecordBinding binding;
-
-    private final Handler handler = new Handler();
-    private Runnable runnableAnimation;
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        Log.d(TAG, "RecordFragment: onCreateView");
-        binding = FragmentRecordBinding.inflate(inflater, container, false);
-
-        init();
-
-        binding.btnRecord.setOnClickListener(view -> {
-            if (PermissionUtils.checkPermission(requireContext(), requireActivity())) {
-                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_recordFragment_to_stopRecordFragment);
-                Log.d(TAG, "RecordFragment: To StopRecordFragment");
+class RecordFragment : Fragment() {
+    private var binding: FragmentRecordBinding? = null
+    private val handler = Handler(Looper.getMainLooper())
+    private var runnableAnimation: Runnable? = null
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        Log.d(VoiceChangerApp.TAG, "RecordFragment: onCreateView")
+        binding = FragmentRecordBinding.inflate(inflater, container, false)
+        init()
+        binding!!.btnRecord.setOnClickListener {
+            if (checkPermission(requireContext(), requireActivity())) {
+                findNavController(binding!!.root).navigate(R.id.action_recordFragment_to_stopRecordFragment)
+                Log.d(VoiceChangerApp.TAG, "RecordFragment: To StopRecordFragment")
             }
-        });
-
-        binding.btnMoreOption.setOnClickListener(view -> {
-            if (PermissionUtils.checkPermission(requireContext(), requireActivity())) {
-                MoreOptionDialog dialog = new MoreOptionDialog(
-                        requireContext(),
-                        requireActivity(),
-                        DialogMoreOptionBinding.inflate(getLayoutInflater())
-                );
-                dialog.show();
+        }
+        binding!!.btnMoreOption.setOnClickListener {
+            if (checkPermission(requireContext(), requireActivity())) {
+                val dialog = MoreOptionDialog(
+                    requireContext(),
+                    requireActivity(),
+                    DialogMoreOptionBinding.inflate(layoutInflater)
+                )
+                dialog.show()
             }
-        });
-
-        return binding.getRoot();
+        }
+        return binding!!.root
     }
 
-    @Override
-    public void onDestroyView() {
-        Log.d(TAG, "RecordFragment: onDestroyView");
-        super.onDestroyView();
-        handler.removeCallbacks(runnableAnimation);
-        binding = null;
+    override fun onDestroyView() {
+        Log.d(VoiceChangerApp.TAG, "RecordFragment: onDestroyView")
+        super.onDestroyView()
+        handler.removeCallbacks(runnableAnimation!!)
+        binding = null
     }
 
-    private void init() {
-        Log.d(TAG, "RecordFragment: init");
-        Animation rotate1Animation = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_rotate1);
-        Animation rotate2Animation = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_rotate2);
-        Animation rotate3Animation = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_rotate3);
-        Animation rotate4Animation = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_rotate4);
-        binding.aniRecord.icAniRecord1.startAnimation(rotate2Animation);
-        binding.aniRecord.icAniRecord2.startAnimation(rotate4Animation);
-        binding.aniRecord.icAniRecord3.startAnimation(rotate1Animation);
-        binding.aniRecord.icAniRecord4.startAnimation(rotate2Animation);
-        binding.aniRecord.icAniRecord5.startAnimation(rotate4Animation);
-        binding.aniRecord.icAniRecord6.startAnimation(rotate3Animation);
-
-        AnimationDrawable rocketAnimation = (AnimationDrawable) binding.aniRecord.icAniRecord7.getBackground();
-        rocketAnimation.start();
-
-        Animation translate1Animation = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_translate1);
-        binding.aniRecord.icAniRecord.startAnimation(translate1Animation);
-
-        handler.postDelayed(() -> {
-            binding.btnMoreOption.setVisibility(View.VISIBLE);
-            binding.txtContent.setVisibility(View.VISIBLE);
-            binding.txtContent2.setVisibility(View.VISIBLE);
-            binding.btnRecord.setVisibility(View.VISIBLE);
-            binding.txtMess.txtMess.setText(R.string.mess_start_record);
-            binding.txtMess.getRoot().setVisibility(View.VISIBLE);
-
-            Animation translate2Animation = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_translate2);
-            runnableAnimation = new Runnable() {
-                @Override
-                public void run() {
-                    binding.txtMess.getRoot().startAnimation(translate2Animation);
-                    handler.postDelayed(this, 1000);
+    private fun init() {
+        Log.d(VoiceChangerApp.TAG, "RecordFragment: init")
+        val rotate1Animation = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_rotate1)
+        val rotate2Animation = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_rotate2)
+        val rotate3Animation = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_rotate3)
+        val rotate4Animation = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_rotate4)
+        binding!!.aniRecord.icAniRecord1.startAnimation(rotate2Animation)
+        binding!!.aniRecord.icAniRecord2.startAnimation(rotate4Animation)
+        binding!!.aniRecord.icAniRecord3.startAnimation(rotate1Animation)
+        binding!!.aniRecord.icAniRecord4.startAnimation(rotate2Animation)
+        binding!!.aniRecord.icAniRecord5.startAnimation(rotate4Animation)
+        binding!!.aniRecord.icAniRecord6.startAnimation(rotate3Animation)
+        val rocketAnimation = binding!!.aniRecord.icAniRecord7.background as AnimationDrawable
+        rocketAnimation.start()
+        val translate1Animation =
+            AnimationUtils.loadAnimation(requireContext(), R.anim.anim_translate1)
+        binding!!.aniRecord.icAniRecord.startAnimation(translate1Animation)
+        handler.postDelayed({
+            binding!!.btnMoreOption.visibility = View.VISIBLE
+            binding!!.txtContent.visibility = View.VISIBLE
+            binding!!.txtContent2.visibility = View.VISIBLE
+            binding!!.btnRecord.visibility = View.VISIBLE
+            binding!!.txtMess.txtMess.setText(R.string.mess_start_record)
+            binding!!.txtMess.root.visibility = View.VISIBLE
+            val translate2Animation =
+                AnimationUtils.loadAnimation(requireContext(), R.anim.anim_translate2)
+            runnableAnimation = object : Runnable {
+                override fun run() {
+                    binding!!.txtMess.root.startAnimation(translate2Animation)
+                    handler.postDelayed(this, 1000)
                 }
-            };
-            handler.post(runnableAnimation);
-        }, 1500);
+            }
+            handler.post(runnableAnimation as Runnable)
+        }, 1500)
     }
 }
