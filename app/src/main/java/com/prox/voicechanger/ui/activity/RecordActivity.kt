@@ -198,7 +198,7 @@ class RecordActivity : AppCompatActivity() {
                                 dialog.cancel()
                             }
                         })
-                        mTts!!.language = Locale.US
+                        mTts!!.language = Locale(TextToVoiceDialog.code_language!!)
                         if (TextToVoiceDialog.textToSpeech!!.isEmpty()) {
                             Toast.makeText(this, R.string.process_error, Toast.LENGTH_SHORT).show()
                             return@label

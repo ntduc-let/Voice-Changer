@@ -98,4 +98,5 @@
     <string name="thank_rate">Thank for rating</string>
     <string name="rated">You have already rated it</string>
     <string name="processing_in_progress">Processing in progress, please try again later</string>
+    <string name="choose_language">Choose a language</string>
 </resources>

@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Project/Voice-Changer/app/src/main/res/layout/dialog_text_to_voice.xml" value="0.33" />
         <entry key="..\:/voice-changer/app/src/main/res/drawable-v24/bg_button6.xml" value="0.1875" />
         <entry key="..\:/voice-changer/app/src/main/res/drawable-v24/bg_button_enable30.xml" value="0.1905" />
         <entry key="..\:/voice-changer/app/src/main/res/drawable-v24/bg_mess2.xml" value="0.138" />

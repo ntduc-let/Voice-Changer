@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="language">
+        <item>Albanian</item>
+        <item>Arabic</item>
+        <item>Bengali (Bangla)</item>
+        <item>Bulgarian</item>
+        <item>Cambodian</item>
+        <item>Catalan</item>
+        <item>Chinese (Simplified)</item>
+        <item>Chinese (Traditional)</item>
+        <item>Croatian</item>
+        <item>Czech</item>
+        <item>Danish</item>
+        <item>Dutch</item>
+        <item>English</item>
+        <item>Estonian</item>
+        <item>Finnish</item>
+        <item>French</item>
+        <item>German</item>
+        <item>Greek</item>
+        <item>Gujarati</item>
+        <item>Hindi</item>
+        <item>Hungarian</item>
+        <item>Italian</item>
+        <item>Japanese</item>
+        <item>Javanese</item>
+        <item>Kannada</item>
+        <item>Korean</item>
+        <item>Kurdish</item>
+        <item>Latin</item>
+        <item>Latvian (Lettish)</item>
+        <item>Malay</item>
+        <item>Malayalam</item>
+        <item>Marathi</item>
+        <item>Nepali</item>
+        <item>Polish</item>
+        <item>Portuguese</item>
+        <item>Punjabi</item>
+        <item>Romanian</item>
+        <item>Russian</item>
+        <item>Serbian</item>
+        <item>Serbo-Croatian</item>
+        <item>Sinhalese</item>
+        <item>Slovak</item>
+        <item>Spanish</item>
+        <item>Sundanese</item>
+        <item>Swahili (Kiswahili)</item>
+        <item>Swedish</item>
+        <item>Tamil</item>
+        <item>Telugu</item>
+        <item>Thai</item>
+        <item>Turkish</item>
+        <item>Ukrainian</item>
+        <item>Urdu</item>
+        <item>Vietnamese</item>
+        <item>Welsh</item>
+    </string-array>
+
+    <string-array name="code_language">
+        <item>sq</item>
+        <item>ar</item>
+        <item>bn</item>
+        <item>bg</item>
+        <item>km</item>
+        <item>ca</item>
+        <item>zh</item>
+        <item>zh</item>
+        <item>hr</item>
+        <item>cs</item>
+        <item>da</item>
+        <item>nl</item>
+        <item>en</item>
+        <item>et</item>
+        <item>fi</item>
+        <item>fr</item>
+        <item>de</item>
+        <item>el</item>
+        <item>gu</item>
+        <item>hi</item>
+        <item>hu</item>
+        <item>it</item>
+        <item>ja</item>
+        <item>ja</item>
+        <item>kn</item>
+        <item>ko</item>
+        <item>ku</item>
+        <item>la</item>
+        <item>lv</item>
+        <item>ms</item>
+        <item>ml</item>
+        <item>mr</item>
+        <item>ne</item>
+        <item>pl</item>
+        <item>pt</item>
+        <item>pa</item>
+        <item>ro</item>
+        <item>ru</item>
+        <item>sr</item>
+        <item>sh</item>
+        <item>si</item>
+        <item>sk</item>
+        <item>es</item>
+        <item>su</item>
+        <item>sw</item>
+        <item>sv</item>
+        <item>ta</item>
+        <item>te</item>
+        <item>th</item>
+        <item>tr</item>
+        <item>uk</item>
+        <item>ur</item>
+        <item>vi</item>
+        <item>cy</item>
+    </string-array>
+</resources>
