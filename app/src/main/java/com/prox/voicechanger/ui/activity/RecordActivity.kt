@@ -88,10 +88,7 @@ class RecordActivity : AppCompatActivity() {
         storageRef = storage!!.reference
 
         auth = FirebaseAuth.getInstance()
-    }
 
-    override fun onStart() {
-        super.onStart()
         if (auth.currentUser != null) {
             activityScope.launch {
                 val listFileVoice = model!!.getFileVoices().value
