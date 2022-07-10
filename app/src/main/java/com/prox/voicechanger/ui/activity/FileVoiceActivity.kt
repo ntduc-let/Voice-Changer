@@ -25,6 +25,7 @@ import com.prox.voicechanger.R
 import android.widget.Toast
 import com.prox.voicechanger.ui.dialog.DeleteAllDialog
 import android.content.Intent
+import android.net.Uri
 import android.view.WindowManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -32,14 +33,20 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.prox.voicechanger.databinding.ActivityFileVoiceBinding
 import com.prox.voicechanger.databinding.DialogDeleteAllBinding
 import com.prox.voicechanger.databinding.DialogLoading2Binding
 import com.prox.voicechanger.databinding.DialogPlayVideoBinding
 import com.prox.voicechanger.ui.dialog.LoadingDialog
 import com.prox.voicechanger.interfaces.FFmpegExecuteCallback
+import kotlinx.coroutines.*
 import java.io.File
 import java.io.IOException
+import java.lang.Runnable
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -47,7 +54,16 @@ import kotlin.collections.ArrayList
 class FileVoiceActivity : AppCompatActivity() {
     private var binding: ActivityFileVoiceBinding? = null
     private var adapter: FileVoiceAdapter? = null
+
+    private val activityScope = CoroutineScope(Job() + Dispatchers.Main)
     private var model: FileVoiceViewModel? = null
+
+    private lateinit var auth: FirebaseAuth
+    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private var storage: FirebaseStorage? = null
+    private var storageRef: StorageReference? = null
+    private var riversRef: StorageReference? = null
+
     private var pathVideo: String? = null
     private var playVideoDialog: PlayVideoDialog? = null
     private val insertVideoToDB = Runnable label@{
@@ -77,6 +93,13 @@ class FileVoiceActivity : AppCompatActivity() {
         binding = ActivityFileVoiceBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
         model = ViewModelProvider(this).get(FileVoiceViewModel::class.java)
+
+        storage = FirebaseStorage.getInstance()
+        storageRef = storage!!.reference
+
+        // Initialize Firebase Auth
+        auth = FirebaseAuth.getInstance()
+
         model!!.getFileVoices().observe(this) { fileVoices: List<FileVoice?>? ->
             if (fileVoices == null) {
                 adapter!!.setFileVoices(ArrayList())
@@ -123,6 +146,44 @@ class FileVoiceActivity : AppCompatActivity() {
             dialog.show()
         }
         binding!!.layoutNoItem.btnRecordNow.setOnClickListener { goToRecord() }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (auth.currentUser != null){
+            activityScope.launch {
+                val listFileVoice = model!!.getFileVoices().value
+
+                for (fileVoice in listFileVoice!!) {
+                    withContext(Dispatchers.IO) {
+                        val docRef =
+                            db.collection(auth.currentUser!!.uid).document(fileVoice!!.name)
+                        docRef.get().addOnSuccessListener { document ->
+                            if (document.data == null) {
+                                val data = hashMapOf(
+                                    "id" to fileVoice.id,
+                                    "src" to fileVoice.src,
+                                    "name" to fileVoice.name,
+                                    "path" to fileVoice.path,
+                                    "duration" to fileVoice.duration,
+                                    "size" to fileVoice.size,
+                                    "date" to fileVoice.date
+                                )
+                                db.collection(auth.currentUser!!.uid)
+                                    .document(fileVoice.name)
+                                    .set(data)
+
+                                val file = Uri.fromFile(File(fileVoice.path))
+
+                                riversRef =
+                                    storageRef!!.child("${auth.currentUser!!.uid}/${fileVoice.name}")
+                                riversRef!!.putFile(file)
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onResume() {

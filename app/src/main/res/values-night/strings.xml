@@ -99,4 +99,6 @@
     <string name="rated">You have already rated it</string>
     <string name="processing_in_progress">Processing in progress, please try again later</string>
     <string name="choose_language">Choose a language</string>
+    <string name="btn_login">Login</string>
+    <string name="btn_logout">Logout</string>
 </resources>

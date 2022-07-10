@@ -46,4 +46,8 @@ class FileVoiceRepository @Inject constructor(private val dao: FileVoiceDAO) {
     fun delete(fileVoice: FileVoice?) {
         dao.delete(fileVoice)
     }
+
+    companion object{
+        var listStorage: ArrayList<FileVoice> = ArrayList()
+    }
 }

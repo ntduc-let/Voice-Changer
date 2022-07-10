@@ -30,8 +30,8 @@ class FileVoiceViewModel @Inject constructor(private val repository: FileVoiceRe
         return fileVideos
     }
 
-    fun check(path: String?): FileVoice {
-        return repository.check(path)!!
+    fun check(path: String?): FileVoice? {
+        return repository.check(path)
     }
 
     fun getPathPlayer(): LiveData<String> {

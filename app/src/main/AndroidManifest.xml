@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.prox.voicechanger">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -21,8 +23,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VoiceChanger">
         <activity
+            android:name=".ui.activity.SettingActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.FileStorageActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ui.activity.FileVideoActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.FileVoiceActivity"
             android:exported="true"
@@ -64,7 +75,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
     </application>
 
 </manifest>

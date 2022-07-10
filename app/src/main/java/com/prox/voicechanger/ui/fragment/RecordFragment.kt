@@ -1,22 +1,24 @@
 package com.prox.voicechanger.ui.fragment
 
-import com.prox.voicechanger.utils.PermissionUtils.checkPermission
-import androidx.navigation.Navigation.findNavController
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import android.os.Bundle
-import com.prox.voicechanger.VoiceChangerApp
-import com.prox.voicechanger.R
-import com.prox.voicechanger.ui.dialog.MoreOptionDialog
+import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation.findNavController
+import com.prox.voicechanger.R
+import com.prox.voicechanger.VoiceChangerApp
 import com.prox.voicechanger.databinding.DialogMoreOptionBinding
 import com.prox.voicechanger.databinding.FragmentRecordBinding
+import com.prox.voicechanger.ui.activity.SettingActivity
+import com.prox.voicechanger.ui.dialog.MoreOptionDialog
+import com.prox.voicechanger.utils.PermissionUtils.checkPermission
 
 class RecordFragment : Fragment() {
     private var binding: FragmentRecordBinding? = null
@@ -35,6 +37,12 @@ class RecordFragment : Fragment() {
                 Log.d(VoiceChangerApp.TAG, "RecordFragment: To StopRecordFragment")
             }
         }
+
+        binding!!.btnMore.setOnClickListener {
+            val goToSetting = Intent(requireActivity(), SettingActivity::class.java)
+            startActivity(goToSetting)
+        }
+
         binding!!.btnMoreOption.setOnClickListener {
             if (checkPermission(requireContext(), requireActivity())) {
                 val dialog = MoreOptionDialog(
@@ -73,6 +81,7 @@ class RecordFragment : Fragment() {
             AnimationUtils.loadAnimation(requireContext(), R.anim.anim_translate1)
         binding!!.aniRecord.icAniRecord.startAnimation(translate1Animation)
         handler.postDelayed({
+            binding!!.btnMore.visibility = View.VISIBLE
             binding!!.btnMoreOption.visibility = View.VISIBLE
             binding!!.txtContent.visibility = View.VISIBLE
             binding!!.txtContent2.visibility = View.VISIBLE

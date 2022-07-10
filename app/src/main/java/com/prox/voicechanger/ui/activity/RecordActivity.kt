@@ -21,6 +21,7 @@ import android.widget.Toast
 import android.view.WindowManager
 import androidx.navigation.fragment.NavHostFragment
 import android.content.pm.PackageManager
+import android.net.Uri
 import androidx.core.content.ContextCompat
 import com.prox.voicechanger.ui.dialog.MoreOptionDialog
 import com.prox.voicechanger.ui.dialog.TextToVoiceDialog
@@ -28,9 +29,18 @@ import com.prox.voicechanger.ui.dialog.LoadingDialog
 import android.speech.tts.TextToSpeech.OnInitListener
 import android.speech.tts.UtteranceProgressListener
 import android.util.Log
+import com.bumptech.glide.Glide.init
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.prox.voicechanger.databinding.ActivityRecordBinding
 import com.prox.voicechanger.databinding.DialogLoading2Binding
+import com.prox.voicechanger.model.FileVoice
+import com.prox.voicechanger.ui.dialog.OptionDialog
+import com.prox.voicechanger.ui.dialog.OptionDialog.Companion.fileVoice
 import com.prox.voicechanger.utils.PermissionUtils.REQUEST_PERMISSION
+import kotlinx.coroutines.*
 import java.io.File
 import java.util.*
 
@@ -40,6 +50,14 @@ class RecordActivity : AppCompatActivity() {
     private var appBarConfiguration: AppBarConfiguration? = null
     private var mTts: TextToSpeech? = null
     private var model: FileVoiceViewModel? = null
+    private val activityScope = CoroutineScope(Job() + Dispatchers.Main)
+
+    private lateinit var auth: FirebaseAuth
+    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private var storage: FirebaseStorage? = null
+    private var storageRef: StorageReference? = null
+    private var riversRef: StorageReference? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(VoiceChangerApp.TAG, "RecordActivity: onCreate")
         super.onCreate(savedInstanceState)
@@ -65,6 +83,49 @@ class RecordActivity : AppCompatActivity() {
             }
         }
         init()
+
+        storage = FirebaseStorage.getInstance()
+        storageRef = storage!!.reference
+
+        auth = FirebaseAuth.getInstance()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (auth.currentUser != null) {
+            activityScope.launch {
+                val listFileVoice = model!!.getFileVoices().value
+
+                for (fileVoice in listFileVoice!!) {
+                    withContext(Dispatchers.IO) {
+                        val docRef =
+                            db.collection(auth.currentUser!!.uid).document(fileVoice!!.name)
+                        docRef.get().addOnSuccessListener { document ->
+                            if (document.data == null) {
+                                val data = hashMapOf(
+                                    "id" to fileVoice.id,
+                                    "src" to fileVoice.src,
+                                    "name" to fileVoice.name,
+                                    "path" to fileVoice.path,
+                                    "duration" to fileVoice.duration,
+                                    "size" to fileVoice.size,
+                                    "date" to fileVoice.date
+                                )
+                                db.collection(auth.currentUser!!.uid)
+                                    .document(fileVoice.name)
+                                    .set(data)
+
+                                val file = Uri.fromFile(File(fileVoice.path))
+
+                                riversRef =
+                                    storageRef!!.child("${auth.currentUser!!.uid}/${fileVoice.name}")
+                                riversRef!!.putFile(file)
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onDestroy() {

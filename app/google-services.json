@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "672625577297",
+    "project_id": "androidcb-voice-changer",
+    "storage_bucket": "androidcb-voice-changer.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:672625577297:android:07225a92ea903c739dd770",
+        "android_client_info": {
+          "package_name": "com.prox.voicechanger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "672625577297-t597re9k3sv8qfk6i3iu49k7ggqmm4lc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB21wbIJxLN5NZ8E1o3BM8zffq-_-YdlX4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "672625577297-t597re9k3sv8qfk6i3iu49k7ggqmm4lc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
