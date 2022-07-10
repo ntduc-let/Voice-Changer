@@ -72,20 +72,25 @@ class FileStorageActivity : AppCompatActivity() {
                     }
                 }
             }
-            adapter!!.setClickDeleteListener {
-                activityScope.launch {
-                    withContext(Dispatchers.IO) {
-                        db.collection(auth.currentUser!!.uid).document(it.name).delete()
-                        model!!.delete(it)
+        }
+        adapter!!.setClickDeleteListener {
+            model!!.delete(it)
 
-                        val islandRef=  storageRef!!.child("${auth.currentUser!!.uid}/${it.name}")
-                        islandRef.delete().addOnSuccessListener { _ ->
-                            FileVoiceRepository.listStorage.remove(it)
-                            adapter!!.notifyDataSetChanged()
-                            Toast.makeText(this@FileStorageActivity, "Successful delete", Toast.LENGTH_SHORT).show()
-                        }.addOnFailureListener {
-                            Toast.makeText(this@FileStorageActivity, "Failed delete", Toast.LENGTH_SHORT).show()
-                        }
+            activityScope.launch {
+                withContext(Dispatchers.IO) {
+                    db.collection(auth.currentUser!!.uid).document(it.name).delete().addOnSuccessListener { _ ->
+                        Log.d("aaaaaaaaaaaaa", "addOnSuccessListener")
+                    }.addOnFailureListener {
+                        Log.d("aaaaaaaaaaaaa", "addOnFailureListener")
+                    }
+
+                    val islandRef = storageRef!!.child("${auth.currentUser!!.uid}/${it.name}")
+                    islandRef.delete().addOnSuccessListener { _ ->
+                        FileVoiceRepository.listStorage.remove(it)
+                        adapter!!.notifyDataSetChanged()
+                        Toast.makeText(this@FileStorageActivity, "Successful delete", Toast.LENGTH_SHORT).show()
+                    }.addOnFailureListener {
+                        Toast.makeText(this@FileStorageActivity, "Failed delete", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
