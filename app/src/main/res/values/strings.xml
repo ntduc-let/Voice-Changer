@@ -76,6 +76,7 @@
     <string name="decay">Decay</string>
     <string name="canceled">Canceled</string>
     <string name="dialog_request_permission"><![CDATA[If you reject permission, you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]]]></string>
+    <string name="dialog_request_permission_record"><![CDATA[To record your voice, allow to record audio\n\nPlease turn on permissions at [Setting] > [Permission]]]></string>
     <string name="setting">Setting</string>
     <string name="save_success">Save successfully</string>
     <string name="save_fail">Save failure</string>
@@ -99,4 +100,6 @@
     <string name="thank_rate">Thank for rating</string>
     <string name="rated">You have already rated it</string>
     <string name="processing_in_progress">Processing in progress, please try again later</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="CheckstyleConfigurable">
+    <option name="suppFilterFilename" value="" />
+    <option name="suppCommentFilter" value="false" />
+    <option name="offComment" value="CHECKSTYLE\:OFF" />
+    <option name="onComment" value="CHECKSTYLE\:ON" />
+    <option name="checkFormat" value=".*" />
+    <option name="messageFormat" value="" />
+    <option name="checkCPP" value="true" />
+    <option name="checkC" value="true" />
+    <option name="suppNearbyCommentFilter" value="false" />
+    <option name="snCommentFormat" value="SUPPRESS CHECKSTYLE (\w+)" />
+    <option name="snCheckFormat" value="$1" />
+    <option name="snMessageFormat" value="" />
+    <option name="snInfluenceFormat" value="0" />
+    <option name="snCheckCPP" value="true" />
+    <option name="snCheckC" value="true" />
+    <option name="pathToUserRulesConfiguration" value="" />
+    <option name="pathToJarWithRules" value="" />
+  </component>
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
@@ -59,6 +78,8 @@
         <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_splash1.xml" value="0.212" />
         <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_splash2.xml" value="0.212" />
         <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_splash3.xml" value="0.212" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_star_not_rate.xml" value="0.1775" />
+        <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_star_rate.xml" value="0.1775" />
         <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_terms.xml" value="0.138" />
         <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_thumb.xml" value="0.1475" />
         <entry key="..\:/voice-changer/app/src/main/res/drawable/ic_thumb2.xml" value="0.181" />
@@ -74,17 +95,17 @@
         <entry key="..\:/voice-changer/app/src/main/res/layout/activity_file_voice.xml" value="0.25" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/activity_play_video.xml" value="0.25" />
-        <entry key="..\:/voice-changer/app/src/main/res/layout/activity_record.xml" value="0.176" />
+        <entry key="..\:/voice-changer/app/src/main/res/layout/activity_record.xml" value="0.5" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/activity_splash.xml" value="0.25" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/dialog_delete_all.xml" value="0.25" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/dialog_loading.xml" value="0.25" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/dialog_loading_2.xml" value="0.14010416666666667" />
-        <entry key="..\:/voice-changer/app/src/main/res/layout/dialog_more_option.xml" value="0.33" />
+        <entry key="..\:/voice-changer/app/src/main/res/layout/dialog_more_option.xml" value="0.25" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/dialog_name.xml" value="0.25" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/dialog_option.xml" value="0.25" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/dialog_option_video.xml" value="0.25" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/dialog_play_video.xml" value="0.45595854922279794" />
-        <entry key="..\:/voice-changer/app/src/main/res/layout/dialog_rate.xml" value="0.25" />
+        <entry key="..\:/voice-changer/app/src/main/res/layout/dialog_rate.xml" value="0.67" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/dialog_rename.xml" value="0.21458333333333332" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/dialog_text_to_voice.xml" value="0.4" />
         <entry key="..\:/voice-changer/app/src/main/res/layout/fragment_change_voice.xml" value="0.25" />
@@ -112,16 +133,22 @@
         <entry key="..\:/voice-changer/app/src/main/res/layout/txt_mess.xml" value="0.264" />
         <entry key="..\:/voice-changer/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.121" />
         <entry key="..\:/voice-changer/app/src/main/res/xml/file_paths.xml" value="0.25" />
-        <entry key="..\:/voice-changer/proxads/src/main/res/layout/ads_native_medium.xml" value="0.49382716049382713" />
-        <entry key="..\:/voice-changer/proxads/src/main/res/layout/shimmer_banner.xml" value="0.25" />
-        <entry key="..\:/voice-changer/proxads/src/main/res/layout/shimmer_native_medium.xml" value="0.25" />
       </map>
     </option>
+  </component>
+  <component name="FindBugsConfigurable">
+    <option name="make" value="true" />
+    <option name="effort" value="default" />
+    <option name="priority" value="Medium" />
+    <option name="excludeFilter" value="" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="SuppressionsComponent">
+    <option name="suppComments" value="[]" />
   </component>
 </project>

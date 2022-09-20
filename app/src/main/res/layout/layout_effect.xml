@@ -42,8 +42,8 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/btn_effect" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_effects"
+    <FrameLayout
+        android:id="@+id/layout_fragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
@@ -53,19 +53,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_effect"/>
+        app:layout_constraintTop_toBottomOf="@+id/btn_effect" />
 
-    <include layout="@layout/layout_custom"
-        android:id="@+id/layout_custom"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_effect"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,17 +1,17 @@
-package com.prox.voicechanger.utils;
+package com.prox.voicechanger.utils
 
-import android.graphics.LinearGradient;
-import android.graphics.Shader;
+import android.graphics.LinearGradient
+import android.graphics.Shader
 
-public class ColorUtils {
-    public static Shader textShader(int startColor, int endColor, float height){
-        return new LinearGradient(
-                0,
-                0,
-                0,
-                (float) (height*1.3),
-                startColor,
-                endColor,
-                Shader.TileMode.CLAMP);
+object ColorUtils {
+    fun textShader(startColor: Int, endColor: Int, height: Float): Shader {
+        return LinearGradient(
+            0f,
+            0f,
+            0f, (height * 1.3).toFloat(),
+            startColor,
+            endColor,
+            Shader.TileMode.CLAMP
+        )
     }
 }

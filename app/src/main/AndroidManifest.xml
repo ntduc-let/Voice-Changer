@@ -27,23 +27,29 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VoiceChanger">
         <activity
-            android:name=".ui.activity.FileVideoActivity"
-            android:exported="true" />
-        <activity
-            android:name=".ui.activity.FileVoiceActivity"
+            android:name=".ui.list_voice.activity.FileVideoActivity"
+            android:theme="@style/MainTheme"
             android:exported="true"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.list_voice.activity.FileVoiceActivity"
+            android:exported="true"
+            android:theme="@style/MainTheme"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activity.ChangeVoiceActivity"
+            android:name=".ui.change_voice.activity.ChangeVoiceActivity"
             android:exported="true"
+            android:theme="@style/MainTheme"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activity.RecordActivity"
+            android:name=".ui.home.activity.RecordActivity"
             android:exported="true"
+            android:theme="@style/MainTheme"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activity.SplashActivity"
+            android:name=".ui.splash.SplashActivity"
             android:exported="true"
+            android:theme="@style/SplashTheme"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

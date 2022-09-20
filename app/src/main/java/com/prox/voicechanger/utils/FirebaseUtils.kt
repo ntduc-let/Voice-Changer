@@ -1,36 +1,37 @@
-package com.prox.voicechanger.utils;
+package com.prox.voicechanger.utils
 
-import android.content.Context;
-import android.os.Bundle;
+import android.content.Context
+import android.os.Bundle
+import com.google.firebase.analytics.FirebaseAnalytics
 
-import com.google.firebase.analytics.FirebaseAnalytics;
-
-public class FirebaseUtils {
-
-    public static void sendEventSubmitRate(Context context, String comment, int rate){
-        Bundle bundle = new Bundle();
-        bundle.putString("event_type", "rated");
-        bundle.putString("comment", comment);
-        bundle.putString("star", rate + " star");
-        FirebaseAnalytics.getInstance(context).logEvent("prox_rating_layout", bundle);
+object FirebaseUtils {
+    @JvmStatic
+    fun sendEventSubmitRate(context: Context?, comment: String?, rate: Int) {
+        val bundle = Bundle()
+        bundle.putString("event_type", "rated")
+        bundle.putString("comment", comment)
+        bundle.putString("star", "$rate star")
+        FirebaseAnalytics.getInstance(context!!).logEvent("prox_rating_layout", bundle)
     }
 
-    public static void sendEventLaterRate(Context context){
-        Bundle bundle = new Bundle();
-        bundle.putString("event_type", "cancel");
-        FirebaseAnalytics.getInstance(context).logEvent("prox_rating_layout", bundle);
+    @JvmStatic
+    fun sendEventLaterRate(context: Context?) {
+        val bundle = Bundle()
+        bundle.putString("event_type", "cancel")
+        FirebaseAnalytics.getInstance(context!!).logEvent("prox_rating_layout", bundle)
     }
 
-    public static void sendEventChangeRate(Context context, int rate){
-        Bundle bundle = new Bundle();
-        bundle.putString("event_type", "rated");
-        bundle.putString("star", rate + " star");
-        FirebaseAnalytics.getInstance(context).logEvent("prox_rating_layout", bundle);
+    @JvmStatic
+    fun sendEventChangeRate(context: Context?, rate: Int) {
+        val bundle = Bundle()
+        bundle.putString("event_type", "rated")
+        bundle.putString("star", "$rate star")
+        FirebaseAnalytics.getInstance(context!!).logEvent("prox_rating_layout", bundle)
     }
 
-    public static void sendEvent(Context context, String nameEvent, String typeEvent){
-        Bundle bundle = new Bundle();
-        bundle.putString("event_type", typeEvent);
-        FirebaseAnalytics.getInstance(context).logEvent(nameEvent, bundle);
+    fun sendEvent(context: Context?, nameEvent: String?, typeEvent: String?) {
+        val bundle = Bundle()
+        bundle.putString("event_type", typeEvent)
+        FirebaseAnalytics.getInstance(context!!).logEvent(nameEvent!!, bundle)
     }
 }
